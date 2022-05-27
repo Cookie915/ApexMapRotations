@@ -4,8 +4,10 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.apexmaprotations.R
 import com.example.apexmaprotations.models.Resource
 import com.example.apexmaprotations.models.retrofit.CurrentMap
+import com.example.apexmaprotations.models.retrofit.MapData
 import com.example.apexmaprotations.repo.ApexRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,14 +15,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ApexViewModel : ViewModel() {
     private val tag = "ApexViewModel"
     private val apexRepo = ApexRepo()
 
-    private var mCurrentMap = MutableStateFlow<Resource<CurrentMap>>(Resource.Loading())
-    val currentMap: StateFlow<Resource<CurrentMap>>
-        get() = mCurrentMap.asStateFlow()
+    private var mMapData = MutableStateFlow<Resource<MapData>>(Resource.Loading())
+    val mapData: StateFlow<Resource<MapData>>
+        get() = mMapData.asStateFlow()
 
     private var  mTimeRemaining = MutableStateFlow<Long>(0)
     val timeRemaining: StateFlow<Long>
@@ -30,15 +33,15 @@ class ApexViewModel : ViewModel() {
         apexRepo.getMapData().collect {
             when (it) {
                 is Resource.Loading -> {
-                    mCurrentMap.value = Resource.Loading()
+                    mMapData.value = Resource.Loading()
                 }
                 is Resource.Failure -> {
-                    mCurrentMap.value = Resource.Failure("Failed")
+                    mMapData.value = Resource.Failure("Failed")
                 }
                 is Resource.Success -> {
                     Log.i(tag, "New Map Data")
-                    mCurrentMap.value = Resource.Success(it.data?.currentMap)
-                    initializeTimer(it.data!!.currentMap)
+                    mMapData.value = Resource.Success(it.data!!)
+                    initializeTimer(it.data.currentMap)
                 }
             }
         }
@@ -65,6 +68,47 @@ class ApexViewModel : ViewModel() {
                 timer.start()
             }
         }
+    }
+
+    fun getKingCanyonImg(): Int {
+        val images = listOf<Int>(
+            R.drawable.transition_kings_canyon,
+            R.drawable.transition_kings_canyon_mu1,
+            R.drawable.transition_kings_canyon_mu2,
+            R.drawable.transition_kings_canyon_mu3
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
+    }
+
+    fun getWorldsEdgeImg(): Int{
+        val images = listOf<Int>(
+            R.drawable.transition_world_s_edge,
+            R.drawable.transition_world_s_edge_mu1,
+            R.drawable.transition_world_s_edge_mu2,
+            R.drawable.transition_world_s_edge_mu3
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
+    }
+
+    fun getOlympusImg(): Int{
+        val images = listOf<Int>(
+            R.drawable.transition_olympus,
+            R.drawable.transition_olympus_mu1,
+            R.drawable.transition_olympus_mu2
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
+    }
+
+    fun getStormPointImg(): Int{
+        val images = listOf<Int>(
+            R.drawable.transition_storm_point,
+            R.drawable.transition_storm_point_mu1
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
     }
 
     init {

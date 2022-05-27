@@ -1,37 +1,26 @@
 package com.example.apexmaprotations
 
 
-import android.graphics.BlurMaskFilter
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.example.apexmaprotations.databinding.ActivityMainBinding
+import com.example.apexmaprotations.models.Resource
+import com.example.apexmaprotations.repo.assignMapImage
 import com.example.apexmaprotations.repo.formatTime
 import com.example.apexmaprotations.viewmodels.ApexViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
+const val tag = "MainActivityLogs"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var apexViewModel: ApexViewModel
-    val paint = Paint().apply {
-        isAntiAlias = true
-        isDither = true
-        color = Color.argb(248, 255, 255, 255)
-        strokeWidth = 20f
-        style = Paint.Style.STROKE
-    }
-    val paintBlur = Paint().apply {
-        set(paint)
-        color = Color.argb(235, 74, 138, 255)
-        strokeWidth = 30f
-        maskFilter = BlurMaskFilter(15F, BlurMaskFilter.Blur.NORMAL)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,34 +29,40 @@ class MainActivity : AppCompatActivity() {
             lifecycleOwner = this@MainActivity
             viewmodel = apexViewModel
         }
-        val view = binding.root
         val currentMap = binding.currentMapImage
         val nextMap = binding.nextMapImage
         val time = binding.time
-        time.setShadowLayer(300F, 0F, 0F, Color.WHITE)
+        setContentView(binding.root)
         lifecycleScope.launch {
-            apexViewModel.timeRemaining.map {
-                val hours = it / (1000*60*60) % 60
-                val minutes = it / (1000 * 60) % 60
-                val seconds = it / (1000) % 60
-                val decimal = it / 100 % 10
-                val times = formatTime( minutes, seconds)
-                time.text = getString(R.string.time_value_format, hours, times.first(), times.last(), decimal)
-            } .collect()
+            repeatOnLifecycle(Lifecycle.State.CREATED){
+                launch {
+                    apexViewModel.timeRemaining.map {
+                        val hours = it / (1000*60*60) % 60
+                        val minutes = it / (1000 * 60) % 60
+                        val seconds = it / (1000) % 60
+                        val decimal = it / 100 % 10
+                        val times = formatTime( minutes, seconds)
+                        time.text = getString(R.string.time_value_format, hours, times.first(), times.last(), decimal)
+                    } .collect()
+                }
+                launch {
+                    apexViewModel.mapData.collect(){
+                        when (it){
+                            is  Resource.Loading ->{
+                                //todo show loading
+                            }
+                            is Resource.Failure -> {
+                                //  todo error screen
+                            }
+                            is  Resource.Success -> {
+                                Log.i(tag, it.data!!.currentMap.map)
+                                assignMapImage(it.data.currentMap.map, currentMap, apexViewModel, this@MainActivity)
+                                assignMapImage(it.data.nextMap.map, nextMap, apexViewModel, this@MainActivity)
+                            }
+                        }
+                    }
+                }
+            }
         }
-        Glide.with(this)
-            .load("https://apexlegendsstatus.com/assets/maps/Olympus.png")
-            .centerCrop()
-            .into(currentMap)
-
-        Glide.with(this)
-            .load("https://apexlegendsstatus.com/assets/maps/Worlds_Edge.png")
-            .centerCrop()
-            .into(nextMap)
-        setContentView(view)
-
-    }
-    override fun onStop() {
-        super.onStop()
     }
 }
