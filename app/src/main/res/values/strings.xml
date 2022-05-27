@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Apex Map Rotations</string>
     <string name="map_image_desc">Map Image</string>
+    <string name="timer_id">timer</string>
+    <string name="animation_id">animation</string>
+    <string name="lottie_rawRes">timer_indicator_scaling</string>
+    <string name="time_value_format">0%1d : %1s : %1s.%1d</string>
 </resources>

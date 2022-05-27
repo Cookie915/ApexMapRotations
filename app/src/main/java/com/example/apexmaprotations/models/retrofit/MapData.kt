@@ -1,7 +1,6 @@
 package com.example.apexmaprotations.models.retrofit
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 data class MapData(
     @SerializedName("current")
@@ -13,8 +12,8 @@ data class MapData(
 
 
 data class CurrentMap(
-    val start: Int,
-    val end: Int,
+    val start: Long,
+    val end: Long,
     val readableDate_start: String,
     val readableDate_end: String,
     val map: String,
