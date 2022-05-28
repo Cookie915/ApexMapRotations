@@ -2,14 +2,12 @@ package com.example.apexmaprotations
 
 
 import android.animation.ObjectAnimator
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,11 +20,15 @@ import com.example.apexmaprotations.viewmodels.ApexViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 const val tag = "MainActivityLogs"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var apexViewModel: ApexViewModel
+
+    //  offset for animating menu lines
+    private var linesOffset by Delegates.notNull<Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +40,14 @@ class MainActivity : AppCompatActivity() {
         val currentMap = binding.currentMapImage
         val nextMap = binding.nextMapImage
         val time = binding.time
-        val animation = binding.animation
+        val animation = binding.timerAnimation
         val topText = binding.topText
         val bottomText = binding.bottomText
         val menuLines = binding.menuBackgroundLines
         val menuBackground = binding.menubackground
         menuBackground.doOnPreDraw {
-            menuLines.translationY = -it.height.toFloat() * 2f
+            linesOffset = it.height.toFloat() * 1.5f
+            menuLines.translationY -= linesOffset
         }
         setContentView(binding.root)
         binding.menubackground.setOnClickListener { v ->
@@ -55,10 +58,13 @@ class MainActivity : AppCompatActivity() {
                     animation.visibility = View.INVISIBLE
                     topText.visibility = View.INVISIBLE
                     bottomText.visibility = View.INVISIBLE
-                    v?.setBackgroundColor(ContextCompat.getColor(this, R.color.menu_background))
                     ObjectAnimator.ofFloat(menuLines, "translationY", 0f).apply {
-                        interpolator = FastOutSlowInInterpolator()
-                        duration = 1500
+                        duration = 1000
+                        start()
+                    }
+                    ObjectAnimator.ofFloat(menuBackground, "alpha", 0.8f).apply {
+                        interpolator = LinearInterpolator()
+                        duration = 1000
                         start()
                     }
                 }
@@ -68,14 +74,13 @@ class MainActivity : AppCompatActivity() {
                     animation.visibility = View.VISIBLE
                     topText.visibility = View.VISIBLE
                     bottomText.visibility = View.VISIBLE
-                    v?.setBackgroundColor(Color.TRANSPARENT)
-                    ObjectAnimator.ofFloat(
-                        menuLines,
-                        "translationY",
-                        -menuBackground.height.toFloat() * 2f
-                    ).apply {
-                        interpolator = FastOutSlowInInterpolator()
-                        duration = 1500
+                    ObjectAnimator.ofFloat(menuLines, "translationY", -linesOffset).apply {
+                        duration = 1000
+                        start()
+                    }
+                    ObjectAnimator.ofFloat(menuBackground, "alpha", 0f).apply {
+                        interpolator = LinearInterpolator()
+                        duration = 1000
                         start()
                     }
                 }

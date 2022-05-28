@@ -7,7 +7,6 @@
             name="viewmodel"
             type="com.example.apexmaprotations.viewmodels.ApexViewModel" />
     </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,7 +52,7 @@
             tools:ignore="ImageContrastCheck" />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animation"
+            android:id="@+id/timer_animation"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/animation_id"
@@ -64,26 +63,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:lottie_autoPlay="true"
+            app:lottie_loop="true"
             app:lottie_cacheComposition="false"
             app:lottie_clipToCompositionBounds="false"
-            app:lottie_colorFilter="@color/white"
-            app:lottie_loop="true"
             app:lottie_rawRes="@raw/timer_indicator_glowing"
-            app:lottie_repeatMode="restart"
             tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:elevation="24dp"
             android:textColor="@color/white"
+            android:textSize="18.sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
 
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/topText"
@@ -123,26 +121,28 @@
             android:id="@+id/menubackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:alpha="0"
+            android:background="@color/menu_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="invisible" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/menuBackgroundLines"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/background"
             android:scaleType="centerCrop"
-            android:scaleX="2"
-            android:scaleY="2"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
             app:layout_constraintBottom_toBottomOf="@+id/nextMapImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_menu_background_lines"
-            tools:ignore="ImageContrastCheck" />
+            tools:ignore="ImageContrastCheck"
+            app:tint="#660505" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
