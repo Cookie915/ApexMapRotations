@@ -36,7 +36,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="ImageContrastCheck" />
 
         <ImageView
             android:id="@+id/nextMapImage"
@@ -48,7 +49,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/middle" />
+            app:layout_constraintTop_toTopOf="@+id/middle"
+            tools:ignore="ImageContrastCheck" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation"
@@ -67,7 +69,8 @@
             app:lottie_colorFilter="@color/white"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/timer_indicator_glowing"
-            app:lottie_repeatMode="restart" />
+            app:lottie_repeatMode="restart"
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/time"
@@ -83,7 +86,7 @@
             />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/topText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="-20dp"
@@ -92,7 +95,8 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/currentMapImage"
-            app:srcCompat="@drawable/ic_currentmap_text" />
+            app:srcCompat="@drawable/ic_currentmap_text"
+            tools:ignore="ImageContrastCheck" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
@@ -102,7 +106,7 @@
             app:layout_constraintGuide_begin="206dp" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/bottomText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -112,7 +116,33 @@
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="@+id/nextMapImage"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:srcCompat="@drawable/next_map_textasset_7" />
+            app:srcCompat="@drawable/next_map_textasset_7"
+            tools:ignore="ImageContrastCheck" />
+
+        <View
+            android:id="@+id/menubackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/menuBackgroundLines"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/background"
+            android:scaleType="centerCrop"
+            android:scaleX="2"
+            android:scaleY="2"
+            app:layout_constraintBottom_toBottomOf="@+id/nextMapImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_menu_background_lines"
+            tools:ignore="ImageContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

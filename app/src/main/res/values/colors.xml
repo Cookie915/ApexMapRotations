@@ -2,6 +2,7 @@
 <resources>
     <color name="apex_red">#E52E2E</color>
     <color name="apex_red_dark">#C82222</color>
+    <color name="menu_background">#E6202020</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

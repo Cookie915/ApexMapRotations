@@ -25,11 +25,23 @@ class ApexViewModel : ViewModel() {
     val mapData: StateFlow<Resource<MapData>>
         get() = mMapData.asStateFlow()
 
-    private var  mTimeRemaining = MutableStateFlow<Long>(0)
+    private var mTimeRemaining = MutableStateFlow<Long>(0)
     val timeRemaining: StateFlow<Long>
         get() = mTimeRemaining.asStateFlow()
 
-    private suspend fun initializeMapData(){
+    private var mShowMenu = MutableStateFlow<Boolean>(false)
+    val showMenu: StateFlow<Boolean>
+        get() = mShowMenu
+
+    fun showMenu() {
+        mShowMenu.value = true
+    }
+
+    fun hideMenu() {
+        mShowMenu.value = false
+    }
+
+    private suspend fun initializeMapData() {
         apexRepo.getMapData().collect {
             when (it) {
                 is Resource.Loading -> {

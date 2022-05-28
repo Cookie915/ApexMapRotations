@@ -8,4 +8,5 @@
     <string name="topText">Current Map</string>
     <string name="topTextContentDesc">Current Map</string>
     <string name="nextmaptext_cont_desc">Next Map Text</string>
+    <string name="background">background</string>
 </resources>
