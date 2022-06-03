@@ -9,4 +9,6 @@
     <string name="topTextContentDesc">Current Map</string>
     <string name="nextmaptext_cont_desc">Next Map Text</string>
     <string name="background">background</string>
+    <string name="alert_imagebutton_desc">Set Notification</string>
+    <string name="alarm_imagebutton_desc">Set Alarm</string>
 </resources>

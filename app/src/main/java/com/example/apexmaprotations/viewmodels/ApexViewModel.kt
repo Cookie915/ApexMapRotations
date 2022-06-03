@@ -1,7 +1,11 @@
 package com.example.apexmaprotations.viewmodels
 
+import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apexmaprotations.R
@@ -17,7 +21,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore("settings")
 class ApexViewModel : ViewModel() {
+
     private val tag = "ApexViewModel"
     private val apexRepo = ApexRepo()
 
@@ -76,11 +82,13 @@ class ApexViewModel : ViewModel() {
                     }
                 }
             }
-            if (mTimeRemaining.value == 0L){
+            if (mTimeRemaining.value == 0L) {
                 timer.start()
             }
         }
     }
+
+    fun setNotification() {}
 
     fun getKingCanyonImg(): Int {
         val images = listOf<Int>(
@@ -114,13 +122,18 @@ class ApexViewModel : ViewModel() {
         return images[rand.nextInt(images.size)]
     }
 
-    fun getStormPointImg(): Int{
+    fun getStormPointImg(): Int {
         val images = listOf<Int>(
             R.drawable.transition_storm_point,
             R.drawable.transition_storm_point_mu1
         )
         val rand = Random()
         return images[rand.nextInt(images.size)]
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
     }
 
     init {

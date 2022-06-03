@@ -34,6 +34,7 @@ class ApexRepo {
             }
         }
         awaitClose {
+            Log.i(tag, "MapDataChannel Closed")
             channel.close()
         }
     }

@@ -1,9 +1,10 @@
-package com.example.apexmaprotations.repo
+package com.example.apexmaprotations.util
 
 import android.content.Context
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.apexmaprotations.viewmodels.ApexViewModel
+
 
 fun formatTime(minutes: Long, seconds: Long): List<String> {
     val result: MutableList<String> = mutableListOf()
@@ -53,4 +54,12 @@ fun assignMapImage(map: String, view: ImageView, apexViewModel: ApexViewModel, c
                 .into(view)
         }
     }
+}
+
+//  Cancels alarms if time has already passed since map change
+fun verifyAlarms(alarmTime: Int, timeRemaining: Long) {
+    val millisRemaining = timeRemaining * 1000L
+    val currentTime = System.currentTimeMillis()
+
+
 }

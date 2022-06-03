@@ -141,8 +141,44 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_menu_background_lines"
-            tools:ignore="ImageContrastCheck"
-            app:tint="#660505" />
+            app:tint="#810707"
+            tools:ignore="ImageContrastCheck" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/notify_button"
+            android:layout_width="120.dp"
+            android:layout_height="120.dp"
+            android:alpha="0.0"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:contentDescription="@string/alert_imagebutton_desc"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toTopOf="@+id/middle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/currentMapImage"
+            tools:ignore="RedundantDescriptionCheck"
+            app:lottie_loop="false"
+            app:lottie_autoPlay="false"
+            app:lottie_rawRes="@raw/notify"
+            android:focusable="true" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/alarm_button"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:alpha="0.0"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:contentDescription="@string/alarm_imagebutton_desc"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/nextMapImage"
+            app:layout_constraintStart_toStartOf="@+id/nextMapImage"
+            app:layout_constraintTop_toBottomOf="@+id/time"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/alarm" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
