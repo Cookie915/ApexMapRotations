@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.example.apexmaprotations.viewmodels.ApexViewModel" />
+            type="com.example.apexmaprotations.viewmodels.BattleRoyalViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,6 +30,7 @@
             android:layout_height="0dp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/map_image_desc"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/middle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -44,6 +45,7 @@
             android:layout_height="0dp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/map_image_desc"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -152,16 +154,17 @@
             android:background="@android:color/transparent"
             android:clickable="true"
             android:contentDescription="@string/alert_imagebutton_desc"
+            android:focusable="true"
+            android:foregroundTint="#474ABB"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toTopOf="@+id/middle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/currentMapImage"
-            tools:ignore="RedundantDescriptionCheck"
-            app:lottie_loop="false"
             app:lottie_autoPlay="false"
+            app:lottie_loop="false"
             app:lottie_rawRes="@raw/notify"
-            android:focusable="true" />
+            tools:ignore="RedundantDescriptionCheck" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/alarm_button"

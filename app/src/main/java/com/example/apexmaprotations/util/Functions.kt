@@ -2,8 +2,9 @@ package com.example.apexmaprotations.util
 
 import android.content.Context
 import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
-import com.example.apexmaprotations.viewmodels.ApexViewModel
+import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
 
 
 fun formatTime(minutes: Long, seconds: Long): List<String> {
@@ -23,43 +24,31 @@ fun formatTime(minutes: Long, seconds: Long): List<String> {
     return result
 }
 
-fun assignMapImage(map: String, view: ImageView, apexViewModel: ApexViewModel, ctx: Context){
-    when(map){
-        "Storm Point" ->{
-            val mapImg = apexViewModel.getStormPointImg()
-            Glide.with(ctx)
-                .load(mapImg)
-                .centerCrop()
-                .into(view)
+fun assignMapImage(
+    map: String,
+    view: ImageView,
+    battleRoyalViewModel: BattleRoyalViewModel,
+    ctx: Context
+) {
+    when (map) {
+        "Storm Point" -> {
+            val mapImg = battleRoyalViewModel.getStormPointImg()
+            view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "King's Canyon" -> {
-            val mapImg = apexViewModel.getKingCanyonImg()
-            Glide.with(ctx)
-                .load(mapImg)
-                .centerCrop()
-                .into(view)
+            val mapImg = battleRoyalViewModel.getStormPointImg()
+            view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "Olympus" -> {
-            val mapImg = apexViewModel.getOlympusImg()
-            Glide.with(ctx)
-                .load(mapImg)
-                .centerCrop()
-                .into(view)
+            val mapImg = battleRoyalViewModel.getStormPointImg()
+            view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "World's Edge" -> {
-            val mapImg = apexViewModel.getWorldsEdgeImg()
+            val mapImg = battleRoyalViewModel.getWorldsEdgeImg()
             Glide.with(ctx)
                 .load(mapImg)
                 .centerCrop()
                 .into(view)
         }
     }
-}
-
-//  Cancels alarms if time has already passed since map change
-fun verifyAlarms(alarmTime: Int, timeRemaining: Long) {
-    val millisRemaining = timeRemaining * 1000L
-    val currentTime = System.currentTimeMillis()
-
-
 }

@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface ApexStatusApi {
     @GET("/maprotation")
-    suspend fun getMaps(): Response<MapData>
+    suspend fun getMaps(): Response<MapDataBundle>
 }

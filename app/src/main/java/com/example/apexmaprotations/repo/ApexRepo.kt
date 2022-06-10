@@ -1,41 +1,59 @@
 package com.example.apexmaprotations.repo
 
-import android.util.Log
-import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.models.retrofit.MapData
+import com.example.apexmaprotations.R
+import com.example.apexmaprotations.models.retrofit.MapDataBundle
 import com.example.apexmaprotations.models.retrofit.RetroFitInstance
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
+import java.util.*
 
 private const val tag = "ApexRepo"
 
 class ApexRepo {
-    suspend fun getMapData(): Flow<Resource<MapData>> = callbackFlow {
-        trySend(Resource.Loading())
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val data = RetroFitInstance.apexApi.getMaps()
-                when (data.isSuccessful) {
-                    false -> {
-                        trySend(Resource.Failure(data.code().toString()))
-                    }
-                    true -> {
-                        Log.i(tag, "New Map Data")
-                        trySend(Resource.Success(data.body()))
-                    }
-                }
-            } catch (err: Exception){
-                err.localizedMessage?.let { Log.i(tag, it) }
-                trySend(Resource.Failure(err.localizedMessage ?: "Error Accessing Api"))
-            }
+    fun getMapDataStream(): Flow<MapDataBundle?> {
+        return flow {
+            emit(RetroFitInstance.apexApi.getMaps().body())
         }
-        awaitClose {
-            Log.i(tag, "MapDataChannel Closed")
-            channel.close()
-        }
+    }
+
+    fun getKingCanyonImg(): Int {
+        val images = listOf(
+            R.drawable.transition_kings_canyon,
+            R.drawable.transition_kings_canyon_mu1,
+            R.drawable.transition_kings_canyon_mu2,
+            R.drawable.transition_kings_canyon_mu3
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
+    }
+
+    fun getWorldsEdgeImg(): Int {
+        val images = listOf(
+            R.drawable.transition_world_s_edge,
+            R.drawable.transition_world_s_edge_mu1,
+            R.drawable.transition_world_s_edge_mu2,
+            R.drawable.transition_world_s_edge_mu3
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
+    }
+
+    fun getOlympusImg(): Int {
+        val images = listOf(
+            R.drawable.transition_olympus,
+            R.drawable.transition_olympus_mu1,
+            R.drawable.transition_olympus_mu2
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
+    }
+
+    fun getStormPointImg(): Int {
+        val images = listOf(
+            R.drawable.transition_storm_point,
+            R.drawable.transition_storm_point_mu1
+        )
+        val rand = Random()
+        return images[rand.nextInt(images.size)]
     }
 }

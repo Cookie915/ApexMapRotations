@@ -1,8 +1,11 @@
-package com.example.apexmaprotations.repo
+package com.example.apexmaprotations.util
 
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 
 //  Datastore Key
-val ALARM_TIME = intPreferencesKey("alarm_time")
+val ALARM_TIME = longPreferencesKey("alarm_time")
 
-val NOTIFICATION_TIME = intPreferencesKey("notification_time")
+val NOTIFICATION_TIME = longPreferencesKey("notification_time")
+
+val NEXT_MAP = stringPreferencesKey("next_map")

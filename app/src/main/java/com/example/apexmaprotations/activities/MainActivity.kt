@@ -5,29 +5,37 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.app.AlarmManager
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.doOnPreDraw
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.SimpleColorFilter
+import com.airbnb.lottie.model.KeyPath
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.databinding.ActivityMainBinding
 import com.example.apexmaprotations.fragments.PermissionDialogFragment
 import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.repo.ALARM_TIME
-import com.example.apexmaprotations.repo.NOTIFICATION_TIME
 import com.example.apexmaprotations.util.*
-import com.example.apexmaprotations.viewmodels.ApexViewModel
+import com.example.apexmaprotations.viewmodels.AppViewModel
+import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
 import com.example.apexmaprotations.viewmodels.dataStore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
@@ -35,14 +43,23 @@ import kotlin.properties.Delegates
 const val tag = "MainActivityLogs"
 
 class MainActivity : AppCompatActivity() {
-    private val apexViewModel: ApexViewModel by lazy {
-        ViewModelProvider(this)[ApexViewModel::class.java]
+    private val battleRoyalViewModel: BattleRoyalViewModel by lazy {
+        ViewModelProvider(this)[BattleRoyalViewModel::class.java]
+    }
+    private val appViewModel: AppViewModel by lazy {
+        ViewModelProvider(this)[AppViewModel::class.java]
+    }
+    private val alarmButton: LottieAnimationView by lazy {
+        binding.alarmButton
+    }
+    private val notifyButton: LottieAnimationView by lazy {
+        binding.notifyButton
     }
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater).apply {
             lifecycleOwner = this@MainActivity
-            viewmodel = apexViewModel
+            viewmodel = battleRoyalViewModel
         }
     }
     private val alarmManager: AlarmManager by lazy {
@@ -53,41 +70,72 @@ class MainActivity : AppCompatActivity() {
     private var linesOffset by Delegates.notNull<Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        Log.i("tester", "Main Create")
         binding.menubackground.doOnPreDraw {
             linesOffset = it.height.toFloat() * 1.5f
             binding.menuBackgroundLines.translationY -= linesOffset
         }
+        splashScreen.setKeepOnScreenCondition {
+            appViewModel.showSplash.value
+        }
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            ObjectAnimator.ofFloat(
+                splashScreenView.view,
+                View.TRANSLATION_X,
+                0f,
+                -splashScreenView.view.width.toFloat()
+
+            ).apply {
+                interpolator = DecelerateInterpolator()
+                duration = 300L
+                doOnEnd {
+                    splashScreenView.remove()
+                }
+            }.start()
+        }
+        // fix
+//        verifyAlarms()
         setContentView(binding.root)
         setupObservables()
-        lifecycleScope.launch(Dispatchers.IO) {
-            val alarmTime = dataStore.data.first()[ALARM_TIME] ?: 0
-            val notificationTime = dataStore.data.first()[NOTIFICATION_TIME] ?: 0
-            if (alarmTime == 0) {
-                binding.alarmButton.progress = 0f
-            } else {
-                binding.alarmButton.progress = 1f
-            }
-            if (notificationTime == 0) {
-                binding.notifyButton.progress = 0f
-            } else {
-                binding.notifyButton.progress = 1f
-            }
-        }
     }
 
     override fun onStart() {
         super.onStart()
         setUpClickListeners()
         setupAnimationListeners()
+        listenToAlarms()
+        lottieListeners()
+    }
+
+
+    private fun listenToAlarms() {
+        lifecycleScope.launch {
+            dataStore.data.map {
+                val alarmTime = it[ALARM_TIME] ?: 0L
+                val notifyTime = it[NOTIFICATION_TIME] ?: 0L
+                if (alarmTime == 0L) {
+                    binding.alarmButton.progress = 0f
+                } else {
+                    binding.notifyButton.isEnabled = false
+                    binding.alarmButton.progress = 1f
+                }
+                if (notifyTime == 0L) {
+                    binding.notifyButton.progress = 0f
+                } else {
+                    binding.alarmButton.isEnabled = false
+                    binding.notifyButton.progress = 1f
+                }
+                if (alarmTime == 0L && notifyTime == 0L) {
+                    binding.notifyButton.isEnabled = true
+                    binding.alarmButton.isEnabled = true
+                }
+            }.collect()
+        }
     }
 
     private fun setupAnimationListeners() {
         binding.alarmButton.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {
-            }
-
             override fun onAnimationEnd(animation: Animator?) {
                 lifecycleScope.launch {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -97,21 +145,19 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     if (binding.alarmButton.progress > 0) {
-                        scheduleNotification(true, 500)
+                        scheduleNotification(true, battleRoyalViewModel.timeRemainingLong.value)
                     } else {
+                        binding.notifyButton.isEnabled = true
                         cancelNotification(true)
                     }
                 }
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
-            }
-
-            override fun onAnimationRepeat(animation: Animator?) {
-            }
+            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator?) {}
         })
         binding.notifyButton.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {}
             override fun onAnimationEnd(animation: Animator?) {
                 lifecycleScope.launch {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -121,13 +167,15 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     if (binding.notifyButton.progress > 0) {
-                        scheduleNotification(false, 500)
+                        scheduleNotification(false, battleRoyalViewModel.timeRemainingLong.value)
                     } else {
+                        binding.alarmButton.isEnabled = true
                         cancelNotification(false)
                     }
                 }
             }
 
+            override fun onAnimationStart(animation: Animator?) {}
             override fun onAnimationCancel(animation: Animator?) {}
             override fun onAnimationRepeat(animation: Animator?) {}
         })
@@ -156,9 +204,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         menubackground.setOnClickListener {
-            when (apexViewModel.showMenu.value) {
+            when (appViewModel.showMenu.value) {
                 false -> {
-                    apexViewModel.showMenu()
+                    appViewModel.showMenu()
                     notifyButton.isClickable = true
                     alarmButton.isClickable = true
                     binding.time.visibility = View.INVISIBLE
@@ -188,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                 true -> {
                     notifyButton.isClickable = false
                     alarmButton.isClickable = false
-                    apexViewModel.hideMenu()
+                    appViewModel.hideMenu()
                     binding.time.visibility = View.VISIBLE
                     binding.timerAnimation.visibility = View.VISIBLE
                     binding.topText.visibility = View.VISIBLE
@@ -225,24 +273,19 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 launch {
-                    apexViewModel.timeRemaining.map {
-                        val hours = it / (1000 * 60 * 60) % 60
-                        val minutes = it / (1000 * 60) % 60
-                        val seconds = it / (1000) % 60
-                        val decimal = it / 100 % 10
-                        val times = formatTime(minutes, seconds)
+                    battleRoyalViewModel.timeRemaining.map {
                         binding.time.text = getString(
                             R.string.time_value_format,
-                            hours,
-                            times.first(),
-                            times.last(),
-                            decimal
+                            it[0].toString().toLong(),
+                            it[1].toString(),
+                            it[2].toString(),
+                            it[3].toString().toLong()
                         )
                     }.collect()
                 }
                 launch {
-                    apexViewModel.mapData.collect {
-                        when (it) {
+                    battleRoyalViewModel.mapDataBundle.collect { mapData ->
+                        when (mapData) {
                             is Resource.Loading -> {
                                 //todo show loading
                             }
@@ -250,26 +293,23 @@ class MainActivity : AppCompatActivity() {
                                 //  todo error screen
                             }
                             is Resource.Success -> {
-                                Log.i(tag, it.data!!.currentMap.map)
-                                this.launch {
-                                    val alarmTime = dataStore.data.first()[ALARM_TIME]
-                                    if (alarmTime != null && alarmTime > 0) {
-                                        val valid = verifyAlarms(
-                                            alarmTime,
-                                            apexViewModel.timeRemaining.first()
-                                        )
-                                    }
+                                appViewModel.hideSplash()
+                                Log.i("tester", mapData.data?.toString() ?: "null")
+                                val currentMap = mapData.data!!.battleRoyale.current
+                                dataStore.edit {
+                                    it[NEXT_MAP] = currentMap.map
                                 }
+                                battleRoyalViewModel.initializeTimer(mapData.data.battleRoyale)
                                 assignMapImage(
-                                    it.data.currentMap.map,
+                                    currentMap.map,
                                     binding.currentMapImage,
-                                    apexViewModel,
+                                    battleRoyalViewModel,
                                     this@MainActivity
                                 )
                                 assignMapImage(
-                                    it.data.nextMap.map,
+                                    mapData.data.battleRoyale.next.map,
                                     binding.nextMapImage,
-                                    apexViewModel,
+                                    battleRoyalViewModel,
                                     this@MainActivity
                                 )
                             }
@@ -279,7 +319,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun lottieListeners() {
+        notifyButton.addLottieOnCompositionLoadedListener {
+            notifyButton.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER) {
+                if (alarmButton.progress > 0f) PorterDuffColorFilter(
+                    Color.DKGRAY,
+                    PorterDuff.Mode.DARKEN
+                ) else SimpleColorFilter(Color.TRANSPARENT)
+            }
+        }
+        alarmButton.addLottieOnCompositionLoadedListener {
+            alarmButton.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER) {
+                if (notifyButton.progress > 0f) PorterDuffColorFilter(
+                    Color.DKGRAY,
+                    PorterDuff.Mode.DARKEN
+                ) else SimpleColorFilter(Color.TRANSPARENT)
+            }
+        }
+    }
+
 }
 
-// full screen intent
-//https://medium.com/android-news/full-screen-intent-notifications-android-85ea2f5b5dc1#:%7E:text=Examples%3A,a%20notification%20with%20high%20priority.
+//  TODO
+//  Make splashscreen compatible on newer android versions
+

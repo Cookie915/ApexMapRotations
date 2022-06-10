@@ -1,38 +1,43 @@
 package com.example.apexmaprotations.activities
 
-import android.media.MediaPlayer
+import android.app.NotificationManager
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.apexmaprotations.databinding.ActivityLockScreenBinding
+import com.example.apexmaprotations.util.NEXT_MAP
+import com.example.apexmaprotations.util.assignMapImage
 import com.example.apexmaprotations.util.turnScreenOffAndKeyGuardOn
 import com.example.apexmaprotations.util.turnScreenOnAndKeyguardOff
+import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
+import com.example.apexmaprotations.viewmodels.dataStore
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 
 class LockScreenActivity : AppCompatActivity() {
     private val binding: ActivityLockScreenBinding by lazy {
         ActivityLockScreenBinding.inflate(layoutInflater)
     }
-    lateinit var mediaPlayer: MediaPlayer
+    private val apexViewModel by viewModels<BattleRoyalViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("tester", "created")
-        setContentView(binding.root)
+        val image = binding.image
+        lifecycleScope.launch {
+            val mapName = dataStore.data.first()[NEXT_MAP] ?: "King's Canyon"
+            assignMapImage(mapName, image, apexViewModel, this@LockScreenActivity)
+            setContentView(binding.root)
+        }
         turnScreenOnAndKeyguardOff()
-        mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_ALARM_ALERT_URI)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mediaPlayer.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         turnScreenOffAndKeyGuardOn()
-        mediaPlayer.stop()
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
 }
