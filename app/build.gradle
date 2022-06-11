@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -39,6 +41,11 @@ android {
 }
 
 dependencies {
+    def nav_version = "2.4.2"
+    def splashScreen_Version = "1.0.0-rc01"
+    def fragment_version = "1.4.1"
+
+
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
@@ -48,9 +55,27 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    def splashScreenVersion = "1.0.0-rc01"
-    implementation "androidx.core:core-splashscreen:$splashScreenVersion"
 
+    //  Fragments
+        // Kotlin
+    implementation("androidx.fragment:fragment-ktx:$fragment_version")
+        // Testing Fragments in Isolation
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version")
+
+    //  Splash
+    implementation "androidx.core:core-splashscreen:$splashScreen_Version"
+
+    //  Hilt
+    implementation 'com.google.dagger:hilt-android:2.42'
+    kapt 'com.google.dagger:hilt-compiler:2.42'
+
+        // For instrumentation tests
+    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.42'
+    kapt 'com.google.dagger:hilt-compiler:2.42'
+
+        // For local unit tests
+    testImplementation 'com.google.dagger:hilt-android-testing:2.42'
+    kapt 'com.google.dagger:hilt-compiler:2.42'
 
     //  retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -66,10 +91,11 @@ dependencies {
     implementation("androidx.core:core-ktx:1.8.0")
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 
     //  Glide
     implementation "com.github.bumptech.glide:glide:4.13.0"
-    // Skip this if you don't want to use integration libraries or configure Glide.
+        // Skip this if you don't want to use integration libraries or configure Glide.
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
     implementation "com.github.bumptech.glide:okhttp3-integration:4.13.0"
 
@@ -80,6 +106,16 @@ dependencies {
     //  Jetpack Datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+    //  Nav
+        // Kotlin
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+        // Feature module Support
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+
+        // Testing Navigation
+    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+
 
 }

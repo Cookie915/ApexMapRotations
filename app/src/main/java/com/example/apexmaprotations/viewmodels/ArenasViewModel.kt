@@ -10,6 +10,7 @@ import com.example.apexmaprotations.models.retrofit.RetroFitInstance
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
 import com.example.apexmaprotations.util.formatTime
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,12 +18,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ArenasViewModel : ViewModel() {
-    private val apexRepo = ApexRepo()
-
+@HiltViewModel
+class ArenasViewModel @Inject constructor(
+    private val apexRepo: ApexRepo
+) : ViewModel() {
     private var mMapDataBundle: Flow<Resource<MapDataBundle?>> =
-        apexRepo.getMapDataStream().asResource()
+        apexRepo.getMapDataData().asResource()
     val mapDataBundle: StateFlow<Resource<MapDataBundle?>>
         get() = mMapDataBundle.toStateFlow(viewModelScope, Resource.Loading)
 

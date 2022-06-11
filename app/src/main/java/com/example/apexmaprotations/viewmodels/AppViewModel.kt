@@ -1,10 +1,13 @@
 package com.example.apexmaprotations.viewmodels
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class AppViewModel : ViewModel() {
+@HiltViewModel
+class AppViewModel @Inject constructor() : ViewModel() {
     private var mShowMenu = MutableStateFlow(false)
     val showMenu: StateFlow<Boolean>
         get() = mShowMenu

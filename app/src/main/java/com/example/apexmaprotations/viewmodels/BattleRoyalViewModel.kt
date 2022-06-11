@@ -14,19 +14,26 @@ import com.example.apexmaprotations.models.retrofit.RetroFitInstance
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
 import com.example.apexmaprotations.util.formatTime
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore("settings")
 
-class BattleRoyalViewModel : ViewModel() {
+@HiltViewModel
+class BattleRoyalViewModel @Inject constructor(
+    private val apexRepo: ApexRepo
+) : ViewModel() {
     private val tag = "BattleRoyalViewModel"
-    private val apexRepo = ApexRepo()
 
     private var mMapDataBundle: Flow<Resource<MapDataBundle?>> =
-        apexRepo.getMapDataStream().asResource()
+        apexRepo.getMapDataData().asResource()
     val mapDataBundle: StateFlow<Resource<MapDataBundle?>>
         get() = mMapDataBundle.toStateFlow(viewModelScope, Resource.Loading)
 
@@ -44,8 +51,13 @@ class BattleRoyalViewModel : ViewModel() {
     val timeRemainingLong: StateFlow<Long>
         get() = mTimeRemaining
 
+    private var mCurrentMapImage = MutableStateFlow<Int?>(null)
+    val currentMapImage: StateFlow<Int?>
+        get() = mCurrentMapImage
+
 
     fun initializeTimer(currentMap: MapDataBundle.BattleRoyale) {
+        val call = RetroFitInstance.apexApi.getMaps()
         val remainingTimer = currentMap.current.remainingSecs
         CoroutineScope(Dispatchers.Main).launch {
             val timer = object : CountDownTimer(remainingTimer * 1000L, 1) {
@@ -55,6 +67,23 @@ class BattleRoyalViewModel : ViewModel() {
 
                 override fun onFinish() {
                     viewModelScope.launch {
+                        call.enqueue(object : Callback<Response<MapDataBundle>> {
+                            override fun onResponse(
+                                call: Call<Response<MapDataBundle>>,
+                                response: Response<Response<MapDataBundle>>
+                            ) {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onFailure(
+                                call: Call<Response<MapDataBundle>>,
+                                t: Throwable
+                            ) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+                        RetroFitInstance.apexApi.getMaps()
                         mMapDataBundle.collectLatest { dataBundle ->
                             if (dataBundle is Resource.Success) {
                                 RetroFitInstance.apexApi.getMaps()

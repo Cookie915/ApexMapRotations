@@ -1,6 +1,7 @@
 package com.example.apexmaprotations.util
 
 import android.content.Context
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
@@ -30,17 +31,18 @@ fun assignMapImage(
     battleRoyalViewModel: BattleRoyalViewModel,
     ctx: Context
 ) {
+    Log.i("tester", map)
     when (map) {
         "Storm Point" -> {
             val mapImg = battleRoyalViewModel.getStormPointImg()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "King's Canyon" -> {
-            val mapImg = battleRoyalViewModel.getStormPointImg()
+            val mapImg = battleRoyalViewModel.getKingCanyonImg()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "Olympus" -> {
-            val mapImg = battleRoyalViewModel.getStormPointImg()
+            val mapImg = battleRoyalViewModel.getOlympusImg()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "World's Edge" -> {

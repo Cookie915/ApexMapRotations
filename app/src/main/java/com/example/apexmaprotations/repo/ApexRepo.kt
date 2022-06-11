@@ -3,18 +3,46 @@ package com.example.apexmaprotations.repo
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.models.retrofit.MapDataBundle
 import com.example.apexmaprotations.models.retrofit.RetroFitInstance
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 private const val tag = "ApexRepo"
 
 class ApexRepo {
-    fun getMapDataStream(): Flow<MapDataBundle?> {
+    fun getMapDataData(): Flow<MapDataBundle> {
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
         return flow {
-            emit(RetroFitInstance.apexApi.getMaps().body())
+            RetroFitInstance.apexApi.getMaps().enqueue(object : Callback<Response<MapDataBundle>> {
+                override fun onResponse(
+                    call: Call<Response<MapDataBundle>>,
+                    response: Response<Response<MapDataBundle>>
+                ) {
+                    coroutineScope.launch {
+                        if (response.isSuccessful) {
+                            emit(response.body() as Response())
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<Response<MapDataBundle>>, t: Throwable) {
+                    throw t
+                }
+            })
         }
     }
+//    fun getMapDataData(): Flow<MapDataBundle?>  {
+//        return flow {
+//            emit(RetroFitInstance.apexApi.getMaps().body())
+//        }
+//    }
+
 
     fun getKingCanyonImg(): Int {
         val images = listOf(

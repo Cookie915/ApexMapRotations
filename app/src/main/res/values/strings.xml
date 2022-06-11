@@ -11,4 +11,5 @@
     <string name="background">background</string>
     <string name="alert_imagebutton_desc">Set Notification</string>
     <string name="alarm_imagebutton_desc">Set Alarm</string>
+    <string name="arrow_desc">Navigation Arrow</string>
 </resources>
