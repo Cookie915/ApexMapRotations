@@ -1,7 +1,6 @@
 package com.example.apexmaprotations.viewmodels
 
 import android.content.Context
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -15,13 +14,17 @@ import com.example.apexmaprotations.models.retrofit.ApexStatusApi
 import com.example.apexmaprotations.models.retrofit.MapDataBundle
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore("settings")
@@ -64,21 +67,17 @@ class BattleRoyalViewModel @Inject constructor(
     private fun initializeTimer(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
-                val timeRemainingMillis =
-                    mapData.battleRoyale.current.remainingSecs * 1000L
-                val timer = object : CountDownTimer(timeRemainingMillis, 1) {
+                val timeRemainingMillis = mapData.battleRoyale.current.durationInSecs * 1000L
+                val timer = object : CustomCountdownTimer(timeRemainingMillis, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemaining.value = millisUntilFinished
                     }
 
-                    override fun onFinish() {
-                        Log.i("tester", "timer finished")
-                        viewModelScope.launch {
-                            delay(2000L)
-                            mMapDataBundle.collect() {
-                                if (it is Resource.Success) {
-                                    initializeTimer(mapData)
-                                }
+                    override suspend fun onFinish() {
+                        mMapDataBundle.collect() {
+                            if (it is Resource.Success) {
+                                this.setMillisInFuture(it.data.battleRoyale.current.durationInSecs * 1000L)
+                                this.start()
                             }
                         }
                     }
@@ -122,7 +121,7 @@ class BattleRoyalViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             mMapDataBundle.collect { mapData ->
-                Log.i("tester", "Got New Maps Data")
+                Log.i("tester", "Got New Maps Data from init")
                 when (mapData) {
                     is Resource.Loading -> {
                         mCurrentMapImage.value = null

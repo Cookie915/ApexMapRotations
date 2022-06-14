@@ -92,10 +92,8 @@
         android:textColor="@color/white"
         android:textSize="18.sp"
         app:layout_constraintBottom_toBottomOf="@+id/topLinearLayout"
-        app:layout_constraintEnd_toEndOf="@+id/topLinearLayout"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/topLinearLayout"
-        app:layout_constraintVertical_bias="0.40" />
+        app:layout_constraintVertical_bias="0.45" />
 
     <TextView
         android:id="@+id/arenasText"
@@ -195,7 +193,7 @@
 
     <TextView
         android:id="@+id/bottomTimer"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:contentDescription="@string/topTimerDesc"
         android:elevation="24.dp"
@@ -204,10 +202,9 @@
         android:textColor="@color/white"
         android:textSize="18.sp"
         app:layout_constraintBottom_toBottomOf="@+id/bottomLinearLayout"
-        app:layout_constraintEnd_toEndOf="@+id/topLinearLayout"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/arenasText"
-        app:layout_constraintVertical_bias="0.40" />
+        app:layout_constraintVertical_bias="0.45"
+        tools:layout_editor_absoluteX="337dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

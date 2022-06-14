@@ -70,6 +70,12 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
             linesOffset = it.height.toFloat() * 1.5f
             binding.menuBackgroundLines.translationY -= linesOffset
         }
+        binding.time.doOnPreDraw {
+            //  Manually set X to avoid jitter caused by centering text as decimal place in timer changes
+            val viewWidth = it.width / 2
+            val width = resources.displayMetrics.widthPixels / 2 - viewWidth
+            binding.time.translationX += width
+        }
         Log.i("tester", "onCreate called")
         // fix
 //        verifyAlarms()
@@ -277,7 +283,6 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
 
     private fun setupObservables() {
         lifecycleScope.launchWhenStarted {
-            Log.i("tester", "launching")
             launch {
                 battleRoyalViewModel.currentMapImage.collect() {
                     if (it != null) {

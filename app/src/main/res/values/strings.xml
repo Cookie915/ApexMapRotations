@@ -5,6 +5,7 @@
     <string name="animation_id">animation</string>
     <string name="lottie_rawRes">timer_indicator_scaling</string>
     <string name="time_value_format">0%1d : %1s : %1s.%1d</string>
+    <string name="time_format_arenas">%1s : %1s.%1d</string>
     <string name="topText">Current Map</string>
     <string name="topTextContentDesc">Current Map</string>
     <string name="nextmaptext_cont_desc">Next Map Text</string>
