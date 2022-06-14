@@ -1,6 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/topLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/arenasText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/rankedCurrent"
+            android:layout_width="match_parent"
+            android:layout_height="0.dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/rankedArenasCurrentMapDesc"
+            android:elevation="24.dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/drop_off_bg"
+            tools:srcCompat="@drawable/drop_off_bg" />
+
+        <ImageView
+            android:id="@+id/rankedNext"
+            android:layout_width="match_parent"
+            android:layout_height="0.dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/rankedArenasNextImgDesc"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/drop_off_bg"
+            tools:srcCompat="@drawable/drop_off_bg" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/topCurrentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/currentLabelText"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/topNextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/nextLabel"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/topLinearLayout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/topRankedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/ranked_text"
+        android:textColor="@color/apex_red_dark"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:letterSpacing="0.17" />
+
+    <TextView
+        android:id="@+id/topTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/topTimerDesc"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_light"
+        android:text="@string/topTimerPlacesHolder"
+        android:textColor="@color/white"
+        android:textSize="18.sp"
+        app:layout_constraintBottom_toBottomOf="@+id/topLinearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/topLinearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/topLinearLayout"
+        app:layout_constraintVertical_bias="0.40" />
+
+    <TextView
+        android:id="@+id/arenasText"
+        android:layout_width="match_parent"
+        android:layout_height="0.dp"
+        android:background="#FFFFFF"
+        android:contentDescription="@string/arenas"
+        android:fontFamily="@font/inter_thin"
+        android:gravity="center"
+        android:text="@string/arenas"
+        android:textAlignment="gravity"
+        android:textAllCaps="false"
+        android:textColor="@color/apex_red"
+        android:textSize="60sp"
+        android:typeface="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/bottomLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/arenasText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arenasText">
+
+        <ImageView
+            android:id="@+id/publicCurrent"
+            android:layout_width="match_parent"
+            android:layout_height="0.dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/PublicArenasCurrentMapDesc"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/drop_off_bg"
+            tools:srcCompat="@drawable/drop_off_bg" />
+
+        <ImageView
+            android:id="@+id/publicNext"
+            android:layout_width="match_parent"
+            android:layout_height="0.dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/PublicArenasNextMapImageDesc"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/drop_off_bg"
+            tools:srcCompat="@drawable/drop_off_bg" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bottomUnrankedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="0.17"
+        android:text="@string/unranked_label"
+        android:textColor="@color/apex_red_dark"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arenasText"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/bottomCurrentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/currentLabelText"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arenasText" />
+
+    <TextView
+        android:id="@+id/bottomNextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/nextLabel"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomLinearLayout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/bottomTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/topTimerDesc"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_light"
+        android:text="@string/topTimerPlacesHolder"
+        android:textColor="@color/white"
+        android:textSize="18.sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomLinearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/topLinearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arenasText"
+        app:layout_constraintVertical_bias="0.40" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

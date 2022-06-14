@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
-import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
+import com.example.apexmaprotations.repo.ApexRepo
 
 
 fun formatTime(minutes: Long, seconds: Long): List<String> {
@@ -28,25 +28,25 @@ fun formatTime(minutes: Long, seconds: Long): List<String> {
 fun assignMapImage(
     map: String,
     view: ImageView,
-    battleRoyalViewModel: BattleRoyalViewModel,
+    apexRepo: ApexRepo,
     ctx: Context
 ) {
     Log.i("tester", map)
     when (map) {
         "Storm Point" -> {
-            val mapImg = battleRoyalViewModel.getStormPointImg()
+            val mapImg = apexRepo.getStormPointImg()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "King's Canyon" -> {
-            val mapImg = battleRoyalViewModel.getKingCanyonImg()
+            val mapImg = apexRepo.getKingsCanyonImg()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "Olympus" -> {
-            val mapImg = battleRoyalViewModel.getOlympusImg()
+            val mapImg = apexRepo.getOlympusImg()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "World's Edge" -> {
-            val mapImg = battleRoyalViewModel.getWorldsEdgeImg()
+            val mapImg = apexRepo.getWorldsEdgeImg()
             Glide.with(ctx)
                 .load(mapImg)
                 .centerCrop()

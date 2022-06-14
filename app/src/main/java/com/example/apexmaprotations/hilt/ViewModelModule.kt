@@ -1,5 +1,6 @@
 package com.example.apexmaprotations.hilt
 
+import com.example.apexmaprotations.models.retrofit.ApexStatusApi
 import com.example.apexmaprotations.repo.ApexRepo
 import com.example.apexmaprotations.viewmodels.AppViewModel
 import com.example.apexmaprotations.viewmodels.ArenasViewModel
@@ -15,18 +16,14 @@ import javax.inject.Singleton
 object ViewModelModule {
     @Singleton
     @Provides
-    fun provideApexViewModel(): BattleRoyalViewModel {
-        return BattleRoyalViewModel(
-            apexRepo = ApexRepo()
-        )
+    fun provideApexViewModel(apexRepo: ApexRepo, apexApi: ApexStatusApi): BattleRoyalViewModel {
+        return BattleRoyalViewModel(apexRepo, apexApi)
     }
 
     @Singleton
     @Provides
-    fun provideArenasViewModel(): ArenasViewModel {
-        return ArenasViewModel(
-            apexRepo = ApexRepo()
-        )
+    fun provideArenasViewModel(apexRepo: ApexRepo, apexApi: ApexStatusApi): ArenasViewModel {
+        return ArenasViewModel(apexRepo, apexApi)
     }
 
     @Singleton
@@ -37,8 +34,8 @@ object ViewModelModule {
 
     @Singleton
     @Provides
-    fun provideRepo(): ApexRepo {
-        return ApexRepo()
+    fun provideRepo(apexApi: ApexStatusApi): ApexRepo {
+        return ApexRepo(apexApi)
     }
 
 

@@ -4,9 +4,8 @@ import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.models.asResource
+import com.example.apexmaprotations.models.retrofit.ApexStatusApi
 import com.example.apexmaprotations.models.retrofit.MapDataBundle
-import com.example.apexmaprotations.models.retrofit.RetroFitInstance
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
 import com.example.apexmaprotations.util.formatTime
@@ -22,10 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArenasViewModel @Inject constructor(
-    private val apexRepo: ApexRepo
+    private val apexRepo: ApexRepo,
+    private val apexApi: ApexStatusApi
 ) : ViewModel() {
-    private var mMapDataBundle: Flow<Resource<MapDataBundle?>> =
-        apexRepo.getMapDataData().asResource()
+    private var mMapDataBundle: Flow<Resource<MapDataBundle?>> = apexRepo.getMapData()
     val mapDataBundle: StateFlow<Resource<MapDataBundle?>>
         get() = mMapDataBundle.toStateFlow(viewModelScope, Resource.Loading)
 
@@ -68,7 +67,7 @@ class ArenasViewModel @Inject constructor(
 
                 override fun onFinish() {
                     viewModelScope.launch {
-                        RetroFitInstance.apexApi.getMaps()
+                        apexApi.getMapDataBundle()
                         mMapDataBundle.collect { dataBundle ->
                             if (dataBundle is Resource.Success) {
                                 initializeTimers(mapDataBundle)
@@ -85,7 +84,7 @@ class ArenasViewModel @Inject constructor(
 
                 override fun onFinish() {
                     viewModelScope.launch {
-                        RetroFitInstance.apexApi.getMaps()
+                        apexApi.getMapDataBundle()
                         mMapDataBundle.collect { dataBundle ->
                             if (dataBundle is Resource.Success) {
                                 initializeTimers(mapDataBundle)

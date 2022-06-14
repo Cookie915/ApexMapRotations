@@ -19,9 +19,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -72,10 +70,9 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
             linesOffset = it.height.toFloat() * 1.5f
             binding.menuBackgroundLines.translationY -= linesOffset
         }
+        Log.i("tester", "onCreate called")
         // fix
 //        verifyAlarms()
-
-
     }
 
     override fun onCreateView(
@@ -89,11 +86,12 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.i("tester", "view created")
         setUpClickListeners()
         setupAnimationListeners()
         listenToAlarms()
         lottieListeners()
-        setupObservables(savedInstanceState)
+        setupObservables()
         val navController = findNavController()
         binding.button.setOnClickListener {
             navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
@@ -277,51 +275,48 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
         }
     }
 
-    private fun setupObservables(savedInstanceState: Bundle?) {
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                launch {
-                    battleRoyalViewModel.timeRemaining.map {
-                        binding.time.text = getString(
-                            R.string.time_value_format,
-                            it[0].toString().toLong(),
-                            it[1].toString(),
-                            it[2].toString(),
-                            it[3].toString().toLong()
-                        )
-                    }.collect()
+    private fun setupObservables() {
+        lifecycleScope.launchWhenStarted {
+            Log.i("tester", "launching")
+            launch {
+                battleRoyalViewModel.currentMapImage.collect() {
+                    if (it != null) {
+                        binding.currentMapImage.setImageDrawable(requireActivity().getDrawable(it))
+                    }
                 }
-                launch {
-                    battleRoyalViewModel.mapDataBundle.collect { mapData ->
-                        when (mapData) {
-                            is Resource.Loading -> {
-                                //todo show loading
-                            }
-                            is Resource.Failure -> {
-                                //  todo error screen
-                            }
-                            is Resource.Success -> {
-                                appViewModel.hideSplash()
-                                Log.i("tester", mapData.data?.toString() ?: "null")
-                                val currentMap = mapData.data!!.battleRoyale.current
-                                requireActivity().dataStore.edit {
-                                    it[NEXT_MAP] = currentMap.map
-                                }
-                                battleRoyalViewModel.initializeTimer(mapData.data.battleRoyale)
-                                if (savedInstanceState == null) {
-                                    assignMapImage(
-                                        currentMap.map,
-                                        binding.currentMapImage,
-                                        battleRoyalViewModel,
-                                        requireContext()
-                                    )
-                                    assignMapImage(
-                                        mapData.data.battleRoyale.next.map,
-                                        binding.nextMapImage,
-                                        battleRoyalViewModel,
-                                        requireContext()
-                                    )
-                                }
+            }
+            launch {
+                battleRoyalViewModel.nextMapImage.collect() {
+                    if (it != null) {
+                        binding.nextMapImage.setImageDrawable(requireActivity().getDrawable(it))
+                    }
+                }
+            }
+            launch {
+                battleRoyalViewModel.timeRemaining.map {
+                    binding.time.text = getString(
+                        R.string.time_value_format,
+                        it[0].toString().toLong(),
+                        it[1].toString(),
+                        it[2].toString(),
+                        it[3].toString().toLong()
+                    )
+                }.collect()
+            }
+            launch {
+                battleRoyalViewModel.mapDataBundle.collect { mapData ->
+                    when (mapData) {
+                        is Resource.Loading -> {
+                            //todo show loading
+                        }
+                        is Resource.Failure -> {
+                            //  todo error screen
+                        }
+                        is Resource.Success -> {
+                            appViewModel.hideSplash()
+                            val currentMap = mapData.data!!.battleRoyale.current
+                            requireActivity().dataStore.edit {
+                                it[NEXT_MAP] = currentMap.map
                             }
                         }
                     }

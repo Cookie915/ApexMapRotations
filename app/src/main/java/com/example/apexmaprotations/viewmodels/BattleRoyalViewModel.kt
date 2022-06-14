@@ -2,38 +2,39 @@ package com.example.apexmaprotations.viewmodels
 
 import android.content.Context
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.models.asResource
+import com.example.apexmaprotations.models.retrofit.ApexStatusApi
 import com.example.apexmaprotations.models.retrofit.MapDataBundle
-import com.example.apexmaprotations.models.retrofit.RetroFitInstance
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore("settings")
 
 @HiltViewModel
 class BattleRoyalViewModel @Inject constructor(
-    private val apexRepo: ApexRepo
+    private val apexRepo: ApexRepo,
+    private val apexStatusApi: ApexStatusApi
 ) : ViewModel() {
     private val tag = "BattleRoyalViewModel"
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private var mMapDataBundle: Flow<Resource<MapDataBundle?>> =
-        apexRepo.getMapDataData().asResource()
+    private var mMapDataBundle: Flow<Resource<MapDataBundle>> = apexRepo.getMapData()
     val mapDataBundle: StateFlow<Resource<MapDataBundle?>>
         get() = mMapDataBundle.toStateFlow(viewModelScope, Resource.Loading)
 
@@ -55,65 +56,89 @@ class BattleRoyalViewModel @Inject constructor(
     val currentMapImage: StateFlow<Int?>
         get() = mCurrentMapImage
 
+    private var mNextMapImage = MutableStateFlow<Int?>(null)
+    val nextMapImage: StateFlow<Int?>
+        get() = mNextMapImage
 
-    fun initializeTimer(currentMap: MapDataBundle.BattleRoyale) {
-        val call = RetroFitInstance.apexApi.getMaps()
-        val remainingTimer = currentMap.current.remainingSecs
-        CoroutineScope(Dispatchers.Main).launch {
-            val timer = object : CountDownTimer(remainingTimer * 1000L, 1) {
-                override fun onTick(millisUntilFinished: Long) {
-                    mTimeRemaining.value = millisUntilFinished
-                }
 
-                override fun onFinish() {
-                    viewModelScope.launch {
-                        call.enqueue(object : Callback<Response<MapDataBundle>> {
-                            override fun onResponse(
-                                call: Call<Response<MapDataBundle>>,
-                                response: Response<Response<MapDataBundle>>
-                            ) {
-                                TODO("Not yet implemented")
+    private fun initializeTimer(mapData: MapDataBundle) {
+        Handler(Looper.getMainLooper())
+            .post {
+                val timeRemainingMillis =
+                    mapData.battleRoyale.current.remainingSecs * 1000L
+                val timer = object : CountDownTimer(timeRemainingMillis, 1) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        mTimeRemaining.value = millisUntilFinished
+                    }
+
+                    override fun onFinish() {
+                        Log.i("tester", "timer finished")
+                        viewModelScope.launch {
+                            delay(2000L)
+                            mMapDataBundle.collect() {
+                                if (it is Resource.Success) {
+                                    initializeTimer(mapData)
+                                }
                             }
-
-                            override fun onFailure(
-                                call: Call<Response<MapDataBundle>>,
-                                t: Throwable
-                            ) {
-                                TODO("Not yet implemented")
-                            }
-
-                        })
-                        RetroFitInstance.apexApi.getMaps()
-                        mMapDataBundle.collectLatest { dataBundle ->
-                            if (dataBundle is Resource.Success) {
-                                RetroFitInstance.apexApi.getMaps()
-                                initializeTimer(dataBundle.data!!.battleRoyale)
-                            }
-                            mTimeRemaining.value = 0L
                         }
                     }
                 }
-            }
-            if (mTimeRemaining.value == 0L) {
                 timer.start()
+            }
+    }
+
+
+    private fun initializeMapImages(mapDataBundle: MapDataBundle) {
+        when (mapDataBundle.battleRoyale.current.map) {
+            "King's Canyon" -> {
+                mCurrentMapImage.value = apexRepo.getKingsCanyonImg()
+            }
+            "Olympus" -> {
+                mCurrentMapImage.value = apexRepo.getOlympusImg()
+            }
+            "World's Edge" -> {
+                mCurrentMapImage.value = apexRepo.getWorldsEdgeImg()
+            }
+            "Storm Point" -> {
+                mCurrentMapImage.value = apexRepo.getStormPointImg()
+            }
+        }
+        when (mapDataBundle.battleRoyale.next.map) {
+            "King's Canyon" -> {
+                mNextMapImage.value = apexRepo.getKingsCanyonImg()
+            }
+            "Olympus" -> {
+                mNextMapImage.value = apexRepo.getOlympusImg()
+            }
+            "World's Edge" -> {
+                mNextMapImage.value = apexRepo.getWorldsEdgeImg()
+            }
+            "Storm Point" -> {
+                mNextMapImage.value = apexRepo.getStormPointImg()
             }
         }
     }
 
-
-    fun getKingCanyonImg(): Int {
-        return apexRepo.getKingCanyonImg()
+    init {
+        viewModelScope.launch {
+            mMapDataBundle.collect { mapData ->
+                Log.i("tester", "Got New Maps Data")
+                when (mapData) {
+                    is Resource.Loading -> {
+                        mCurrentMapImage.value = null
+                        mNextMapImage.value = null
+                    }
+                    is Resource.Failure -> {
+                        mCurrentMapImage.value = null
+                        mNextMapImage.value = null
+                    }
+                    is Resource.Success -> {
+                        initializeMapImages(mapData.data)
+                        initializeTimer(mapData.data)
+                    }
+                }
+            }
+        }
     }
 
-    fun getWorldsEdgeImg(): Int {
-        return apexRepo.getWorldsEdgeImg()
-    }
-
-    fun getOlympusImg(): Int {
-        return apexRepo.getOlympusImg()
-    }
-
-    fun getStormPointImg(): Int {
-        return apexRepo.getStormPointImg()
-    }
 }

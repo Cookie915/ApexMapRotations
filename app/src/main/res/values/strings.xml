@@ -12,4 +12,16 @@
     <string name="alert_imagebutton_desc">Set Notification</string>
     <string name="alarm_imagebutton_desc">Set Alarm</string>
     <string name="arrow_desc">Navigation Arrow</string>
+
+    <string name="arenas"><u>ARENAS</u></string>
+    <string name="rankedArenasCurrentMapDesc">Current Ranked Apex Map</string>
+    <string name="rankedArenasNextImgDesc">Ranked Arenas Next Map</string>
+    <string name="PublicArenasCurrentMapDesc">Public Arenas Current Map</string>
+    <string name="PublicArenasNextMapImageDesc">Public Arenas Current Map</string>
+    <string name="ranked_text"><u>RANKED</u></string>
+    <string name="topTimerDesc">Ranked Arenas Timer</string>
+    <string name="currentLabelText">CURRENT</string>
+    <string name="topTimerPlacesHolder">59 : 87 : 00</string>
+    <string name="nextLabel">NEXT</string>
+    <string name="unranked_label"><u>UNRANKED</u></string>
 </resources>
