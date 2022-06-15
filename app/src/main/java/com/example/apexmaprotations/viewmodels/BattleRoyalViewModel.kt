@@ -67,7 +67,8 @@ class BattleRoyalViewModel @Inject constructor(
     private fun initializeTimer(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
-                val timeRemainingMillis = mapData.battleRoyale.current.durationInSecs * 1000L
+                val timeRemainingMillis = 5000L
+//                    mapData.battleRoyale.current.remainingSecs * 1000L
                 val timer = object : CustomCountdownTimer(timeRemainingMillis, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemaining.value = millisUntilFinished
@@ -76,7 +77,8 @@ class BattleRoyalViewModel @Inject constructor(
                     override suspend fun onFinish() {
                         mMapDataBundle.collect() {
                             if (it is Resource.Success) {
-                                this.setMillisInFuture(it.data.battleRoyale.current.durationInSecs * 1000L)
+                                initializeMapImages(it.data)
+                                this.setMillisInFuture(it.data.battleRoyale.current.remainingSecs * 1000L)
                                 this.start()
                             }
                         }

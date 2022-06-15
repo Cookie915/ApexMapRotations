@@ -54,13 +54,19 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
         setUpObservables()
     }
 
 
     private fun setUpObservables() {
         lifecycleScope.launchWhenCreated {
-
+            launch {
+                arenasViewModel.mapDataBundle.collect()
+            }
             launch {
                 Log.i("tester2", "test")
                 arenasViewModel.timeRemainingRanked.map {

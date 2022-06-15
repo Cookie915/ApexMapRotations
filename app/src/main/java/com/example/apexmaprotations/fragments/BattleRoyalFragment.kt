@@ -97,11 +97,17 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
         setupAnimationListeners()
         listenToAlarms()
         lottieListeners()
-        setupObservables()
+
         val navController = findNavController()
         binding.button.setOnClickListener {
             navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupObservables()
+        Log.i("tester2", "onResume")
     }
 
 

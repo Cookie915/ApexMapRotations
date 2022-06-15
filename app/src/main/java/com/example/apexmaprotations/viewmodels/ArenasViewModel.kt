@@ -83,7 +83,7 @@ class ArenasViewModel @Inject constructor(
 
                     override suspend fun onFinish() {
                         mMapDataBundle.collect() {
-                            if (it is Resource.Success && it.data != null) {
+                            if (it is Resource.Success && it.data != null && this != null) {
                                 this.setMillisInFuture(it.data.arenas.current.remainingSecs * 1000L)
                                 this.start()
                             }
