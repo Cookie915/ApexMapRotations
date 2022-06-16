@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.databinding.FragmentArenasBinding
+import com.example.apexmaprotations.util.SwipeGestureListener
 import com.example.apexmaprotations.util.SwipeListener
 import com.example.apexmaprotations.viewmodels.ArenasViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +36,7 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Glide.with(this)
-            .load(R.drawable.encore)
+            .load(R.drawable.phase_rush)
             .diskCacheStrategy(
                 DiskCacheStrategy.ALL
             )
@@ -49,14 +50,13 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
         Glide.with(this)
             .load(R.drawable.phase_rush)
             .into(binding.publicNext)
+        //  We center timers here to avoid jitter from centering text as time changes
         binding.timerTop.doOnPreDraw {
-            //  Manually set X to avoid jitter caused by centering text as decimal place in timer changes
             val viewWidth = it.width / 2
             val width = resources.displayMetrics.widthPixels / 2 - viewWidth
             binding.timerTop.translationX += width
         }
         binding.timerBottom.doOnPreDraw {
-            //  Manually set X to avoid jitter caused by centering text as decimal place in timer changes
             val viewWidth = it.width / 2
             val width = resources.displayMetrics.widthPixels / 2 - viewWidth
             binding.timerBottom.translationX += width
@@ -76,6 +76,7 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.background.setOnTouchListener(SwipeGestureListener(this))
     }
 
     override fun onResume() {
@@ -118,6 +119,7 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     }
 
     override fun onSwipeRight() {
+        Log.i("tester6", "Right swipe")
         navController.popBackStack()
     }
 }

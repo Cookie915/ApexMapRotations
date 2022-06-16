@@ -31,14 +31,15 @@
         app:layout_constraintTop_toBottomOf="@+id/rankedCurrent" />
 
     <TextView
-        android:id="@+id/currentTop"
-        android:layout_width="wrap_content"
+        android:id="@+id/nextTop"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:background="#BF303030"
         android:contentDescription="@string/nextLabel"
         android:fontFamily="@font/inter_regular"
         android:text="@string/nextLabel"
+        android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,16 +48,23 @@
 
     <TextView
         android:id="@+id/timerTop"
-        android:layout_width="wrap_content"
+        android:layout_width="100.dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
-        android:fontFamily="@font/inter_thin"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_regular"
+        android:shadowColor="@color/apex_red"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="1"
         android:text="@string/topTimerPlacesHolder"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="20sp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/rankedNext"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rankedCurrent" />
+        app:layout_constraintTop_toTopOf="@+id/rankedCurrent"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/arenasText"
@@ -70,12 +78,42 @@
         android:textAlignment="gravity"
         android:textAllCaps="false"
         android:textColor="@color/apex_red"
-        android:textSize="60sp"
+        android:textSize="34sp"
         android:typeface="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rankedNext" />
+
+    <TextView
+        android:id="@+id/rankedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/ranked_text"
+        android:fontFamily="@font/inter_extralight"
+        android:text="@string/ranked_text"
+        android:textColor="@color/apex_red"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/arenasText"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/unrankedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/unranked_label_desc"
+        android:fontFamily="@font/inter_extralight"
+        android:text="@string/unranked_label"
+        android:textColor="@color/apex_red"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@id/arenasText"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <ImageView
         android:id="@+id/publicCurrent"
@@ -102,17 +140,53 @@
         app:layout_constraintTop_toBottomOf="@+id/publicCurrent" />
 
     <TextView
+        android:id="@+id/nextBottom"
+        android:layout_width="60.dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#BF303030"
+        android:contentDescription="@string/nextmaptext_cont_desc"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/nextLabel"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/publicCurrent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
         android:id="@+id/timerBottom"
-        android:layout_width="wrap_content"
+        android:layout_width="100.dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
-        android:fontFamily="@font/inter_thin"
+        android:elevation="24.dp"
+        android:fontFamily="@font/inter_regular"
+        android:shadowColor="@color/apex_red"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="1"
         android:text="@string/topTimerPlacesHolder"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="20sp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/publicNext" />
+        app:layout_constraintTop_toBottomOf="@+id/arenasText"
+        tools:ignore="TextContrastCheck" />
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#00000000"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

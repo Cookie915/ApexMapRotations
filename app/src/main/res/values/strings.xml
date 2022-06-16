@@ -19,10 +19,13 @@
     <string name="rankedArenasNextImgDesc">Ranked Arenas Next Map</string>
     <string name="PublicArenasCurrentMapDesc">Public Arenas Current Map</string>
     <string name="PublicArenasNextMapImageDesc">Public Arenas Current Map</string>
-    <string name="ranked_text"><u>RANKED</u></string>
+    <string name="ranked_text_underlined"><u>RANKED</u></string>
+    <string name="ranked_text">RANKED</string>
     <string name="topTimerDesc">Ranked Arenas Timer</string>
     <string name="currentLabelText">CURRENT</string>
     <string name="topTimerPlacesHolder">00 : 00</string>
     <string name="nextLabel">NEXT</string>
-    <string name="unranked_label"><u>UNRANKED</u></string>
+    <string name="unranked_label_underlined"><u>UNRANKED</u></string>
+    <string name="unranked_label">UNRANKED</string>
+    <string name="unranked_label_desc">UNRANKED LABEL</string>
 </resources>
