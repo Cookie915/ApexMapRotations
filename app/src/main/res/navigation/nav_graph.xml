@@ -17,5 +17,11 @@
     <fragment
         android:id="@+id/arenasFragment"
         android:name="com.example.apexmaprotations.fragments.ArenasFragment"
-        android:label="ArenasFragment" />
+        android:label="ArenasFragment">
+        <action
+            android:id="@+id/action_arenasFragment_to_battleRoyalFragment"
+            app:destination="@id/battleRoyalFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
 </navigation>

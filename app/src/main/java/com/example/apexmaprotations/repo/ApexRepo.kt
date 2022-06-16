@@ -66,4 +66,24 @@ class ApexRepo(
         val rand = Random()
         return images[rand.nextInt(images.size)]
     }
+
+    fun getPartyCrasherImage(): Int {
+        return R.drawable.party_crash
+    }
+
+    fun getPhaseRunnerImage(): Int {
+        return R.drawable.phase_rush
+    }
+
+    fun getEncoreImage(): Int {
+        return R.drawable.encore
+    }
+
+    fun getHabitatImage(): Int {
+        return R.drawable.habitat
+    }
+
+    fun getDropOffImage(): Int {
+        return R.drawable.bg_drop_off
+    }
 }

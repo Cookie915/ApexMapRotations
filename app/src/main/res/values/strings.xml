@@ -22,7 +22,7 @@
     <string name="ranked_text"><u>RANKED</u></string>
     <string name="topTimerDesc">Ranked Arenas Timer</string>
     <string name="currentLabelText">CURRENT</string>
-    <string name="topTimerPlacesHolder">59 : 87 : 00</string>
+    <string name="topTimerPlacesHolder">00 : 00</string>
     <string name="nextLabel">NEXT</string>
     <string name="unranked_label"><u>UNRANKED</u></string>
 </resources>

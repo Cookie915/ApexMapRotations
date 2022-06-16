@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
         setUpSplash(splashScreen)
         setContentView(R.layout.activity_main)
+
     }
 
 

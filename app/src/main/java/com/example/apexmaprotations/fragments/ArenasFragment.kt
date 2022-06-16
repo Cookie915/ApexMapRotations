@@ -1,6 +1,7 @@
 package com.example.apexmaprotations.fragments
 
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,13 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.databinding.FragmentArenasBinding
+import com.example.apexmaprotations.util.SwipeListener
 import com.example.apexmaprotations.viewmodels.ArenasViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -19,7 +25,8 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class ArenasFragment : Fragment(R.layout.fragment_arenas) {
+class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
+    private lateinit var navController: NavController
     private val arenasViewModel: ArenasViewModel by viewModels({ requireActivity() })
     private val binding: FragmentArenasBinding by lazy {
         FragmentArenasBinding.inflate(layoutInflater)
@@ -27,21 +34,33 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.topTimer.doOnPreDraw {
+        Glide.with(this)
+            .load(R.drawable.encore)
+            .diskCacheStrategy(
+                DiskCacheStrategy.ALL
+            )
+            .into(binding.rankedCurrent)
+        Glide.with(this)
+            .load(R.drawable.habitat)
+            .into(binding.rankedNext)
+        Glide.with(this)
+            .load(R.drawable.party_crash)
+            .into(binding.publicCurrent)
+        Glide.with(this)
+            .load(R.drawable.phase_rush)
+            .into(binding.publicNext)
+        binding.timerTop.doOnPreDraw {
             //  Manually set X to avoid jitter caused by centering text as decimal place in timer changes
             val viewWidth = it.width / 2
             val width = resources.displayMetrics.widthPixels / 2 - viewWidth
-            binding.topTimer.translationX += width
+            binding.timerTop.translationX += width
         }
-        binding.bottomTimer.doOnPreDraw {
+        binding.timerBottom.doOnPreDraw {
             //  Manually set X to avoid jitter caused by centering text as decimal place in timer changes
             val viewWidth = it.width / 2
             val width = resources.displayMetrics.widthPixels / 2 - viewWidth
-            binding.bottomTimer.translationX += width
+            binding.timerBottom.translationX += width
         }
-        Log.i("tester2", "Created")
-
-
     }
 
     override fun onCreateView(
@@ -49,6 +68,9 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        navController = findNavController()
+        val transitionInflater = TransitionInflater.from(requireContext())
+        enterTransition = transitionInflater.inflateTransition(R.transition.slide_right)
         return binding.root
     }
 
@@ -63,14 +85,14 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas) {
 
 
     private fun setUpObservables() {
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenResumed {
             launch {
                 arenasViewModel.mapDataBundle.collect()
             }
             launch {
                 Log.i("tester2", "test")
                 arenasViewModel.timeRemainingRanked.map {
-                    binding.topTimer.text = getString(
+                    binding.timerTop.text = getString(
                         R.string.time_format_arenas,
                         it[0].toString(),
                         it[1].toString(),
@@ -80,7 +102,7 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas) {
             }
             launch {
                 arenasViewModel.timeRemainingUnranked.map {
-                    binding.bottomTimer.text = getString(
+                    binding.timerBottom.text = getString(
                         R.string.time_format_arenas,
                         it[0].toString(),
                         it[1].toString(),
@@ -91,6 +113,12 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas) {
         }
     }
 
+    override fun onSwipeLeft() {
 
+    }
+
+    override fun onSwipeRight() {
+        navController.popBackStack()
+    }
 }
 

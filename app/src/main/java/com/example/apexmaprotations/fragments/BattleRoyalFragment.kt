@@ -1,6 +1,5 @@
 package com.example.apexmaprotations.fragments
 
-
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.app.AlarmManager
@@ -10,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +20,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -30,19 +31,21 @@ import com.example.apexmaprotations.databinding.FragmentBattleroyaleBinding
 import com.example.apexmaprotations.models.Resource
 import com.example.apexmaprotations.util.*
 import com.example.apexmaprotations.viewmodels.AppViewModel
+import com.example.apexmaprotations.viewmodels.ArenasViewModel
 import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
 import com.example.apexmaprotations.viewmodels.dataStore
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 
 const val tag = "MainActivityLogs"
 
 @AndroidEntryPoint
-class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
+class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListener {
+    private lateinit var navController: NavController
     private val battleRoyalViewModel: BattleRoyalViewModel by viewModels()
+    private val arenasViewModel: ArenasViewModel by viewModels()
     private val appViewModel: AppViewModel by viewModels()
     private val binding: FragmentBattleroyaleBinding by lazy {
         FragmentBattleroyaleBinding.inflate(layoutInflater).apply {
@@ -50,35 +53,102 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
             viewmodel = battleRoyalViewModel
         }
     }
-    private val alarmButton: LottieAnimationView by lazy {
-        binding.alarmButton
-    }
-    private val notifyButton: LottieAnimationView by lazy {
-        binding.notifyButton
-    }
-
+    private val alarmButton: LottieAnimationView by lazy { binding.alarmButton }
+    private val notifyButton: LottieAnimationView by lazy { binding.notifyButton }
     private val alarmManager: AlarmManager by lazy {
-        requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+        requireActivity().getSystemService(
+            ALARM_SERVICE
+        ) as AlarmManager
     }
 
     //  offset for animating menu lines
-    private var linesOffset by Delegates.notNull<Float>()
+    private var linesOffset = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.menubackground.doOnPreDraw {
-            linesOffset = it.height.toFloat() * 1.5f
-            binding.menuBackgroundLines.translationY -= linesOffset
-        }
+        navController = findNavController()
+        val transitionInflater = TransitionInflater.from(requireContext())
+        exitTransition = transitionInflater.inflateTransition(R.transition.fade)
         binding.time.doOnPreDraw {
             //  Manually set X to avoid jitter caused by centering text as decimal place in timer changes
             val viewWidth = it.width / 2
             val width = resources.displayMetrics.widthPixels / 2 - viewWidth
             binding.time.translationX += width
         }
-        Log.i("tester", "onCreate called")
+        binding.menubackground.doOnPreDraw {
+            linesOffset = it.height.toFloat() * 1.5f
+            binding.menuBackgroundLines.translationY -= linesOffset
+            lifecycleScope.launch {
+                appViewModel.showMenu.collect { showMenu ->
+                    when (showMenu) {
+                        true -> {
+                            appViewModel.showMenu()
+                            notifyButton.isClickable = true
+                            alarmButton.isClickable = true
+                            binding.time.visibility = View.INVISIBLE
+                            binding.timerAnimation.visibility = View.INVISIBLE
+                            binding.topText.visibility = View.INVISIBLE
+                            binding.bottomText.visibility = View.INVISIBLE
+                            ObjectAnimator.ofFloat(binding.menuBackgroundLines, "translationY", 0f)
+                                .apply {
+                                    duration = 800
+                                    start()
+                                }
+                            ObjectAnimator.ofFloat(binding.menubackground, "alpha", 0.8f).apply {
+                                interpolator = LinearInterpolator()
+                                duration = 800
+                                start()
+                            }
+                            ObjectAnimator.ofFloat(notifyButton, "alpha", 1f).apply {
+                                interpolator = LinearInterpolator()
+                                duration = 600
+                                start()
+                            }
+                            ObjectAnimator.ofFloat(alarmButton, "alpha", 1f).apply {
+                                interpolator = LinearInterpolator()
+                                duration = 600
+                                start()
+                            }
+                        }
+                        false -> {
+                            notifyButton.isClickable = false
+                            alarmButton.isClickable = false
+                            appViewModel.hideMenu()
+                            binding.time.visibility = View.VISIBLE
+                            binding.timerAnimation.visibility = View.VISIBLE
+                            binding.topText.visibility = View.VISIBLE
+                            binding.bottomText.visibility = View.VISIBLE
+                            ObjectAnimator.ofFloat(
+                                binding.menuBackgroundLines,
+                                "translationY",
+                                -linesOffset
+                            ).apply {
+                                duration = 800
+                                start()
+                            }
+                            ObjectAnimator.ofFloat(binding.menubackground, "alpha", 0f).apply {
+                                interpolator = LinearInterpolator()
+                                duration = 800
+                                start()
+                            }
+                            ObjectAnimator.ofFloat(notifyButton, "alpha", 0f).apply {
+                                interpolator = LinearInterpolator()
+                                duration = 600
+                                start()
+                            }
+                            ObjectAnimator.ofFloat(alarmButton, "alpha", 0f).apply {
+                                interpolator = LinearInterpolator()
+                                duration = 600
+                                start()
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
         // fix
-//        verifyAlarms()
+        // verifyAlarms()
     }
 
     override fun onCreateView(
@@ -92,22 +162,15 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i("tester", "view created")
         setUpClickListeners()
         setupAnimationListeners()
         listenToAlarms()
         lottieListeners()
-
-        val navController = findNavController()
-        binding.button.setOnClickListener {
-            navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
-        }
     }
 
     override fun onResume() {
         super.onResume()
         setupObservables()
-        Log.i("tester2", "onResume")
     }
 
 
@@ -195,10 +258,6 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
         })
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
     private fun setUpClickListeners() {
         val notifyButton = binding.notifyButton
         val alarmButton = binding.alarmButton
@@ -221,74 +280,27 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
                 alarmButton.playAnimation()
             }
         }
-        menubackground.setOnClickListener {
+        menubackground.setOnTouchListener(SwipeGestureListener(this))
+        binding.arrowRight.setOnClickListener {
+            navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
+        }
+        menubackground.setOnLongClickListener {
             when (appViewModel.showMenu.value) {
+                true -> {
+                    appViewModel.hideMenu()
+                }
                 false -> {
                     appViewModel.showMenu()
-                    notifyButton.isClickable = true
-                    alarmButton.isClickable = true
-                    binding.time.visibility = View.INVISIBLE
-                    binding.timerAnimation.visibility = View.INVISIBLE
-                    binding.topText.visibility = View.INVISIBLE
-                    binding.bottomText.visibility = View.INVISIBLE
-                    ObjectAnimator.ofFloat(binding.menuBackgroundLines, "translationY", 0f).apply {
-                        duration = 800
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(menubackground, "alpha", 0.8f).apply {
-                        interpolator = LinearInterpolator()
-                        duration = 800
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(notifyButton, "alpha", 1f).apply {
-                        interpolator = LinearInterpolator()
-                        duration = 600
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(alarmButton, "alpha", 1f).apply {
-                        interpolator = LinearInterpolator()
-                        duration = 600
-                        start()
-                    }
-                }
-                true -> {
-                    notifyButton.isClickable = false
-                    alarmButton.isClickable = false
-                    appViewModel.hideMenu()
-                    binding.time.visibility = View.VISIBLE
-                    binding.timerAnimation.visibility = View.VISIBLE
-                    binding.topText.visibility = View.VISIBLE
-                    binding.bottomText.visibility = View.VISIBLE
-                    ObjectAnimator.ofFloat(
-                        binding.menuBackgroundLines,
-                        "translationY",
-                        -linesOffset
-                    ).apply {
-                        duration = 800
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(menubackground, "alpha", 0f).apply {
-                        interpolator = LinearInterpolator()
-                        duration = 800
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(notifyButton, "alpha", 0f).apply {
-                        interpolator = LinearInterpolator()
-                        duration = 600
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(alarmButton, "alpha", 0f).apply {
-                        interpolator = LinearInterpolator()
-                        duration = 600
-                        start()
-                    }
                 }
             }
+            return@setOnLongClickListener true
         }
+
+
     }
 
     private fun setupObservables() {
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenResumed {
             launch {
                 battleRoyalViewModel.currentMapImage.collect() {
                     if (it != null) {
@@ -355,8 +367,17 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
         }
     }
 
+    override fun onSwipeLeft() {
+        Log.i("tester5", "swi[ed")
+        navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
+    }
+
+    override fun onSwipeRight() {
+        TODO("Not yet implemented")
+    }
+
 }
 
 //  TODO
-//  Make splashscreen compatible on newer android versions
+//  Improve layout perfomance of arenafragment
 

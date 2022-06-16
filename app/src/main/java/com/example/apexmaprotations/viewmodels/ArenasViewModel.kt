@@ -57,6 +57,22 @@ class ArenasViewModel @Inject constructor(
     val timeRemainingRankedLong: StateFlow<Long>
         get() = mTimeRemainingRanked
 
+    private var mCurrentMapImage = MutableStateFlow<Int?>(null)
+    val currentMapImage: StateFlow<Int?>
+        get() = mCurrentMapImage
+
+    private var mNextMapImage = MutableStateFlow<Int?>(null)
+    val nextMapImage: StateFlow<Int?>
+        get() = mNextMapImage
+
+    private var mCurrentMapImageRanked = MutableStateFlow<Int?>(null)
+    val currentMapImageRanked: StateFlow<Int?>
+        get() = mCurrentMapImage
+
+    private var mNextMapImageRanked = MutableStateFlow<Int?>(null)
+    val nextMapImageRanked: StateFlow<Int?>
+        get() = mNextMapImage
+
     private fun initializeTimers(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
@@ -83,7 +99,7 @@ class ArenasViewModel @Inject constructor(
 
                     override suspend fun onFinish() {
                         mMapDataBundle.collect() {
-                            if (it is Resource.Success && it.data != null && this != null) {
+                            if (it is Resource.Success && it.data != null) {
                                 this.setMillisInFuture(it.data.arenas.current.remainingSecs * 1000L)
                                 this.start()
                             }
@@ -101,7 +117,6 @@ class ArenasViewModel @Inject constructor(
     }
 
     init {
-        Log.i("tester2", "init arenasVM")
         viewModelScope.launch {
             mMapDataBundle.collect { mapData ->
                 when (mapData) {
@@ -116,12 +131,46 @@ class ArenasViewModel @Inject constructor(
                     is Resource.Success -> {
 //                        initializeMapImages(mapData.data)
                         if (mapData.data != null) {
+                            initializeMapImages(mapData.data)
                             initializeTimers(mapData.data)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun initializeMapImages(mapData: MapDataBundle) {
+        when (mapData.arenasRanked.current.map) {
+            "Party Crasher" -> {}
+            "Phase Runner" -> {}
+            "Overflow" -> {}
+            "Encore" -> {}
+            "Habitat 4" -> {}
+            "Drop-Off" -> {}
+        }
+        when (mapData.arenasRanked.next.map) {
+
+        }
+        when (mapData.arenas.current.map) {
+        }
+        when (mapData.arenas.next.map) {
+        }
+    }
+
+    private fun getImageForMapName(mapName: String) {
+        when (mapName) {
+            "Party Crasher" -> {}
+            "Phase Runner" -> {}
+            "Overflow" -> {}
+            "Encore" -> {}
+            "Habitat 4" -> {}
+            "Drop-Off" -> {}
+        }
+    }
+
+    init {
+        Log.i("Tester5", "arenasVM init")
     }
 }
 
