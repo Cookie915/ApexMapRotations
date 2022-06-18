@@ -1,29 +1,44 @@
 package com.example.apexmaprotations.repo
 
+import android.util.Log
 import com.example.apexmaprotations.R
-import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.models.asResource
-import com.example.apexmaprotations.models.retrofit.ApexStatusApi
-import com.example.apexmaprotations.models.retrofit.MapDataBundle
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.example.apexmaprotations.models.BaseApiResponse
+import com.example.apexmaprotations.models.NetworkResult
+import com.example.apexmaprotations.models.toStateFlow
+import com.example.apexmaprotations.retrofit.ApexStatusApi
+import com.example.apexmaprotations.retrofit.MapDataBundle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val tag = "ApexRepo"
 
-class ApexRepo(
+@Singleton
+class ApexRepo @Inject constructor(
     private val apexApi: ApexStatusApi
-) {
+) : BaseApiResponse() {
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    fun getMapData(): Flow<Resource<MapDataBundle>> {
+    private var _mapData: Flow<NetworkResult<MapDataBundle>> = getMapData()
+    val mapData: StateFlow<NetworkResult<MapDataBundle>> by lazy {
+        _mapData.toStateFlow(coroutineScope, NetworkResult.Loading())
+    }
+
+    fun refreshMapData() {
+        coroutineScope.launch {
+            _mapData.collect()
+        }
+    }
+
+    private fun getMapData(): Flow<NetworkResult<MapDataBundle>> {
         return flow {
-            val mapDataBundle = apexApi.getMapDataBundle()
-            if (mapDataBundle.isSuccessful && mapDataBundle.body() != null) {
-                emit(mapDataBundle.body()!!)
-            } else {
-                throw Throwable(mapDataBundle.errorBody().toString())
-            }
-        }.asResource()
+            emit(safeApiCall { apexApi.getMapDataBundle() })
+        }
+            .flowOn(Dispatchers.IO)
     }
 
     fun getKingsCanyonImg(): Int {
@@ -85,5 +100,9 @@ class ApexRepo(
 
     fun getDropOffImage(): Int {
         return R.drawable.bg_drop_off
+    }
+
+    init {
+        Log.i("ApexRepo", "Created Repo $this")
     }
 }

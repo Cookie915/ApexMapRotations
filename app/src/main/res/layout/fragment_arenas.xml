@@ -8,7 +8,7 @@
 
     <ImageView
         android:id="@+id/rankedCurrent"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/rankedArenasCurrentMapDesc"
         android:scaleType="fitXY"
@@ -16,11 +16,12 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent=".2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/rankedNext"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/rankedArenasNextImgDesc"
         android:scaleType="fitXY"
@@ -52,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         android:elevation="24.dp"
-        android:fontFamily="@font/inter_regular"
+        android:fontFamily="@font/inter_extralight"
         android:shadowColor="@color/apex_red"
         android:shadowDx="0"
         android:shadowDy="0"
@@ -117,7 +118,7 @@
 
     <ImageView
         android:id="@+id/publicCurrent"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/PublicArenasCurrentMapDesc"
         android:scaleType="fitXY"
@@ -125,11 +126,12 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent=".2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arenasText" />
+        app:layout_constraintTop_toBottomOf="@+id/arenasText"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/publicNext"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/PublicArenasNextMapImageDesc"
         android:scaleType="fitXY"
@@ -161,7 +163,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         android:elevation="24.dp"
-        android:fontFamily="@font/inter_regular"
+        android:fontFamily="@font/inter_extralight"
         android:shadowColor="@color/apex_red"
         android:shadowDx="0"
         android:shadowDy="0"

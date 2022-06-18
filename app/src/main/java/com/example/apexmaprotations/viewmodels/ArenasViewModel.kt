@@ -5,29 +5,27 @@ import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.models.retrofit.ApexStatusApi
-import com.example.apexmaprotations.models.retrofit.MapDataBundle
+import com.example.apexmaprotations.R
+import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "ArenaViewModel"
 @HiltViewModel
 class ArenasViewModel @Inject constructor(
-    private val apexRepo: ApexRepo,
-    private val apexApi: ApexStatusApi
+    private val apexRepo: ApexRepo
 ) : ViewModel() {
-    private var mMapDataBundle: Flow<Resource<MapDataBundle?>> = apexRepo.getMapData()
-    val mapDataBundle: StateFlow<Resource<MapDataBundle?>>
-        get() = mMapDataBundle.toStateFlow(viewModelScope, Resource.Loading)
+    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> = apexRepo.mapData
 
     //  Ranked Timer
     private var mTimeRemainingUnranked = MutableStateFlow<Long>(0)
@@ -73,6 +71,10 @@ class ArenasViewModel @Inject constructor(
     val nextMapImageRanked: StateFlow<Int?>
         get() = mNextMapImage
 
+    private fun refreshMapData() {
+        apexRepo.refreshMapData()
+    }
+
     private fun initializeTimers(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
@@ -84,8 +86,10 @@ class ArenasViewModel @Inject constructor(
                     }
 
                     override suspend fun onFinish() {
-                        mMapDataBundle.collect() {
-                            if (it is Resource.Success && it.data != null) {
+                        refreshMapData()
+                        mapDataBundle.collect() {
+                            if (it is NetworkResult.Success && it.data != null) {
+                                initializeMapImages(it.data)
                                 this.setMillisInFuture(it.data.arenasRanked.current.remainingSecs * 1000L)
                                 this.start()
                             }
@@ -98,8 +102,10 @@ class ArenasViewModel @Inject constructor(
                     }
 
                     override suspend fun onFinish() {
-                        mMapDataBundle.collect() {
-                            if (it is Resource.Success && it.data != null) {
+                        refreshMapData()
+                        mapDataBundle.collect() {
+                            if (it is NetworkResult.Success && it.data != null) {
+                                initializeMapImages(it.data)
                                 this.setMillisInFuture(it.data.arenas.current.remainingSecs * 1000L)
                                 this.start()
                             }
@@ -111,25 +117,20 @@ class ArenasViewModel @Inject constructor(
             }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.i("tester2", "ArenaVM Cleared")
-    }
-
     init {
+        Log.i(TAG, "init")
         viewModelScope.launch {
-            mMapDataBundle.collect { mapData ->
+            mapDataBundle.collect() { mapData ->
                 when (mapData) {
-                    is Resource.Loading -> {
-//                                mCurrentMapImage.value = null
-//                                mNextMapImage.value = null
+                    is NetworkResult.Loading -> {}
+                    is NetworkResult.Error -> {
+                        //  Rate limit hit, wait and re-fetch data
+                        if (mapData.message == "429") {
+                            delay(2100L)
+                            refreshMapData()
+                        }
                     }
-                    is Resource.Failure -> {
-//                                mCurrentMapImage.value = null
-//                                mNextMapImage.value = null
-                    }
-                    is Resource.Success -> {
-//                        initializeMapImages(mapData.data)
+                    is NetworkResult.Success -> {
                         if (mapData.data != null) {
                             initializeMapImages(mapData.data)
                             initializeTimers(mapData.data)
@@ -140,37 +141,43 @@ class ArenasViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.i(TAG, "ArenaVM Cleared")
+    }
+
     private fun initializeMapImages(mapData: MapDataBundle) {
-        when (mapData.arenasRanked.current.map) {
-            "Party Crasher" -> {}
-            "Phase Runner" -> {}
-            "Overflow" -> {}
-            "Encore" -> {}
-            "Habitat 4" -> {}
-            "Drop-Off" -> {}
-        }
-        when (mapData.arenasRanked.next.map) {
-
-        }
-        when (mapData.arenas.current.map) {
-        }
-        when (mapData.arenas.next.map) {
-        }
+        mCurrentMapImageRanked.value = getImageForMapName(mapData.arenasRanked.current.map)
+        mNextMapImageRanked.value = getImageForMapName(mapData.arenasRanked.next.map)
+        mCurrentMapImage.value = getImageForMapName(mapData.arenas.current.map)
+        mNextMapImage.value = getImageForMapName(mapData.arenas.next.map)
     }
 
-    private fun getImageForMapName(mapName: String) {
+    private fun getImageForMapName(mapName: String): Int? {
+        Log.i("tester6", mapName)
         when (mapName) {
-            "Party Crasher" -> {}
-            "Phase Runner" -> {}
-            "Overflow" -> {}
-            "Encore" -> {}
-            "Habitat 4" -> {}
-            "Drop-Off" -> {}
+            "Party crasher" -> {
+                return R.drawable.party_crash
+            }
+            "Phase runner" -> {
+                return R.drawable.phase_rush
+            }
+            "Overflow" -> {
+                return R.drawable.overflow
+            }
+            "Encore" -> {
+                return R.drawable.encore
+            }
+            "Habitat" -> {
+                return R.drawable.habitat
+            }
+            "Drop Off" -> {
+                return R.drawable.bg_drop_off
+            }
+            else -> {
+                return null
+            }
         }
-    }
-
-    init {
-        Log.i("Tester5", "arenasVM init")
     }
 }
 

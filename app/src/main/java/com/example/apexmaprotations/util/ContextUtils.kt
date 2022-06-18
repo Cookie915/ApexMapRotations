@@ -28,7 +28,7 @@ enum class RequestCodes {
 
 fun Context.scheduleNotification(isAlarm: Boolean, timeRemaining: Long) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val scheduleTime = System.currentTimeMillis() + 500
+    val scheduleTime = System.currentTimeMillis() + 5000L
     with(alarmManager) {
         setExact(AlarmManager.RTC_WAKEUP, scheduleTime, getReceiver(isAlarm))
     }
@@ -137,7 +137,9 @@ fun Context.showNotificationWithFullScreenIntent(
     }
     with(NotificationManagerCompat.from(this)) {
         buildChannel(channelId, description, channelId)
-        val notification = builder.build()
+        val notification = builder.build().apply {
+            category = NotificationCompat.CATEGORY_ALARM
+        }
         notify(requestCode, notification)
     }
 }

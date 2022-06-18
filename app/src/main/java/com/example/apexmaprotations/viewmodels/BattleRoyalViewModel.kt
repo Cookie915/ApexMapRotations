@@ -9,18 +9,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apexmaprotations.models.Resource
-import com.example.apexmaprotations.models.retrofit.ApexStatusApi
-import com.example.apexmaprotations.models.retrofit.MapDataBundle
+import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.transform
@@ -28,18 +24,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore("settings")
+private const val TAG = "BattleRoyalViewModel"
 
 @HiltViewModel
 class BattleRoyalViewModel @Inject constructor(
     private val apexRepo: ApexRepo,
-    private val apexStatusApi: ApexStatusApi
 ) : ViewModel() {
-    private val tag = "BattleRoyalViewModel"
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    private var mMapDataBundle: Flow<Resource<MapDataBundle>> = apexRepo.getMapData()
-    val mapDataBundle: StateFlow<Resource<MapDataBundle?>>
-        get() = mMapDataBundle.toStateFlow(viewModelScope, Resource.Loading)
+    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> = apexRepo.mapData
 
     private var mTimeRemaining = MutableStateFlow<Long>(0)
     val timeRemaining: StateFlow<List<Any>>
@@ -54,30 +45,31 @@ class BattleRoyalViewModel @Inject constructor(
         }.toStateFlow(viewModelScope, listOf(0, "0.0", "0.0", 0))
     val timeRemainingLong: StateFlow<Long>
         get() = mTimeRemaining
-
     private var mCurrentMapImage = MutableStateFlow<Int?>(null)
     val currentMapImage: StateFlow<Int?>
         get() = mCurrentMapImage
-
     private var mNextMapImage = MutableStateFlow<Int?>(null)
     val nextMapImage: StateFlow<Int?>
         get() = mNextMapImage
 
+    fun refreshMapData() {
+        apexRepo.refreshMapData()
+    }
 
     private fun initializeTimer(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
-                val timeRemainingMillis = 5000L
-//                    mapData.battleRoyale.current.remainingSecs * 1000L
+                val timeRemainingMillis = mapData.battleRoyale.current.remainingSecs * 1000L
                 val timer = object : CustomCountdownTimer(timeRemainingMillis, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemaining.value = millisUntilFinished
                     }
 
                     override suspend fun onFinish() {
-                        mMapDataBundle.collect() {
-                            if (it is Resource.Success) {
-                                initializeMapImages(it.data)
+                        refreshMapData()
+                        mapDataBundle.collect() {
+                            if (it is NetworkResult.Success) {
+                                initializeMapImages(it.data!!)
                                 this.setMillisInFuture(it.data.battleRoyale.current.remainingSecs * 1000L)
                                 this.start()
                             }
@@ -88,6 +80,43 @@ class BattleRoyalViewModel @Inject constructor(
             }
     }
 
+    init {
+        Log.i(TAG, "Vm Init $this")
+        viewModelScope.launch {
+            mapDataBundle.collect { mapData ->
+                Log.i(TAG, "Got New Maps Data from init")
+                when (mapData) {
+                    is NetworkResult.Loading -> {
+                        Log.i(TAG, "Loading...")
+                        mCurrentMapImage.value = null
+                        mNextMapImage.value = null
+                    }
+                    is NetworkResult.Error -> {
+                        Log.i(TAG, "FetchMapDataFaiL ${mapData.message}")
+                        //  Rate limit hit, wait and re-fetch data
+                        if (mapData.message == "429") {
+                            delay(2100L)
+                            refreshMapData()
+                        }
+                        mCurrentMapImage.value = null
+                        mNextMapImage.value = null
+                    }
+                    is NetworkResult.Success -> {
+                        Log.i(TAG, "FetchMapData Success")
+                        if (mapData.data != null) {
+                            initializeMapImages(mapData.data)
+                            initializeTimer(mapData.data)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.i(TAG, "vm cleared")
+    }
 
     private fun initializeMapImages(mapDataBundle: MapDataBundle) {
         when (mapDataBundle.battleRoyale.current.map) {
@@ -116,28 +145,6 @@ class BattleRoyalViewModel @Inject constructor(
             }
             "Storm Point" -> {
                 mNextMapImage.value = apexRepo.getStormPointImg()
-            }
-        }
-    }
-
-    init {
-        viewModelScope.launch {
-            mMapDataBundle.collect { mapData ->
-                Log.i("tester", "Got New Maps Data from init")
-                when (mapData) {
-                    is Resource.Loading -> {
-                        mCurrentMapImage.value = null
-                        mNextMapImage.value = null
-                    }
-                    is Resource.Failure -> {
-                        mCurrentMapImage.value = null
-                        mNextMapImage.value = null
-                    }
-                    is Resource.Success -> {
-                        initializeMapImages(mapData.data)
-                        initializeTimer(mapData.data)
-                    }
-                }
             }
         }
     }

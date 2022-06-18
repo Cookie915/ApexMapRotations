@@ -1,12 +1,13 @@
 package com.example.apexmaprotations
 
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
-import org.junit.Test
+import com.example.apexmaprotations.hilt.RetroFitModule
+import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
+import org.junit.Before
+import org.junit.Rule
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -15,10 +16,17 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.apexmaprotations", appContext.packageName)
+    @Rule
+    @JvmField
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var repo: ApexRepo
+    private lateinit var viewModel: BattleRoyalViewModel
+
+    @Before
+    fun setUp() {
+        repo = ApexRepo(RetroFitModule.provideRetrofitInstance())
+        viewModel = BattleRoyalViewModel(repo)
     }
+
 }

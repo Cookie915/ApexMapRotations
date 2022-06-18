@@ -1,7 +1,7 @@
 package com.example.apexmaprotations.hilt
 
-import com.example.apexmaprotations.models.retrofit.ApexApiInterceptor
-import com.example.apexmaprotations.models.retrofit.ApexStatusApi
+import com.example.apexmaprotations.retrofit.ApexApiInterceptor
+import com.example.apexmaprotations.retrofit.ApexStatusApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

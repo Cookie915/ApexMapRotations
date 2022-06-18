@@ -1,5 +1,6 @@
 package com.example.apexmaprotations.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,5 +27,9 @@ class AppViewModel @Inject constructor() : ViewModel() {
 
     fun hideMenu() {
         mShowMenu.value = false
+    }
+
+    init {
+        Log.i("AppViewModel", "init $this")
     }
 }
