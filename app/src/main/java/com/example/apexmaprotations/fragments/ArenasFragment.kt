@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.databinding.FragmentArenasBinding
 import com.example.apexmaprotations.util.SwipeGestureListener
@@ -105,52 +105,44 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     private fun assignMapImages() {
         lifecycleScope.launchWhenCreated {
             launch {
-                arenasViewModel.currentMapImageRanked.map {
+                arenasViewModel.currentMapImageRanked.collect {
                     if (it != null) {
                         Glide.with(this@ArenasFragment)
                             .load(it)
-                            .diskCacheStrategy(
-                                DiskCacheStrategy.ALL
-                            )
+                            .signature(ObjectKey(it))
                             .into(binding.rankedCurrent)
                     }
-                }.collect()
+                }
             }
             launch {
-                arenasViewModel.nextMapImageRanked.map {
+                arenasViewModel.nextMapImageRanked.collect {
                     if (it != null) {
                         Glide.with(this@ArenasFragment)
-                            .load(it)
-                            .diskCacheStrategy(
-                                DiskCacheStrategy.ALL
-                            )
+                            .load(requireContext().getDrawable(it))
+                            .signature(ObjectKey(it))
                             .into(binding.rankedNext)
                     }
-                }.collect()
+                }
             }
             launch {
-                arenasViewModel.currentMapImage.map {
+                arenasViewModel.currentMapImage.collect {
                     if (it != null) {
                         Glide.with(this@ArenasFragment)
-                            .load(it)
-                            .diskCacheStrategy(
-                                DiskCacheStrategy.ALL
-                            )
+                            .load(requireContext().getDrawable(it))
+                            .signature(ObjectKey(it))
                             .into(binding.publicCurrent)
                     }
-                }.collect()
+                }
             }
             launch {
-                arenasViewModel.nextMapImage.map {
+                arenasViewModel.nextMapImage.collect {
                     if (it != null) {
                         Glide.with(this@ArenasFragment)
-                            .load(it)
-                            .diskCacheStrategy(
-                                DiskCacheStrategy.ALL
-                            )
+                            .load(requireContext().getDrawable(it))
+                            .signature(ObjectKey(it))
                             .into(binding.publicNext)
                     }
-                }.collect()
+                }
             }
         }
     }

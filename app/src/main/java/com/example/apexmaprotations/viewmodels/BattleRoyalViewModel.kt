@@ -52,14 +52,15 @@ class BattleRoyalViewModel @Inject constructor(
     val nextMapImage: StateFlow<Int?>
         get() = mNextMapImage
 
-    fun refreshMapData() {
+    private suspend fun refreshMapData() {
         apexRepo.refreshMapData()
     }
 
     private fun initializeTimer(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
-                val timeRemainingMillis = mapData.battleRoyale.current.remainingSecs * 1000L
+                val timeRemainingMillis = 3000L
+//                    mapData.battleRoyale.current.remainingSecs * 1000L
                 val timer = object : CustomCountdownTimer(timeRemainingMillis, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemaining.value = millisUntilFinished

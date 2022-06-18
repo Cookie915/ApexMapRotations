@@ -65,13 +65,13 @@ class ArenasViewModel @Inject constructor(
 
     private var mCurrentMapImageRanked = MutableStateFlow<Int?>(null)
     val currentMapImageRanked: StateFlow<Int?>
-        get() = mCurrentMapImage
+        get() = mCurrentMapImageRanked
 
     private var mNextMapImageRanked = MutableStateFlow<Int?>(null)
     val nextMapImageRanked: StateFlow<Int?>
-        get() = mNextMapImage
+        get() = mNextMapImageRanked
 
-    private fun refreshMapData() {
+    private suspend fun refreshMapData() {
         apexRepo.refreshMapData()
     }
 
@@ -84,18 +84,18 @@ class ArenasViewModel @Inject constructor(
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemainingRanked.value = millisUntilFinished
                     }
-
                     override suspend fun onFinish() {
                         refreshMapData()
                         mapDataBundle.collect() {
-                            if (it is NetworkResult.Success && it.data != null) {
-                                initializeMapImages(it.data)
+                            if (it is NetworkResult.Success) {
+                                initializeMapImages(it.data!!)
                                 this.setMillisInFuture(it.data.arenasRanked.current.remainingSecs * 1000L)
                                 this.start()
                             }
                         }
                     }
                 }
+
                 val unRankedTimer = object : CustomCountdownTimer(remainingTimerUnranked, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemainingUnranked.value = millisUntilFinished
@@ -104,8 +104,8 @@ class ArenasViewModel @Inject constructor(
                     override suspend fun onFinish() {
                         refreshMapData()
                         mapDataBundle.collect() {
-                            if (it is NetworkResult.Success && it.data != null) {
-                                initializeMapImages(it.data)
+                            if (it is NetworkResult.Success) {
+                                initializeMapImages(it.data!!)
                                 this.setMillisInFuture(it.data.arenas.current.remainingSecs * 1000L)
                                 this.start()
                             }
@@ -131,6 +131,7 @@ class ArenasViewModel @Inject constructor(
                         }
                     }
                     is NetworkResult.Success -> {
+                        Log.i(TAG, "Success")
                         if (mapData.data != null) {
                             initializeMapImages(mapData.data)
                             initializeTimers(mapData.data)

@@ -189,6 +189,34 @@
             app:lottie_loop="false"
             app:lottie_rawRes="@raw/alarm" />
 
+        <TextView
+            android:id="@+id/alarmLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/inter_extralight"
+            android:text="@string/alarmLabel"
+            android:textColor="@color/apex_red_dark"
+            android:textSize="34sp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/alarm_button" />
+
+        <TextView
+            android:id="@+id/notifyLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/inter_extralight"
+            android:text="@string/notifyLabel"
+            android:textColor="@color/apex_red_dark"
+            android:textSize="34sp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notify_button" />
+
         <ImageView
             android:id="@+id/arrowRight"
             android:layout_width="48.dp"

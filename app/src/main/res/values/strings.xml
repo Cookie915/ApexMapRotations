@@ -28,4 +28,6 @@
     <string name="unranked_label_underlined"><u>UNRANKED</u></string>
     <string name="unranked_label">UNRANKED</string>
     <string name="unranked_label_desc">UNRANKED LABEL</string>
+    <string name="alarmLabel">Set Alarm</string>
+    <string name="notifyLabel">Notify</string>
 </resources>

@@ -200,6 +200,16 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                                     duration = 600
                                     start()
                                 }
+                                ObjectAnimator.ofFloat(binding.notifyLabel, "alpha", 1f).apply {
+                                    interpolator = LinearInterpolator()
+                                    duration = 600
+                                    start()
+                                }
+                                ObjectAnimator.ofFloat(binding.alarmLabel, "alpha", 1f).apply {
+                                    interpolator = LinearInterpolator()
+                                    duration = 600
+                                    start()
+                                }
                             }
                             false -> {
                                 notifyButton.isClickable = false
@@ -228,6 +238,16 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                                     start()
                                 }
                                 ObjectAnimator.ofFloat(alarmButton, "alpha", 0f).apply {
+                                    interpolator = LinearInterpolator()
+                                    duration = 600
+                                    start()
+                                }
+                                ObjectAnimator.ofFloat(binding.notifyLabel, "alpha", 0f).apply {
+                                    interpolator = LinearInterpolator()
+                                    duration = 600
+                                    start()
+                                }
+                                ObjectAnimator.ofFloat(binding.alarmLabel, "alpha", 0f).apply {
                                     interpolator = LinearInterpolator()
                                     duration = 600
                                     start()
