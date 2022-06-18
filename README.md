@@ -3,16 +3,10 @@
 * [About](#about)
 * [Libraries](#libraries)
 * [Download](#Download)
-* [Attributions])(#atrributions)
-
-## About
- Apex Map Rotations taps into an unofficial apex legends API to give status updates on the current and upcoming maps.
- The app shows the data for both the battle royal and arena game modes. You can set alarms or notications to recieve 
- updates when the map changes. I build all the animations and icons for this app in house. Background images courtesy of 
-
-
-
-
+* [Attributions](#atrributions)
+<p align="center">
+ <img width="250" height="250" src="https://user-images.githubusercontent.com/49169067/174446678-9b697331-e67d-4433-af9f-29af2dc602c8.png">
+</p
 
 ## Libraries
 
@@ -26,3 +20,4 @@
 
 
 ## Downloads
+
