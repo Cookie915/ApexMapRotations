@@ -4,8 +4,11 @@
  </p>
 
 #### Table Of Contents
-[About](#▶️-about)
-## ▶️ About
+- [ℹ️ About](#ℹ%EF%B8%8F-about)
+- [🏗️ Libraries/Arch](#%EF%B8%8F-librariesarchitecture)
+- [▶️ Downloads](#%EF%B8%8F-downloads)
+- [✅ Atrributions](#-attributions)
+## ℹ️ About
 <p>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps in rotation
 for battle royal and arenas. You can set alarms or notifications to be alerted when app changes happen.
