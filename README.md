@@ -8,6 +8,7 @@
 - [🏗️ Libraries/Arch](#%EF%B8%8F-librariesarchitecture)
 - [▶️ Downloads](#%EF%B8%8F-downloads)
 - [✅ Atrributions](#-attributions)
+- [📷 Screenshots](#-screenshots)
 ## ℹ️ About
 <p>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps in rotation
@@ -28,6 +29,8 @@ to limit calls to the server and prevent hitting rate limits for GET requests, c
 
 ## ✅ Attributions  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses. 
+
+## 📷 Screenshots
 
 
 
