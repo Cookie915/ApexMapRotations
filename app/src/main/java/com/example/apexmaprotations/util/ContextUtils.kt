@@ -28,7 +28,7 @@ enum class RequestCodes {
 
 fun Context.scheduleNotification(isAlarm: Boolean, timeRemaining: Long) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val scheduleTime = System.currentTimeMillis() + 5000L
+    val scheduleTime = System.currentTimeMillis() + timeRemaining
     with(alarmManager) {
         setExact(AlarmManager.RTC_WAKEUP, scheduleTime, getReceiver(isAlarm))
     }

@@ -30,4 +30,6 @@
     <string name="unranked_label_desc">UNRANKED LABEL</string>
     <string name="alarmLabel">Set Alarm</string>
     <string name="notifyLabel">Notify</string>
+    <string name="nextMapNameDesc">name of next map</string>
+    <string name="currentMapNameDesc">current map name</string>
 </resources>

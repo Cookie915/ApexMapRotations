@@ -35,6 +35,7 @@ import com.example.apexmaprotations.databinding.FragmentBattleroyaleBinding
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.util.*
 import com.example.apexmaprotations.viewmodels.AppViewModel
+import com.example.apexmaprotations.viewmodels.ArenasViewModel
 import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
 import com.example.apexmaprotations.viewmodels.dataStore
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,6 +54,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
         TransitionInflater.from(requireContext())
     }
     private val battleRoyalViewModel: BattleRoyalViewModel by viewModels()
+    private val arenaViewModel: ArenasViewModel by activityViewModels()
     private val appViewModel: AppViewModel by activityViewModels()
     private val binding: FragmentBattleroyaleBinding by lazy {
         FragmentBattleroyaleBinding.inflate(layoutInflater).apply {
@@ -115,9 +117,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     battleRoyalViewModel.currentMapImage.collect() {
                         if (it != null) {
                             binding.currentMapImage.setImageDrawable(
-                                requireActivity().getDrawable(
-                                    it
-                                )
+                                requireActivity().getDrawable(it)
                             )
                         }
                     }
@@ -157,9 +157,12 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                             }
                             is NetworkResult.Success -> {
                                 Log.i(TAG, "mapdata Success from setupobvs()")
+                                binding.currentMapName.text =
+                                    mapData.data!!.battleRoyale.current.map
+                                binding.nextMapName.text = mapData.data.battleRoyale.next.map
                                 appViewModel.hideSplash()
                                 requireActivity().dataStore.edit {
-                                    it[NEXT_MAP] = mapData.data!!.battleRoyale.next.map
+                                    it[NEXT_MAP] = mapData.data.battleRoyale.next.map
                                 }
                             }
                         }
@@ -175,6 +178,12 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                                 binding.timerAnimation.visibility = View.INVISIBLE
                                 binding.topText.visibility = View.INVISIBLE
                                 binding.bottomText.visibility = View.INVISIBLE
+                                binding.alarmLabel.visibility = View.INVISIBLE
+                                binding.notifyLabel.visibility = View.INVISIBLE
+                                binding.alarmLabel.visibility = View.VISIBLE
+                                binding.notifyLabel.visibility = View.VISIBLE
+                                binding.currentMapName.visibility = View.INVISIBLE
+                                binding.nextMapName.visibility = View.INVISIBLE
                                 ObjectAnimator.ofFloat(
                                     binding.menuBackgroundLines,
                                     "translationY",
@@ -218,6 +227,10 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                                 binding.timerAnimation.visibility = View.VISIBLE
                                 binding.topText.visibility = View.VISIBLE
                                 binding.bottomText.visibility = View.VISIBLE
+                                binding.alarmLabel.visibility = View.INVISIBLE
+                                binding.notifyLabel.visibility = View.INVISIBLE
+                                binding.currentMapName.visibility = View.VISIBLE
+                                binding.nextMapName.visibility = View.VISIBLE
                                 ObjectAnimator.ofFloat(
                                     binding.menuBackgroundLines,
                                     "translationY",

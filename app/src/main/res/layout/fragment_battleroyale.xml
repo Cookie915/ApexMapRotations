@@ -30,7 +30,7 @@
             android:layout_height="0dp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/map_image_desc"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toTopOf="@+id/centerVertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -45,7 +45,7 @@
             android:layout_height="0dp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/map_image_desc"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -77,15 +77,15 @@
             android:id="@+id/time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTintMode="add"
             android:elevation="24dp"
             android:fontFamily="@font/inter_extralight"
+
+
             android:shadowColor="@color/apex_red"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="1"
-
-
-            android:textAlignment="viewStart"
             android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -228,6 +228,32 @@
             app:layout_constraintTop_toTopOf="@+id/currentMapImage"
             app:srcCompat="@drawable/ic_arrow_right"
             app:tint="@color/apex_red_dark" />
+
+        <TextView
+            android:id="@+id/currentMapName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/currentMapNameDesc"
+            android:fontFamily="@font/automobile_contest"
+            android:textColor="@color/white"
+            android:textSize="96sp"
+            app:layout_constraintBottom_toBottomOf="@+id/centerVertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nextMapName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/nextMapNameDesc"
+            android:fontFamily="@font/automobile_contest"
+            android:textColor="#FFFFFF"
+            android:textSize="96sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/centerVertical" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

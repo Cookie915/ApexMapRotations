@@ -19,6 +19,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck" />
 
+    <TextView
+        android:id="@+id/rankedCurrentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/automobile_contest"
+        android:textColor="#FFFFFF"
+        android:textSize="96sp"
+        app:layout_constraintBottom_toBottomOf="@+id/rankedCurrent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/rankedNext"
         android:layout_width="0dp"
@@ -28,6 +40,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent=".2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rankedCurrent" />
+
+    <TextView
+        android:id="@+id/rankedNextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/automobile_contest"
+        android:textColor="#FFFFFF"
+        android:textSize="96sp"
+        app:layout_constraintBottom_toBottomOf="@+id/rankedNext"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rankedCurrent" />
 
@@ -49,7 +73,7 @@
 
     <TextView
         android:id="@+id/timerTop"
-        android:layout_width="100.dp"
+        android:layout_width="0.dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         android:elevation="24.dp"
@@ -129,6 +153,18 @@
         app:layout_constraintTop_toBottomOf="@+id/arenasText"
         tools:ignore="ImageContrastCheck" />
 
+    <TextView
+        android:id="@+id/unrankedCurrentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/automobile_contest"
+        android:textColor="#FFFFFF"
+        android:textSize="96sp"
+        app:layout_constraintBottom_toBottomOf="@+id/publicCurrent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arenasText" />
+
     <ImageView
         android:id="@+id/publicNext"
         android:layout_width="0dp"
@@ -138,6 +174,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent=".2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/publicCurrent" />
+
+    <TextView
+        android:id="@+id/unrankedNextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/automobile_contest"
+        android:textColor="#FFFFFF"
+        android:textSize="96.sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/publicCurrent" />
 
@@ -159,7 +207,7 @@
 
     <TextView
         android:id="@+id/timerBottom"
-        android:layout_width="100.dp"
+        android:layout_width="0.dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         android:elevation="24.dp"

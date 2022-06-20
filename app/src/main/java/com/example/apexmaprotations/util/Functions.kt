@@ -54,3 +54,5 @@ fun assignMapImage(
         }
     }
 }
+
+fun String.capitalizeWords(): String = split(" ").joinToString(" ", transform = String::capitalize)

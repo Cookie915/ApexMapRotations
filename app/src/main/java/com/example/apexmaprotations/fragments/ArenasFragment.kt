@@ -15,8 +15,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.databinding.FragmentArenasBinding
+import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.util.SwipeGestureListener
 import com.example.apexmaprotations.util.SwipeListener
+import com.example.apexmaprotations.util.capitalizeWords
 import com.example.apexmaprotations.viewmodels.ArenasViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -65,12 +67,6 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
         binding.background.setOnTouchListener(SwipeGestureListener(this))
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
-
     private fun setUpObservables() {
         lifecycleScope.launchWhenCreated {
             launch {
@@ -93,57 +89,54 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
                     )
                 }.collect()
             }
+            launch {
+                arenasViewModel.mapDataBundle.collect() {
+                    if (it is NetworkResult.Success) {
+                        assignMapImages()
+                        assignMapLabels()
+                    }
+                }
+            }
         }
     }
 
-//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-//        super.onViewStateRestored(savedInstanceState)
-//        assignMapImages()
-//        setUpObservables()
-//    }
+    private fun assignMapLabels() {
+        val mapNames = mutableListOf(
+            arenasViewModel.mapDataBundle.value.data!!.arenasRanked.current.map,
+            arenasViewModel.mapDataBundle.value.data!!.arenasRanked.next.map,
+            arenasViewModel.mapDataBundle.value.data!!.arenas.current.map,
+            arenasViewModel.mapDataBundle.value.data!!.arenas.next.map
+        ).map { it.capitalizeWords() }
+        binding.rankedCurrentLabel.text = mapNames[0]
+        binding.rankedNextLabel.text = mapNames[1]
+        binding.unrankedCurrentLabel.text = mapNames[2]
+        binding.unrankedNextLabel.text = mapNames[3]
+    }
 
     private fun assignMapImages() {
-        lifecycleScope.launchWhenCreated {
-            launch {
-                arenasViewModel.currentMapImageRanked.collect {
-                    if (it != null) {
-                        Glide.with(this@ArenasFragment)
-                            .load(it)
-                            .signature(ObjectKey(it))
-                            .into(binding.rankedCurrent)
-                    }
-                }
-            }
-            launch {
-                arenasViewModel.nextMapImageRanked.collect {
-                    if (it != null) {
-                        Glide.with(this@ArenasFragment)
-                            .load(requireContext().getDrawable(it))
-                            .signature(ObjectKey(it))
-                            .into(binding.rankedNext)
-                    }
-                }
-            }
-            launch {
-                arenasViewModel.currentMapImage.collect {
-                    if (it != null) {
-                        Glide.with(this@ArenasFragment)
-                            .load(requireContext().getDrawable(it))
-                            .signature(ObjectKey(it))
-                            .into(binding.publicCurrent)
-                    }
-                }
-            }
-            launch {
-                arenasViewModel.nextMapImage.collect {
-                    if (it != null) {
-                        Glide.with(this@ArenasFragment)
-                            .load(requireContext().getDrawable(it))
-                            .signature(ObjectKey(it))
-                            .into(binding.publicNext)
-                    }
-                }
-            }
+        val rankedCurrent = arenasViewModel.currentMapImageRanked.value
+        val rankedNext = arenasViewModel.nextMapImageRanked.value
+        val publicCurrent = arenasViewModel.currentMapImage.value
+        val publicNext = arenasViewModel.nextMapImage.value
+        if (rankedCurrent != null && rankedNext != null
+            && publicCurrent != null && publicNext != null
+        ) {
+            Glide.with(this@ArenasFragment)
+                .load(rankedCurrent)
+                .signature(ObjectKey(rankedCurrent))
+                .into(binding.rankedCurrent)
+            Glide.with(this@ArenasFragment)
+                .load(rankedNext)
+                .signature(ObjectKey(rankedNext))
+                .into(binding.rankedNext)
+            Glide.with(this@ArenasFragment)
+                .load(publicCurrent)
+                .signature(ObjectKey(publicCurrent))
+                .into(binding.publicCurrent)
+            Glide.with(this@ArenasFragment)
+                .load(publicNext)
+                .signature(ObjectKey(publicNext))
+                .into(binding.publicNext)
         }
     }
 

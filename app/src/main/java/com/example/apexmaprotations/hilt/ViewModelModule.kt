@@ -8,7 +8,9 @@ import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -22,13 +24,19 @@ object ViewModelModule {
         return BattleRoyalViewModel(apexRepo)
     }
 
-    @ViewModelScoped
+
+}
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object ActivityViewModelModule {
+    @ActivityRetainedScoped
     @Provides
     fun provideArenasViewModel(apexRepo: ApexRepo): ArenasViewModel {
         return ArenasViewModel(apexRepo)
     }
 
-    @ViewModelScoped
+    @ActivityRetainedScoped
     @Provides
     fun provideAppViewModel(): AppViewModel {
         return AppViewModel()

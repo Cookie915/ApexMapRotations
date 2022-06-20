@@ -86,6 +86,7 @@ class ArenasViewModel @Inject constructor(
                     }
                     override suspend fun onFinish() {
                         refreshMapData()
+                        delay(1000L)
                         mapDataBundle.collect() {
                             if (it is NetworkResult.Success) {
                                 initializeMapImages(it.data!!)
@@ -103,6 +104,7 @@ class ArenasViewModel @Inject constructor(
 
                     override suspend fun onFinish() {
                         refreshMapData()
+                        delay(1000L)
                         mapDataBundle.collect() {
                             if (it is NetworkResult.Success) {
                                 initializeMapImages(it.data!!)
@@ -158,10 +160,10 @@ class ArenasViewModel @Inject constructor(
         Log.i("tester6", mapName)
         when (mapName) {
             "Party crasher" -> {
-                return R.drawable.party_crash
+                return R.drawable.party_crasher
             }
             "Phase runner" -> {
-                return R.drawable.phase_rush
+                return R.drawable.phase_runner
             }
             "Overflow" -> {
                 return R.drawable.overflow

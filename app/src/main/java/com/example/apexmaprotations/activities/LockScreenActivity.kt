@@ -33,8 +33,9 @@ class LockScreenActivity : AppCompatActivity() {
         val image = binding.image
         lifecycleScope.launch {
             //  todo add default imaage when NEXT_MAP is null
-            val mapName = dataStore.data.first()[NEXT_MAP] ?: "King's Canyon"
+            val mapName = dataStore.data.first()[NEXT_MAP] ?: ""
             assignMapImage(mapName, image, apexRepo, this@LockScreenActivity)
+            binding.mapName.text = mapName
             setContentView(binding.root)
         }
         turnScreenOnAndKeyguardOff()
