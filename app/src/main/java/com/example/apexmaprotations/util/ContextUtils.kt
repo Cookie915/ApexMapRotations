@@ -40,7 +40,7 @@ fun Context.scheduleNotification(isAlarm: Boolean, timeRemaining: Long) {
     }
 }
 
-fun Context.cancelNotification(isAlarm: Boolean) {
+fun Context.cancelAlert(isAlarm: Boolean) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     alarmManager.cancel(getReceiver(isAlarm))
     CoroutineScope(Dispatchers.IO).launch {
@@ -52,7 +52,7 @@ fun Context.cancelNotification(isAlarm: Boolean) {
 }
 
 //  Verifies alarms are valid and resets them with alarm manager
-suspend fun Context.resetAlarms() {
+suspend fun Context.resetAlerts() {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val alarmTime = dataStore.data.first()[ALARM_TIME] ?: 0
     val notifyTime = dataStore.data.first()[NOTIFICATION_TIME] ?: 0
@@ -74,13 +74,34 @@ suspend fun Context.resetAlarms() {
     }
 }
 
-suspend fun Context.cancelAlarmsNotifications() {
+suspend fun Context.cancelAlerts() {
     dataStore.edit {
         it[ALARM_TIME] = 0L
         it[NOTIFICATION_TIME] = 0L
     }
-    cancelNotification(true)
-    cancelNotification(false)
+    cancelAlert(true)
+    cancelAlert(false)
+}
+
+//  Cancels alarms if time has already passed since map change
+fun Context.verifyAlerts() {
+    CoroutineScope(Dispatchers.IO).launch {
+        val alarmTime = dataStore.data.first()[ALARM_TIME] ?: 0L
+        val notifyTime = dataStore.data.first()[NOTIFICATION_TIME] ?: 0L
+        val currentTime = System.currentTimeMillis()
+        if (currentTime > alarmTime) {
+            cancelAlert(true)
+            dataStore.edit {
+                it[ALARM_TIME] = 0L
+            }
+        }
+        if (currentTime > notifyTime) {
+            cancelAlert(false)
+            dataStore.edit {
+                it[NOTIFICATION_TIME] = 0L
+            }
+        }
+    }
 }
 
 fun Context.getReceiver(isAlarm: Boolean): PendingIntent {
@@ -107,7 +128,7 @@ fun Context.showNotificationWithFullScreenIntent(
     title: String = "Apex Map Change",
     description: String = "Apex map changed to",
 ) {
-    val channelId = if (isAlarm) "Alarms" else "Notifications"
+    val channelId = if (isAlarm) RequestCodes.ALARM.name else RequestCodes.NOTIFICATION.name
     val icon = if (isAlarm) R.drawable.ic_notify_filled else R.drawable.ic_alert_3
     val requestCode = if (isAlarm) RequestCodes.ALARM() else RequestCodes.NOTIFICATION()
     val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
@@ -158,25 +179,4 @@ private fun Context.getFullScreenIntent(isLockScreen: Boolean): PendingIntent {
         flag = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
     }
     return PendingIntent.getActivity(this, RequestCodes.ALARM(), intent, flag)
-}
-
-//  Cancels alarms if time has already passed since map change
-fun Context.verifyAlarms() {
-    CoroutineScope(Dispatchers.IO).launch {
-        val alarmTime = dataStore.data.first()[ALARM_TIME] ?: 0L
-        val notifyTime = dataStore.data.first()[NOTIFICATION_TIME] ?: 0L
-        val currentTime = System.currentTimeMillis()
-        if (currentTime > alarmTime) {
-            cancelNotification(true)
-            dataStore.edit {
-                it[ALARM_TIME] = 0L
-            }
-        }
-        if (System.currentTimeMillis() > notifyTime) {
-            cancelNotification(false)
-            dataStore.edit {
-                it[NOTIFICATION_TIME] = 0L
-            }
-        }
-    }
 }

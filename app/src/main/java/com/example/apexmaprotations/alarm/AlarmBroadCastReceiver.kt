@@ -13,6 +13,7 @@ import com.example.apexmaprotations.util.*
 import com.example.apexmaprotations.viewmodels.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AlarmBroadCastReceiver : BroadcastReceiver() {
@@ -27,9 +28,9 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 if (Build.VERSION.SDK_INT >= 31) {
                     CoroutineScope(Dispatchers.IO).launch {
                         if (alarmManager.canScheduleExactAlarms()) {
-                            context.resetAlarms()
+                            context.resetAlerts()
                         } else {
-                            context.cancelAlarmsNotifications()
+                            context.cancelAlerts()
                         }
                     }
                 }
@@ -39,12 +40,12 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 CoroutineScope(Dispatchers.IO).launch {
                     if (Build.VERSION.SDK_INT >= 31) {
                         if (alarmManager.canScheduleExactAlarms()) {
-                            context.resetAlarms()
+                            context.resetAlerts()
                         } else {
-                            context.cancelAlarmsNotifications()
+                            context.cancelAlerts()
                         }
                     } else {
-                        context.resetAlarms()
+                        context.resetAlerts()
                     }
                 }
             }
@@ -55,10 +56,16 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                         it[NOTIFICATION_TIME] = 0
                         it[ALARM_TIME] = 0
                     }
-                }
-                val isAlarm = intent.extras?.get("ALARM") as Boolean
-                with(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager) {
-                    context.showNotificationWithFullScreenIntent(isAlarm, isDeviceLocked)
+                    val isAlarm = intent.extras?.get("ALARM") as Boolean
+                    val nextMap = context.dataStore.data.first()[NEXT_MAP]
+                    with(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager) {
+                        context.showNotificationWithFullScreenIntent(
+                            isAlarm,
+                            isDeviceLocked,
+                            "Map Change",
+                            "Battle Royal map changed to $nextMap"
+                        )
+                    }
                 }
             }
         }

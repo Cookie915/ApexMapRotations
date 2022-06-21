@@ -12,7 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 fun NotificationManagerCompat.buildChannel(name: String, description: String, channelId: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val importance = NotificationManager.IMPORTANCE_HIGH
-        if (channelId == "Alarms") {
+        if (channelId == RequestCodes.ALARM.name) {
             val channel = NotificationChannel(channelId, name, importance).apply {
                 enableLights(true)
                 lightColor = Color.RED
@@ -26,7 +26,7 @@ fun NotificationManagerCompat.buildChannel(name: String, description: String, ch
             }
             createNotificationChannel(channel)
         }
-        if (channelId == "Notifications") {
+        if (channelId == RequestCodes.NOTIFICATION.name) {
             val channel = NotificationChannel(channelId, name, importance).apply {
                 setDescription(description)
                 enableLights(true)

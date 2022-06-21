@@ -101,7 +101,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
 
         exitTransition = transitionInflater.inflateTransition(R.transition.fade)
         // fix
-        // verifyAlarms()
+        // verifyAlerts()
         setupObservables()
     }
 
@@ -283,7 +283,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     )
                 } else {
                     binding.notifyButton.isEnabled = true
-                    requireContext().cancelNotification(true)
+                    requireContext().cancelAlert(true)
                 }
             }
 
@@ -309,7 +309,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     )
                 } else {
                     binding.alarmButton.isEnabled = true
-                    requireContext().cancelNotification(false)
+                    requireContext().cancelAlert(false)
                 }
             }
 
