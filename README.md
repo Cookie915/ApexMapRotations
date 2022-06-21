@@ -11,21 +11,23 @@
 - [📷 Screenshots](#-screenshots)
 ## ℹ️ About
 <p>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps in rotation
-for battle royal and arenas. You can set alarms or notifications to be alerted when app changes happen.
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps for battle royal and arenas. You can set alarms or notifications to be alerted when map changes happen.
 I made this app to get some experience using Views + XML for layout as opposed to Jetpack Compose, and to brush up on my skills with Adobe Illustrator,
 Photoshop and other graphic utilities. All icons and animations are made in house. If you have an issues or feature requests send me and 
 email at calebcookdev@gmail.com or leave it on the repository, I'd love to hear it! 😁
  </P>
 
 ## 🏗️ Libraries/Architecture 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is build using MVVM, with a single activity swapping out fragments. It features a repository layer that uses Retrofit
-to make request to the server. Its set up for dependency injection with hilt for the viewmodels, repository, and retrofit instance.
-The viewmodels are bound to each fragment and the repository layer is a singleton that holds a private MutableStateFlow. The flow is converted to a public stateflow that is collect in each viewmodel. Althought its not best to keep a hot flow alive in the repository layer, I opted out of using a normal flow
-to limit calls to the server and prevent hitting rate limits for GET requests, causing the flow to potentially return an error. This also maintains a single source of truth for map data. The app uses Glide for image loading and caching. The animations and icons are build in Adobe Illustrator, animated in after effects, and exoprted as lottieanimations. Jetpack Datastore is used to persist local data. The app takes advantage of kotlin KTX and Coroutines. It also implements the new Splash Screen Api for android 12
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is build using MVVM, with a single activity swapping out fragments. It features a repository layer that uses Retrofit to make request to the server. Its set up for dependency injection with hilt for the viewmodels, repository, and retrofit instance.
+The viewmodels are bound to each fragment and the repository layer is a singleton that holds a SharedFlow which collects data from the api. The flow is converted to a public stateflow that is collect in each viewmodel. This also maintains a single source of truth for map data. The app uses Glide for image loading and caching. The animations and icons are build in Adobe Illustrator, animated in after effects, and exoprted as lottieanimations. Jetpack Datastore is used to persist local data. The app takes advantage of kotlin KTX and Coroutines. It also implements the new Splash Screen Api for android 12
 
 ## ▶️ Downloads 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Currently working on play store release! 
+- Go to Code -> Download ZIP
+- Extract to ApexMapRotations-master
+- Open Android Studio
+- File -> Open -> ApexMapRotations-master
+- Run from Android Studio on emulator or device
+- Working on play store release :)
 
 ## ✅ Attributions  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses. 
