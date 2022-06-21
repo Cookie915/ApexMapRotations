@@ -30,7 +30,8 @@ The viewmodels are bound to each fragment and the repository layer is a singleto
 - Working on play store release :)
 
 ## ✅ Attributions  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses. 
+- Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
+- Thank you https://www.reddit.com/user/kurdan/ for the Error and Loading screen images 
 
 ## 📷 Screenshots
 <P align="center">
