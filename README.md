@@ -31,9 +31,13 @@ to limit calls to the server and prevent hitting rate limits for GET requests, c
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses. 
 
 ## 📷 Screenshots
-<img width="360" height="800" src="https://user-images.githubusercontent.com/49169067/174484534-5005e075-9039-412c-84f5-0eddbb53b179.png">
-
-
+<P align="center">
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608266-c11e7b04-369c-4be4-86eb-112e9d462c97.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608247-0d939ffc-6002-466b-963d-630fd4356ed1.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608286-bc21f98b-9875-4d53-ab3c-9588ab0ec4a0.png>
+</P>
+<video src=https://user-images.githubusercontent.com/49169067/174610059-53ca9a5d-68de-4c9c-ae27-331a4def176c.mp4>
+ 
 
 
 
