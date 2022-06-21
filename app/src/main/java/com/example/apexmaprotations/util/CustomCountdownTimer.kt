@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+//  Countdown timer with ability to reset mMillisInFuture
 abstract class CustomCountdownTimer(
     /**
      * Millis since epoch when alarm should stop.
@@ -24,6 +25,8 @@ abstract class CustomCountdownTimer(
      * boolean representing if the timer was cancelled
      */
     private var mCancelled = false
+
+    //  Set new time for timer
     fun setMillisInFuture(millisInFuture: Long) {
         mMillisInFuture = millisInFuture
     }

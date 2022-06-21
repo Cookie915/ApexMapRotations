@@ -73,22 +73,23 @@
 
     <TextView
         android:id="@+id/timerTop"
-        android:layout_width="0.dp"
+        android:layout_width="100.dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="48dp"
         android:elevation="24.dp"
         android:fontFamily="@font/inter_extralight"
-        android:shadowColor="@color/apex_red"
+        android:shadowColor="@color/apex_red_night"
         android:shadowDx="0"
         android:shadowDy="0"
-        android:shadowRadius="1"
+        android:shadowRadius="8"
         android:text="@string/topTimerPlacesHolder"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/rankedNext"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rankedCurrent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TextContrastCheck" />
 
     <TextView
@@ -207,9 +208,9 @@
 
     <TextView
         android:id="@+id/timerBottom"
-        android:layout_width="0.dp"
+        android:layout_width="100.dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="48dp"
         android:elevation="24.dp"
         android:fontFamily="@font/inter_extralight"
         android:shadowColor="@color/apex_red"
@@ -221,6 +222,7 @@
         android:textSize="20sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/arenasText"
         tools:ignore="TextContrastCheck" />

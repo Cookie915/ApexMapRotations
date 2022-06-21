@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,7 +31,8 @@ private const val TAG = "BattleRoyalViewModel"
 class BattleRoyalViewModel @Inject constructor(
     private val apexRepo: ApexRepo,
 ) : ViewModel() {
-    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> = apexRepo.mapData
+    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
+        apexRepo.mapData
 
     private var mTimeRemaining = MutableStateFlow<Long>(0)
     val timeRemaining: StateFlow<List<Any>>
@@ -56,70 +58,30 @@ class BattleRoyalViewModel @Inject constructor(
         apexRepo.refreshMapData()
     }
 
+    private var timer: CustomCountdownTimer? = null
+
     private fun initializeTimer(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
-                val timeRemainingMillis =
-                    mapData.battleRoyale.current.remainingSecs * 1000L
-                val timer = object : CustomCountdownTimer(timeRemainingMillis, 1) {
+                //  Prevent duplicate timers
+                timer?.cancel()
+                timer = null
+                val timeRemainingMillis = mapData.battleRoyale.current.remainingSecs * 1000L
+                timer = object : CustomCountdownTimer(timeRemainingMillis, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemaining.value = millisUntilFinished
                     }
 
                     override suspend fun onFinish() {
+                        delay(1500L)
                         refreshMapData()
-                        mapDataBundle.collect() {
-                            if (it is NetworkResult.Success) {
-                                initializeMapImages(it.data!!)
-                                this.setMillisInFuture(it.data.battleRoyale.current.remainingSecs * 1000L)
-                                this.start()
-                            }
-                        }
                     }
                 }
-                timer.start()
+                timer?.start()
             }
     }
 
-    init {
-        Log.i(TAG, "Vm Init $this")
-        viewModelScope.launch {
-            mapDataBundle.collect { mapData ->
-                Log.i(TAG, "Got New Maps Data from init")
-                when (mapData) {
-                    is NetworkResult.Loading -> {
-                        Log.i(TAG, "Loading...")
-                        mCurrentMapImage.value = null
-                        mNextMapImage.value = null
-                    }
-                    is NetworkResult.Error -> {
-                        Log.i(TAG, "FetchMapDataFaiL ${mapData.message}")
-                        //  Rate limit hit, wait and re-fetch data
-                        if (mapData.message == "429") {
-                            delay(2100L)
-                            refreshMapData()
-                        }
-                        mCurrentMapImage.value = null
-                        mNextMapImage.value = null
-                    }
-                    is NetworkResult.Success -> {
-                        Log.i(TAG, "FetchMapData Success")
-                        if (mapData.data != null) {
-                            initializeMapImages(mapData.data)
-                            initializeTimer(mapData.data)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.i(TAG, "vm cleared")
-    }
-
-    private fun initializeMapImages(mapDataBundle: MapDataBundle) {
+    private fun assignMapImages(mapDataBundle: MapDataBundle) {
         when (mapDataBundle.battleRoyale.current.map) {
             "King's Canyon" -> {
                 mCurrentMapImage.value = apexRepo.getKingsCanyonImg()
@@ -150,4 +112,41 @@ class BattleRoyalViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.i(TAG, "vm cleared")
+    }
+
+    init {
+        Log.i(TAG, "Vm Init $this")
+        viewModelScope.launch {
+            mapDataBundle.collectLatest { mapData ->
+                Log.i(TAG, "Got New Maps Data from init")
+                when (mapData) {
+                    is NetworkResult.Loading -> {
+                        Log.i(TAG, "Loading...")
+                        mCurrentMapImage.value = null
+                        mNextMapImage.value = null
+                    }
+                    is NetworkResult.Error -> {
+                        Log.i(TAG, "FetchMapDataFaiL ${mapData.message}")
+                        //  Rate limit hit, wait and re-fetch data
+                        if (mapData.message == "429") {
+                            delay(2100L)
+                            refreshMapData()
+                        }
+                        mCurrentMapImage.value = null
+                        mNextMapImage.value = null
+                    }
+                    is NetworkResult.Success -> {
+                        Log.i(TAG, "FetchMapData Success")
+                        if (mapData.data != null) {
+                            assignMapImages(mapData.data)
+                            initializeTimer(mapData.data)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

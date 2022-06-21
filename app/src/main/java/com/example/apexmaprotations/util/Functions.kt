@@ -1,7 +1,6 @@
 package com.example.apexmaprotations.util
 
 import android.content.Context
-import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
@@ -31,7 +30,6 @@ fun assignMapImage(
     apexRepo: ApexRepo,
     ctx: Context
 ) {
-    Log.i("tester", map)
     when (map) {
         "Storm Point" -> {
             val mapImg = apexRepo.getStormPointImg()

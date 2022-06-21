@@ -8,6 +8,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 
+
 fun NotificationManagerCompat.buildChannel(name: String, description: String, channelId: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val importance = NotificationManager.IMPORTANCE_HIGH
@@ -38,6 +39,5 @@ fun NotificationManagerCompat.buildChannel(name: String, description: String, ch
             }
             createNotificationChannel(channel)
         }
-
     }
 }

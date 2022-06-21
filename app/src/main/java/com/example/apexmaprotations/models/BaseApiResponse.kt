@@ -3,6 +3,8 @@ package com.example.apexmaprotations.models
 import retrofit2.Response
 
 abstract class BaseApiResponse {
+
+    //  Makes Api call and returns wraps result in response
     suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): NetworkResult<T> {
         try {
             val response = apiCall()

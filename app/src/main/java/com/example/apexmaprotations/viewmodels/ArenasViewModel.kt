@@ -5,7 +5,6 @@ import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apexmaprotations.R
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.repo.ApexRepo
@@ -16,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +25,8 @@ private const val TAG = "ArenaViewModel"
 class ArenasViewModel @Inject constructor(
     private val apexRepo: ApexRepo
 ) : ViewModel() {
-    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> = apexRepo.mapData
+    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
+        apexRepo.mapData
 
     //  Ranked Timer
     private var mTimeRemainingUnranked = MutableStateFlow<Long>(0)
@@ -38,8 +39,6 @@ class ArenasViewModel @Inject constructor(
             val list = listOf<Any>(times.first(), times.last(), decimal)
             emit(list)
         }.toStateFlow(viewModelScope, listOf("0.0", "0.0", 0))
-    val timeRemainingUnrankedLong: StateFlow<Long>
-        get() = mTimeRemainingUnranked
 
     //  Unranked Timer
     private var mTimeRemainingRanked = MutableStateFlow<Long>(0)
@@ -52,8 +51,6 @@ class ArenasViewModel @Inject constructor(
             val list = listOf<Any>(times.first(), times.last(), decimal)
             emit(list)
         }.toStateFlow(viewModelScope, listOf("0.0", "0.0", 0))
-    val timeRemainingRankedLong: StateFlow<Long>
-        get() = mTimeRemainingRanked
 
     private var mCurrentMapImage = MutableStateFlow<Int?>(null)
     val currentMapImage: StateFlow<Int?>
@@ -71,6 +68,9 @@ class ArenasViewModel @Inject constructor(
     val nextMapImageRanked: StateFlow<Int?>
         get() = mNextMapImageRanked
 
+    private var rankedTimer: CustomCountdownTimer? = null
+    private var unrankedTimer: CustomCountdownTimer? = null
+
     private suspend fun refreshMapData() {
         apexRepo.refreshMapData()
     }
@@ -78,54 +78,48 @@ class ArenasViewModel @Inject constructor(
     private fun initializeTimers(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
-                val remainingTimerUnranked = mapData.arenas.current.remainingSecs * 1000L
-                val remainingTimerRanked = mapData.arenasRanked.current.remainingSecs * 1000L
-                val rankedTimer = object : CustomCountdownTimer(remainingTimerRanked, 1) {
+                //  Prevent duplicate timers
+                rankedTimer?.cancel()
+                unrankedTimer?.cancel()
+                rankedTimer = null
+                unrankedTimer = null
+                val remainingTimeUnranked = mapData.arenas.current.remainingSecs * 1000L
+                val remainingTimeRanked = mapData.arenasRanked.current.remainingSecs * 1000L
+                rankedTimer = object : CustomCountdownTimer(remainingTimeRanked, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemainingRanked.value = millisUntilFinished
                     }
+
                     override suspend fun onFinish() {
+                        delay(1500L)
                         refreshMapData()
-                        delay(1000L)
-                        mapDataBundle.collect() {
-                            if (it is NetworkResult.Success) {
-                                initializeMapImages(it.data!!)
-                                this.setMillisInFuture(it.data.arenasRanked.current.remainingSecs * 1000L)
-                                this.start()
-                            }
-                        }
                     }
                 }
-
-                val unRankedTimer = object : CustomCountdownTimer(remainingTimerUnranked, 1) {
+                unrankedTimer = object : CustomCountdownTimer(remainingTimeUnranked, 1) {
                     override fun onTick(millisUntilFinished: Long) {
                         mTimeRemainingUnranked.value = millisUntilFinished
                     }
 
                     override suspend fun onFinish() {
+                        delay(1500L)
                         refreshMapData()
-                        delay(1000L)
-                        mapDataBundle.collect() {
-                            if (it is NetworkResult.Success) {
-                                initializeMapImages(it.data!!)
-                                this.setMillisInFuture(it.data.arenas.current.remainingSecs * 1000L)
-                                this.start()
-                            }
-                        }
                     }
                 }
-                rankedTimer.start()
-                unRankedTimer.start()
+                rankedTimer?.start()
+                unrankedTimer?.start()
             }
     }
 
     init {
         Log.i(TAG, "init")
         viewModelScope.launch {
-            mapDataBundle.collect() { mapData ->
+            mapDataBundle.collectLatest { mapData ->
                 when (mapData) {
-                    is NetworkResult.Loading -> {}
+                    is NetworkResult.Loading -> {
+                        Log.i(TAG, "Loading")
+                    }
                     is NetworkResult.Error -> {
+                        Log.i(TAG, "Error")
                         //  Rate limit hit, wait and re-fetch data
                         if (mapData.message == "429") {
                             delay(2100L)
@@ -150,37 +144,11 @@ class ArenasViewModel @Inject constructor(
     }
 
     private fun initializeMapImages(mapData: MapDataBundle) {
-        mCurrentMapImageRanked.value = getImageForMapName(mapData.arenasRanked.current.map)
-        mNextMapImageRanked.value = getImageForMapName(mapData.arenasRanked.next.map)
-        mCurrentMapImage.value = getImageForMapName(mapData.arenas.current.map)
-        mNextMapImage.value = getImageForMapName(mapData.arenas.next.map)
-    }
-
-    private fun getImageForMapName(mapName: String): Int? {
-        Log.i("tester6", mapName)
-        when (mapName) {
-            "Party crasher" -> {
-                return R.drawable.party_crasher
-            }
-            "Phase runner" -> {
-                return R.drawable.phase_runner
-            }
-            "Overflow" -> {
-                return R.drawable.overflow
-            }
-            "Encore" -> {
-                return R.drawable.encore
-            }
-            "Habitat" -> {
-                return R.drawable.habitat
-            }
-            "Drop Off" -> {
-                return R.drawable.bg_drop_off
-            }
-            else -> {
-                return null
-            }
-        }
+        mCurrentMapImageRanked.value =
+            apexRepo.getArenasImageForMapName(mapData.arenasRanked.current.map)
+        mNextMapImageRanked.value = apexRepo.getArenasImageForMapName(mapData.arenasRanked.next.map)
+        mCurrentMapImage.value = apexRepo.getArenasImageForMapName(mapData.arenas.current.map)
+        mNextMapImage.value = apexRepo.getArenasImageForMapName(mapData.arenas.next.map)
     }
 }
 

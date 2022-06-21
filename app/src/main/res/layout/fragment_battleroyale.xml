@@ -75,20 +75,21 @@
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="0dp"
+            android:layout_width="120.dp"
             android:layout_height="wrap_content"
             android:backgroundTintMode="add"
             android:elevation="24dp"
             android:fontFamily="@font/inter_extralight"
 
 
-            android:shadowColor="@color/apex_red"
+            android:shadowColor="@color/apex_red_night"
             android:shadowDx="0"
             android:shadowDy="0"
-            android:shadowRadius="1"
+            android:shadowRadius="8"
             android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.48" />

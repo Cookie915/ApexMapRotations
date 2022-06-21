@@ -5,10 +5,11 @@ import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -16,12 +17,14 @@ import com.bumptech.glide.signature.ObjectKey
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.databinding.FragmentArenasBinding
 import com.example.apexmaprotations.models.NetworkResult
+import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.SwipeGestureListener
 import com.example.apexmaprotations.util.SwipeListener
 import com.example.apexmaprotations.util.capitalizeWords
 import com.example.apexmaprotations.viewmodels.ArenasViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -32,21 +35,6 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     private val arenasViewModel: ArenasViewModel by activityViewModels()
     private val binding: FragmentArenasBinding by lazy {
         FragmentArenasBinding.inflate(layoutInflater)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        //  We center timers here to avoid jitter from centering text as time changes
-        binding.timerTop.doOnPreDraw {
-            val viewWidth = it.width / 2
-            val width = resources.displayMetrics.widthPixels / 2 - viewWidth
-            binding.timerTop.translationX += width
-        }
-        binding.timerBottom.doOnPreDraw {
-            val viewWidth = it.width / 2
-            val width = resources.displayMetrics.widthPixels / 2 - viewWidth
-            binding.timerBottom.translationX += width
-        }
     }
 
     override fun onCreateView(
@@ -68,44 +56,46 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     }
 
     private fun setUpObservables() {
-        lifecycleScope.launchWhenCreated {
-            launch {
-                arenasViewModel.timeRemainingRanked.map {
-                    binding.timerTop.text = getString(
-                        R.string.time_format_arenas,
-                        it[0].toString(),
-                        it[1].toString(),
-                        it[2].toString().toLong()
-                    )
-                }.collect()
-            }
-            launch {
-                arenasViewModel.timeRemainingUnranked.map {
-                    binding.timerBottom.text = getString(
-                        R.string.time_format_arenas,
-                        it[0].toString(),
-                        it[1].toString(),
-                        it[2].toString().toLong()
-                    )
-                }.collect()
-            }
-            launch {
-                arenasViewModel.mapDataBundle.collect() {
-                    if (it is NetworkResult.Success) {
-                        assignMapImages()
-                        assignMapLabels()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    arenasViewModel.timeRemainingRanked.map {
+                        binding.timerTop.text = getString(
+                            R.string.time_format_arenas,
+                            it[0].toString(),
+                            it[1].toString(),
+                            it[2].toString().toLong()
+                        )
+                    }.collect()
+                }
+                launch {
+                    arenasViewModel.timeRemainingUnranked.map {
+                        binding.timerBottom.text = getString(
+                            R.string.time_format_arenas,
+                            it[0].toString(),
+                            it[1].toString(),
+                            it[2].toString().toLong()
+                        )
+                    }.collect()
+                }
+                launch {
+                    arenasViewModel.mapDataBundle.collectLatest {
+                        if (it is NetworkResult.Success && it.data != null) {
+                            assignMapImages()
+                            assignMapLabels(it.data)
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun assignMapLabels() {
+    private fun assignMapLabels(mapData: MapDataBundle) {
         val mapNames = mutableListOf(
-            arenasViewModel.mapDataBundle.value.data!!.arenasRanked.current.map,
-            arenasViewModel.mapDataBundle.value.data!!.arenasRanked.next.map,
-            arenasViewModel.mapDataBundle.value.data!!.arenas.current.map,
-            arenasViewModel.mapDataBundle.value.data!!.arenas.next.map
+            mapData.arenasRanked.current.map,
+            mapData.arenasRanked.next.map,
+            mapData.arenas.current.map,
+            mapData.arenas.next.map
         ).map { it.capitalizeWords() }
         binding.rankedCurrentLabel.text = mapNames[0]
         binding.rankedNextLabel.text = mapNames[1]

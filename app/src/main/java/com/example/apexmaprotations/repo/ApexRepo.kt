@@ -4,17 +4,20 @@ import android.util.Log
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.models.BaseApiResponse
 import com.example.apexmaprotations.models.NetworkResult
-import com.example.apexmaprotations.models.toStateFlow
 import com.example.apexmaprotations.retrofit.ApexStatusApi
 import com.example.apexmaprotations.retrofit.MapDataBundle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val tag = "ApexRepo"
+private const val TAG = "ApexRepo"
 
 @Singleton
 class ApexRepo @Inject constructor(
@@ -22,21 +25,13 @@ class ApexRepo @Inject constructor(
 ) : BaseApiResponse() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    private var _mapData: Flow<NetworkResult<MapDataBundle>> = getMapData()
-    val mapData: StateFlow<NetworkResult<MapDataBundle>> by lazy {
-        _mapData.toStateFlow(coroutineScope, NetworkResult.Loading())
-    }
+    private var _mapData: MutableSharedFlow<NetworkResult<MapDataBundle>> = MutableSharedFlow()
+    val mapData = _mapData.asSharedFlow()
+        .stateIn(coroutineScope, SharingStarted.Lazily, NetworkResult.Loading())
 
     suspend fun refreshMapData() {
-        Log.i("ArenaViewModel", "Refreshing...")
-        _mapData.collect()
-    }
-
-    private fun getMapData(): Flow<NetworkResult<MapDataBundle>> {
-        return flow {
-            emit(safeApiCall { apexApi.getMapDataBundle() })
-        }
-            .flowOn(Dispatchers.IO)
+        Log.i(TAG, "Refreshing...")
+        _mapData.emit(safeApiCall { apexApi.getMapDataBundle() })
     }
 
     fun getKingsCanyonImg(): Int {
@@ -79,7 +74,37 @@ class ApexRepo @Inject constructor(
         return images[rand.nextInt(images.size)]
     }
 
+    fun getArenasImageForMapName(mapName: String): Int? {
+        when (mapName) {
+            "Party crasher" -> {
+                return R.drawable.party_crasher
+            }
+            "Phase runner" -> {
+                return R.drawable.phase_runner
+            }
+            "Overflow" -> {
+                return R.drawable.overflow
+            }
+            "Encore" -> {
+                return R.drawable.encore
+            }
+            "Habitat" -> {
+                return R.drawable.habitat
+            }
+            "Drop Off" -> {
+                return R.drawable.bg_drop_off
+            }
+            else -> {
+                return null
+            }
+        }
+    }
+
+
     init {
+        coroutineScope.launch(Dispatchers.IO) {
+            refreshMapData()
+        }
         Log.i("ApexRepo", "Created Repo $this")
     }
 }
