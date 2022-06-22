@@ -27,7 +27,6 @@ The viewmodels are bound to each fragment and the repository layer is a singleto
 - Open Android Studio
 - File -> Open -> ApexMapRotations-master
 - Run from Android Studio on emulator or device
-- Working on play store release :)
 
 ## ✅ Attributions  
 - Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
