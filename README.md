@@ -10,6 +10,8 @@
 - [✅ Atrributions](#-attributions)
 - [📷 Screenshots](#-screenshots)
 ## ℹ️ About
+## Quick Edit 6/27/2022
+Currently working on getting all the testing setup, once that is down I'll get a stable version for downloads and create a sererate branch for developement :)
 <p>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps for battle royal and arenas. You can set alarms or notifications to be alerted when map changes happen.
 I made this app to get some experience using Views + XML for layout as opposed to Jetpack Compose, and to brush up on my skills with Adobe Illustrator,
@@ -40,10 +42,3 @@ The viewmodels are bound to each fragment and the repository layer is a singleto
  <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608286-bc21f98b-9875-4d53-ab3c-9588ab0ec4a0.png>
 </P>
 <video src=https://user-images.githubusercontent.com/49169067/174610059-53ca9a5d-68de-4c9c-ae27-331a4def176c.mp4>
-
-// Quick Edit 6/27/2022
-Currently working on getting all the testing setup, once that is down I'll get a stable version for downloads and create a sererate branch for developement :)
- 
-
-
-
