@@ -30,7 +30,11 @@ fun Context.scheduleNotification(isAlarm: Boolean, timeRemaining: Long) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val scheduleTime = System.currentTimeMillis() + timeRemaining
     with(alarmManager) {
-        setExact(AlarmManager.RTC_WAKEUP, scheduleTime, getReceiver(isAlarm))
+//        setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, scheduleTime, getReceiver(isAlarm))
+        setAlarmClock(
+            AlarmManager.AlarmClockInfo(scheduleTime, getReceiver(isAlarm)),
+            getReceiver(isAlarm)
+        )
     }
     CoroutineScope(Dispatchers.IO).launch {
         val dataStoreTarget = if (isAlarm) ALARM_TIME else NOTIFICATION_TIME

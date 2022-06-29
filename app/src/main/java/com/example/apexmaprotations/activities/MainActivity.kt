@@ -17,15 +17,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val appViewModel: AppViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
         setUpSplash(splashScreen)
         setContentView(R.layout.activity_main)
-
     }
-
 
     private fun setUpSplash(splashScreen: SplashScreen) {
         splashScreen.setKeepOnScreenCondition {

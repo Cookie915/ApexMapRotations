@@ -1,6 +1,8 @@
-package com.example.apexmaprotations.hilt
+package com.example.apexmaprotations.di
 
 import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.repo.ApexRepoImpl
+import com.example.apexmaprotations.retrofit.ApexApiInterceptor
 import com.example.apexmaprotations.retrofit.ApexStatusApi
 import com.example.apexmaprotations.viewmodels.AppViewModel
 import com.example.apexmaprotations.viewmodels.ArenasViewModel
@@ -13,7 +15,32 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object RetroFitModule {
+    @Singleton
+    @Provides
+    fun provideRetrofitInstance(): ApexStatusApi {
+        return Retrofit.Builder()
+            .baseUrl(HttpUrl.get("https://api.mozambiquehe.re"))
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                OkHttpClient()
+                    .newBuilder()
+                    .addInterceptor(ApexApiInterceptor())
+                    .build()
+            )
+            .build()
+            .create(ApexStatusApi::class.java)
+    }
+}
+
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -23,9 +50,8 @@ object ViewModelModule {
     fun provideApexViewModel(apexRepo: ApexRepo): BattleRoyalViewModel {
         return BattleRoyalViewModel(apexRepo)
     }
-
-
 }
+
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -43,12 +69,13 @@ object ActivityViewModelModule {
     }
 }
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
     @Singleton
     @Provides
-    fun provideRepo(apexApi: ApexStatusApi): ApexRepo {
-        return ApexRepo(apexApi)
-    }
+    fun provideRealApexRepo(
+        apexApi: ApexStatusApi
+    ) = ApexRepo(apexApi) as ApexRepoImpl
 }

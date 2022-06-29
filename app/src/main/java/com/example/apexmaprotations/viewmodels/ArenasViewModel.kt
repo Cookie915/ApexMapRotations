@@ -7,26 +7,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.models.toStateFlow
-import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.repo.ApexRepoImpl
 import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "ArenaViewModel"
 @HiltViewModel
 class ArenasViewModel @Inject constructor(
-    private val apexRepo: ApexRepo
+    private val apexRepo: ApexRepoImpl
 ) : ViewModel() {
     val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
-        apexRepo.mapData
+        apexRepo._mapData
+            .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, NetworkResult.Loading())
 
     //  Ranked Timer
     private var mTimeRemainingUnranked = MutableStateFlow<Long>(0)
@@ -71,7 +71,7 @@ class ArenasViewModel @Inject constructor(
     private var rankedTimer: CustomCountdownTimer? = null
     private var unrankedTimer: CustomCountdownTimer? = null
 
-    private suspend fun refreshMapData() {
+    suspend fun refreshMapData() {
         apexRepo.refreshMapData()
     }
 
@@ -143,7 +143,7 @@ class ArenasViewModel @Inject constructor(
         Log.i(TAG, "ArenaVM Cleared")
     }
 
-    private fun initializeMapImages(mapData: MapDataBundle) {
+    fun initializeMapImages(mapData: MapDataBundle) {
         mCurrentMapImageRanked.value =
             apexRepo.getArenasImageForMapName(mapData.arenasRanked.current.map)
         mNextMapImageRanked.value = apexRepo.getArenasImageForMapName(mapData.arenasRanked.next.map)

@@ -1,30 +1,34 @@
 package com.example.apexmaprotations.repo
 
-import android.util.Log
 import com.example.apexmaprotations.R
-import com.example.apexmaprotations.models.BaseApiResponse
 import com.example.apexmaprotations.models.NetworkResult
-import com.example.apexmaprotations.retrofit.ApexStatusApi
 import com.example.apexmaprotations.retrofit.MapDataBundle
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
-import javax.inject.Inject
 
-private const val TAG = "ApexRepo"
+class FakeApexRepo : ApexRepoImpl {
+    override var _mapData: MutableSharedFlow<NetworkResult<MapDataBundle>> =
+        MutableStateFlow(NetworkResult.Loading())
 
-class ApexRepo @Inject constructor(
-    private val apexApi: ApexStatusApi
-) : BaseApiResponse(), ApexRepoImpl {
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    suspend fun emit(value: NetworkResult<MapDataBundle>) = _mapData.emit(value)
 
-    override var _mapData: MutableSharedFlow<NetworkResult<MapDataBundle>> = MutableSharedFlow()
+    private var shouldReturnNetworkError = false
+
+    fun setShouldReturnNetworkError(value: Boolean) {
+        shouldReturnNetworkError = value
+    }
 
     override suspend fun refreshMapData() {
-        Log.i(TAG, "Refreshing...")
-        _mapData.emit(safeApiCall { apexApi.getMapDataBundle() })
+        emit(NetworkResult.Loading())
+        when (shouldReturnNetworkError) {
+            true -> {
+                emit(NetworkResult.Error("Network Error"))
+            }
+            false -> {
+                emit(NetworkResult.Success(null))
+            }
+        }
     }
 
     override fun getKingsCanyonImage(): Int {
@@ -91,12 +95,5 @@ class ApexRepo @Inject constructor(
                 return null
             }
         }
-    }
-
-    init {
-        coroutineScope.launch(Dispatchers.IO) {
-            refreshMapData()
-        }
-        Log.i("ApexRepo", "Created Repo $this")
     }
 }

@@ -11,16 +11,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.models.toStateFlow
-import com.example.apexmaprotations.repo.ApexRepo
+import com.example.apexmaprotations.repo.ApexRepoImpl
 import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,10 +28,11 @@ private const val TAG = "BattleRoyalViewModel"
 
 @HiltViewModel
 class BattleRoyalViewModel @Inject constructor(
-    private val apexRepo: ApexRepo,
+    private val apexRepo: ApexRepoImpl,
 ) : ViewModel() {
     val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
-        apexRepo.mapData
+        apexRepo._mapData
+            .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, NetworkResult.Loading())
 
     private var mTimeRemaining = MutableStateFlow<Long>(0)
     val timeRemaining: StateFlow<List<Any>>
@@ -84,30 +84,30 @@ class BattleRoyalViewModel @Inject constructor(
     private fun assignMapImages(mapDataBundle: MapDataBundle) {
         when (mapDataBundle.battleRoyale.current.map) {
             "King's Canyon" -> {
-                mCurrentMapImage.value = apexRepo.getKingsCanyonImg()
+                mCurrentMapImage.value = apexRepo.getKingsCanyonImage()
             }
             "Olympus" -> {
-                mCurrentMapImage.value = apexRepo.getOlympusImg()
+                mCurrentMapImage.value = apexRepo.getOlympusImage()
             }
             "World's Edge" -> {
-                mCurrentMapImage.value = apexRepo.getWorldsEdgeImg()
+                mCurrentMapImage.value = apexRepo.getWorldsEdgeImage()
             }
             "Storm Point" -> {
-                mCurrentMapImage.value = apexRepo.getStormPointImg()
+                mCurrentMapImage.value = apexRepo.getStormPointImage()
             }
         }
         when (mapDataBundle.battleRoyale.next.map) {
             "King's Canyon" -> {
-                mNextMapImage.value = apexRepo.getKingsCanyonImg()
+                mNextMapImage.value = apexRepo.getKingsCanyonImage()
             }
             "Olympus" -> {
-                mNextMapImage.value = apexRepo.getOlympusImg()
+                mNextMapImage.value = apexRepo.getOlympusImage()
             }
             "World's Edge" -> {
-                mNextMapImage.value = apexRepo.getWorldsEdgeImg()
+                mNextMapImage.value = apexRepo.getWorldsEdgeImage()
             }
             "Storm Point" -> {
-                mNextMapImage.value = apexRepo.getStormPointImg()
+                mNextMapImage.value = apexRepo.getStormPointImage()
             }
         }
     }

@@ -32,19 +32,19 @@ fun assignMapImage(
 ) {
     when (map) {
         "Storm Point" -> {
-            val mapImg = apexRepo.getStormPointImg()
+            val mapImg = apexRepo.getStormPointImage()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "King's Canyon" -> {
-            val mapImg = apexRepo.getKingsCanyonImg()
+            val mapImg = apexRepo.getKingsCanyonImage()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "Olympus" -> {
-            val mapImg = apexRepo.getOlympusImg()
+            val mapImg = apexRepo.getOlympusImage()
             view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
         }
         "World's Edge" -> {
-            val mapImg = apexRepo.getWorldsEdgeImg()
+            val mapImg = apexRepo.getWorldsEdgeImage()
             Glide.with(ctx)
                 .load(mapImg)
                 .centerCrop()

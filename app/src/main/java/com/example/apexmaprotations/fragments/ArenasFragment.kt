@@ -36,7 +36,6 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     private val binding: FragmentArenasBinding by lazy {
         FragmentArenasBinding.inflate(layoutInflater)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -19,14 +19,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LockScreenActivity : AppCompatActivity() {
+class LockScreenActivity @Inject constructor(
+    private var apexRepo: ApexRepo
+) : AppCompatActivity() {
     private val binding: ActivityLockScreenBinding by lazy {
         ActivityLockScreenBinding.inflate(layoutInflater)
     }
     private val apexViewModel by viewModels<BattleRoyalViewModel>()
-
-    @Inject
-    lateinit var apexRepo: ApexRepo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
