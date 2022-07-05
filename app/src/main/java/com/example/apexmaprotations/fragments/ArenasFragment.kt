@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.apexmaprotations.R
@@ -27,21 +26,22 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
-    private lateinit var navController: NavController
-    private val arenasViewModel: ArenasViewModel by activityViewModels()
+class ArenasFragment @Inject constructor(
+    var arenasViewModel: ArenasViewModel?
+) : Fragment(), SwipeListener {
     private val binding: FragmentArenasBinding by lazy {
         FragmentArenasBinding.inflate(layoutInflater)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        navController = findNavController()
         val transitionInflater = TransitionInflater.from(requireContext())
         enterTransition = transitionInflater.inflateTransition(R.transition.slide_right)
         return binding.root
@@ -49,6 +49,9 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //  Use real viewmodel in production, but allow us to inject fake viewmodels for tests
+        arenasViewModel =
+            arenasViewModel ?: ViewModelProvider(requireActivity())[ArenasViewModel::class.java]
         setUpObservables()
         assignMapImages()
         binding.background.setOnTouchListener(SwipeGestureListener(this))
@@ -58,27 +61,27 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    arenasViewModel.timeRemainingRanked.map {
+                    arenasViewModel?.timeRemainingRanked?.map {
                         binding.timerTop.text = getString(
                             R.string.time_format_arenas,
                             it[0].toString(),
                             it[1].toString(),
                             it[2].toString().toLong()
                         )
-                    }.collect()
+                    }?.collect()
                 }
                 launch {
-                    arenasViewModel.timeRemainingUnranked.map {
+                    arenasViewModel?.timeRemainingUnranked?.map {
                         binding.timerBottom.text = getString(
                             R.string.time_format_arenas,
                             it[0].toString(),
                             it[1].toString(),
                             it[2].toString().toLong()
                         )
-                    }.collect()
+                    }?.collect()
                 }
                 launch {
-                    arenasViewModel.mapDataBundle.collectLatest {
+                    arenasViewModel?.mapDataBundle?.collectLatest {
                         if (it is NetworkResult.Success && it.data != null) {
                             assignMapImages()
                             assignMapLabels(it.data)
@@ -103,10 +106,10 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     }
 
     private fun assignMapImages() {
-        val rankedCurrent = arenasViewModel.currentMapImageRanked.value
-        val rankedNext = arenasViewModel.nextMapImageRanked.value
-        val publicCurrent = arenasViewModel.currentMapImage.value
-        val publicNext = arenasViewModel.nextMapImage.value
+        val rankedCurrent = arenasViewModel?.currentMapImageRanked?.value
+        val rankedNext = arenasViewModel?.nextMapImageRanked?.value
+        val publicCurrent = arenasViewModel?.currentMapImage?.value
+        val publicNext = arenasViewModel?.nextMapImage?.value
         if (rankedCurrent != null && rankedNext != null
             && publicCurrent != null && publicNext != null
         ) {
@@ -132,7 +135,7 @@ class ArenasFragment : Fragment(R.layout.fragment_arenas), SwipeListener {
     override fun onSwipeLeft() {}
 
     override fun onSwipeRight() {
-        navController.popBackStack()
+        view?.findNavController()?.popBackStack()
     }
 }
 

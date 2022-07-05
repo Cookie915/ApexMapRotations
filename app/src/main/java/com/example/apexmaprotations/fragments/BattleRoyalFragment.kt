@@ -16,15 +16,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
-import androidx.core.view.OneShotPreDrawListener
 import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -43,24 +40,25 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val TAG = "BattleRoyalFragment"
 
 @AndroidEntryPoint
-class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListener {
-    private val navController: NavController by lazy { findNavController() }
+class BattleRoyalFragment @Inject constructor(
+    var battleRoyalViewModel: BattleRoyalViewModel?,
+    var arenasViewModel: ArenasViewModel?,
+    var appViewModel: AppViewModel?,
+) : Fragment(R.layout.fragment_battleroyale), SwipeListener {
     private val transitionInflater: TransitionInflater by lazy {
         TransitionInflater.from(
             requireContext()
         )
     }
-    private val battleRoyalViewModel: BattleRoyalViewModel by viewModels()
-    private val arenaViewModel: ArenasViewModel by activityViewModels()
-    private val appViewModel: AppViewModel by activityViewModels()
     private val binding: FragmentBattleroyaleBinding by lazy {
         FragmentBattleroyaleBinding.inflate(layoutInflater).apply {
             lifecycleOwner = this@BattleRoyalFragment
-            viewmodel = battleRoyalViewModel
+//            viewmodel = battleRoyalViewModel
         }
     }
     private val alarmButton: LottieAnimationView by lazy { binding.alarmButton }
@@ -98,11 +96,9 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         exitTransition = transitionInflater.inflateTransition(R.transition.fade)
         // fix
         // verifyAlerts()
-        setupObservables()
     }
 
     override fun onCreateView(
@@ -116,20 +112,27 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        OneShotPreDrawListener.add(binding.menuBackgroundLines) {
-            binding.menuBackgroundLines.translationY -= linesOffset
-        }
+        battleRoyalViewModel = battleRoyalViewModel
+            ?: ViewModelProvider(requireActivity())[BattleRoyalViewModel::class.java]
+        arenasViewModel =
+            arenasViewModel ?: ViewModelProvider(requireActivity())[ArenasViewModel::class.java]
+        appViewModel =
+            appViewModel ?: ViewModelProvider(requireActivity())[AppViewModel::class.java]
+//        OneShotPreDrawListener.add(binding.menuBackgroundLines) {
+//            binding.menuBackgroundLines.translationY -= linesOffset
+//        }
         setUpClickListeners()
         setupAnimationListeners()
         listenToAlarms()
         lottieListeners()
+        setupObservables()
     }
 
     private fun setupObservables() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    battleRoyalViewModel.currentMapImage.collectLatest {
+                    battleRoyalViewModel?.currentMapImage?.collectLatest {
                         if (it != null) {
                             binding.currentMapImage.setImageDrawable(
                                 requireActivity().getDrawable(it)
@@ -138,14 +141,14 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     }
                 }
                 launch {
-                    battleRoyalViewModel.nextMapImage.collectLatest {
+                    battleRoyalViewModel?.nextMapImage?.collectLatest {
                         if (it != null) {
                             binding.nextMapImage.setImageDrawable(requireActivity().getDrawable(it))
                         }
                     }
                 }
                 launch {
-                    battleRoyalViewModel.timeRemaining.map {
+                    battleRoyalViewModel?.timeRemaining?.map {
                         binding.time.text = getString(
                             R.string.time_value_format,
                             it[0].toString().toLong(),
@@ -153,10 +156,10 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                             it[2].toString(),
                             it[3].toString().toLong()
                         )
-                    }.collect()
+                    }?.collect()
                 }
                 launch {
-                    battleRoyalViewModel.mapDataBundle.collectLatest { mapData ->
+                    battleRoyalViewModel?.mapDataBundle?.collectLatest { mapData ->
                         when (mapData) {
                             is NetworkResult.Loading -> {
                                 Log.i(TAG, "mapdata Loading from setupobvs()")
@@ -177,7 +180,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                                 binding.currentMapName.text =
                                     mapData.data!!.battleRoyale.current.map
                                 binding.nextMapName.text = mapData.data.battleRoyale.next.map
-                                appViewModel.hideSplash()
+                                appViewModel?.hideSplash()
                                 requireActivity().dataStore.edit {
                                     it[NEXT_MAP] = mapData.data.battleRoyale.next.map
                                 }
@@ -186,7 +189,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     }
                 }
                 launch {
-                    appViewModel.showMenu.collectLatest { showMenu ->
+                    appViewModel?.showMenu?.collectLatest { showMenu ->
                         when (showMenu) {
                             true -> showMenu()
                             false -> hideMenu()
@@ -277,10 +280,12 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     }
                 }
                 if (binding.alarmButton.progress > 0) {
-                    requireContext().scheduleNotification(
-                        true,
-                        battleRoyalViewModel.timeRemainingLong.value
-                    )
+                    battleRoyalViewModel?.timeRemainingLong?.let {
+                        requireContext().scheduleNotification(
+                            true,
+                            it.value
+                        )
+                    }
                 } else {
                     binding.notifyButton.isEnabled = true
                     requireContext().cancelAlert(true)
@@ -303,10 +308,12 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
                     }
                 }
                 if (binding.notifyButton.progress > 0) {
-                    requireContext().scheduleNotification(
-                        false,
-                        battleRoyalViewModel.timeRemainingLong.value
-                    )
+                    battleRoyalViewModel?.timeRemainingLong?.let {
+                        requireContext().scheduleNotification(
+                            false,
+                            it.value
+                        )
+                    }
                 } else {
                     binding.alarmButton.isEnabled = true
                     requireContext().cancelAlert(false)
@@ -343,15 +350,15 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
         }
         menubackground.setOnTouchListener(SwipeGestureListener(this))
         binding.arrowRight.setOnClickListener {
-            navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
+            findNavController().navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
         }
         menubackground.setOnLongClickListener {
-            when (appViewModel.showMenu.value) {
+            when (appViewModel!!.showMenu.value) {
                 true -> {
-                    appViewModel.hideMenu()
+                    appViewModel?.hideMenu()
                 }
                 false -> {
-                    appViewModel.showMenu()
+                    appViewModel!!.showMenu()
                 }
             }
             return@setOnLongClickListener true
@@ -407,7 +414,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale), SwipeListe
     }
 
     override fun onSwipeLeft() {
-        navController.navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
+        findNavController().navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
     }
 
     override fun onSwipeRight() {}

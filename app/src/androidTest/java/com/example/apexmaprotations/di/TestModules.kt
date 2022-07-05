@@ -1,25 +1,28 @@
 package com.example.apexmaprotations.di
 
-import com.example.apexmaprotations.retrofit.ApexStatusApi
+import com.example.apexmaprotations.repo.ApexRepoImpl
+import com.example.apexmaprotations.repo.FakeApexRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [ApexStatusApi::class]
+    replaces = [RepositoryModule::class]
 )
-object TestModules {
+object TestRepositoryModule {
+    //    @Provides
+//    fun getFakeApi(): ApexStatusApi {
+//        return Retrofit.Builder()
+//            .baseUrl("/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(ApexStatusApi::class.java)
+//    }
     @Provides
-    fun getFakeApi(): ApexStatusApi {
-        return Retrofit.Builder()
-            .baseUrl("/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApexStatusApi::class.java)
+    fun getFakeRepo(): ApexRepoImpl {
+        return FakeApexRepo()
     }
 }

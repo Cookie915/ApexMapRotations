@@ -3,6 +3,7 @@ package com.example.apexmaprotations.repo
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.retrofit.MapDataBundle
+import com.example.apexmaprotations.testUtils.TestMapDataBundles
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
@@ -26,7 +27,7 @@ class FakeApexRepo : ApexRepoImpl {
                 emit(NetworkResult.Error("Network Error"))
             }
             false -> {
-                emit(NetworkResult.Success(null))
+                emit(NetworkResult.Success(TestMapDataBundles.SuccessfulMapDataBundle))
             }
         }
     }

@@ -22,8 +22,9 @@ import javax.inject.Inject
 private const val TAG = "ArenaViewModel"
 @HiltViewModel
 class ArenasViewModel @Inject constructor(
-    private val apexRepo: ApexRepoImpl
+    val apexRepo: ApexRepoImpl
 ) : ViewModel() {
+
     val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
         apexRepo._mapData
             .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, NetworkResult.Loading())

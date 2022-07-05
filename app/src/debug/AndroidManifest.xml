@@ -5,8 +5,8 @@
 
     <application tools:ignore="MissingApplicationIcon">
         <activity
-            android:name="com.example.apexmaprotations.HiltTestActivity"
-            android:exported="true" />
+            android:name=".HiltTestActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

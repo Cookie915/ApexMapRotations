@@ -10,6 +10,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.apexmaprotations.R
+import com.example.apexmaprotations.fragments.ApexFragmentFactory
 import com.example.apexmaprotations.viewmodels.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportFragmentManager.fragmentFactory = ApexFragmentFactory()
         val splashScreen = installSplashScreen()
         setUpSplash(splashScreen)
         setContentView(R.layout.activity_main)

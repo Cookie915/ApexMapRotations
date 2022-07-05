@@ -54,7 +54,7 @@ class BattleRoyalViewModel @Inject constructor(
     val nextMapImage: StateFlow<Int?>
         get() = mNextMapImage
 
-    private suspend fun refreshMapData() {
+    suspend fun refreshMapData() {
         apexRepo.refreshMapData()
     }
 

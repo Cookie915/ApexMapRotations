@@ -15,6 +15,7 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ArenasViewModelTest {
+    //  Switches main dispatcher to StandardTestDispatcher(), delay skipping
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
@@ -61,7 +62,6 @@ class ArenasViewModelTest {
         arenasViewModel.refreshMapData()
         job.join()
         job.cancel()
-
     }
 
 }
