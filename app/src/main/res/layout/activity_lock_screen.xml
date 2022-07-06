@@ -8,7 +8,7 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@string/map_image_desc"
+        android:contentDescription="@string/bgImageDesc"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,35 +1,35 @@
 <resources>
     <string name="app_name">Apex Map Rotations</string>
-    <string name="map_image_desc">Map Image</string>
-    <string name="timer_id">timer</string>
-    <string name="animation_id">animation</string>
     <string name="lottie_rawRes">timer_indicator_scaling</string>
-    <string name="time_value_format">0%1d : %1s : %1s.%1d</string>
-    <string name="time_format_arenas">%1s : %1s.%1d</string>
-    <string name="topText">Current Map</string>
-    <string name="topTextContentDesc">Current Map</string>
-    <string name="nextmaptext_cont_desc">Next Map Text</string>
+
+    // ID's
+    <string name="timer_id">timer</string>
     <string name="background">background</string>
-    <string name="alert_imagebutton_desc">Set Notification</string>
+    <string name="timer_animation_id">timer_animation</string>
+
+    // Content Desc
+    <string name="notify_imagebutton_desc">Set Notification</string>
     <string name="alarm_imagebutton_desc">Set Alarm</string>
     <string name="arrow_desc">Navigation Arrow</string>
+    <string name="topTimerDesc">Ranked Arenas Timer</string>
+    <string name="bgImageDesc">Background Image</string>
+    <string name="appIconDesc">App Icon</string>
 
-    <string name="arenas"><u>ARENAS</u></string>
-    <string name="rankedArenasCurrentMapDesc">Current Ranked Apex Map</string>
-    <string name="rankedArenasNextImgDesc">Ranked Arenas Next Map</string>
-    <string name="PublicArenasCurrentMapDesc">Public Arenas Current Map</string>
-    <string name="PublicArenasNextMapImageDesc">Public Arenas Current Map</string>
+    // Strings
+    <string name="currentMapText">Current Map :</string>
+    <string name="nextUpText">Next Map :</string>
+    <string name="time_format_arenas">%1s : %1s.%1d</string>
+    <string name="time_format_br">0%1d : %1s : %1s.%1d</string>
+    <string name="topTimerPlacesHolder">00 : 00</string>
+    <string name="arenas">ARENAS</string>
     <string name="ranked_text_underlined"><u>RANKED</u></string>
     <string name="ranked_text">RANKED</string>
-    <string name="topTimerDesc">Ranked Arenas Timer</string>
-    <string name="currentLabelText">CURRENT</string>
-    <string name="topTimerPlacesHolder">00 : 00</string>
-    <string name="nextLabel">NEXT</string>
+    <string name="alarmText">Set Alarm</string>
+    <string name="notifyText">Notify</string>
+
     <string name="unranked_label_underlined"><u>UNRANKED</u></string>
     <string name="unranked_label">UNRANKED</string>
     <string name="unranked_label_desc">UNRANKED LABEL</string>
-    <string name="alarmLabel">Set Alarm</string>
-    <string name="notifyLabel">Notify</string>
     <string name="nextMapNameDesc">name of next map</string>
     <string name="currentMapNameDesc">current map name</string>
 </resources>

@@ -16,8 +16,6 @@ import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,8 +29,11 @@ class BattleRoyalViewModel @Inject constructor(
     private val apexRepo: ApexRepoImpl,
 ) : ViewModel() {
     val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
-        apexRepo._mapData
-            .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, NetworkResult.Loading())
+        apexRepo._mapData.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            NetworkResult.Loading()
+        )
 
     private var mTimeRemaining = MutableStateFlow<Long>(0)
     val timeRemaining: StateFlow<List<Any>>
@@ -60,7 +61,7 @@ class BattleRoyalViewModel @Inject constructor(
 
     private var timer: CustomCountdownTimer? = null
 
-    private fun initializeTimer(mapData: MapDataBundle) {
+    fun initializeTimer(mapData: MapDataBundle) {
         Handler(Looper.getMainLooper())
             .post {
                 //  Prevent duplicate timers
@@ -125,23 +126,18 @@ class BattleRoyalViewModel @Inject constructor(
                 when (mapData) {
                     is NetworkResult.Loading -> {
                         Log.i(TAG, "Loading...")
-                        mCurrentMapImage.value = null
-                        mNextMapImage.value = null
                     }
                     is NetworkResult.Error -> {
                         Log.i(TAG, "FetchMapDataFaiL ${mapData.message}")
                         //  Rate limit hit, wait and re-fetch data
                         if (mapData.message == "429") {
-                            delay(2100L)
+                            delay(3000L)
                             refreshMapData()
                         }
-                        mCurrentMapImage.value = null
-                        mNextMapImage.value = null
                     }
                     is NetworkResult.Success -> {
                         Log.i(TAG, "FetchMapData Success")
                         if (mapData.data != null) {
-                            assignMapImages(mapData.data)
                             initializeTimer(mapData.data)
                         }
                     }

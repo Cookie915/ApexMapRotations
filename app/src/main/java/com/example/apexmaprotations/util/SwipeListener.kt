@@ -24,7 +24,7 @@ open class SwipeGestureListener internal constructor(
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 anchorX = event.x
-                return false
+                return true
             }
             MotionEvent.ACTION_UP -> {
                 if (abs(event.x - anchorX) > minDistance) {

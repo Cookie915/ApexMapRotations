@@ -15,63 +15,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/centerVertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintGuide_percent="0.5"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--        <ImageView-->
+        <!--            android:id="@+id/appIcon"-->
+        <!--            android:layout_width="100.dp"-->
+        <!--            android:layout_height="50.dp"-->
+        <!--            android:layout_marginTop="32dp"-->
+        <!--            android:contentDescription="@string/appIconDesc"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:srcCompat="@drawable/ic_apex_maps_icon" />-->
 
-        <ImageView
-            android:id="@+id/currentMapImage"
+        <TextView
+            android:id="@+id/currentMapText"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="false"
-            android:contentDescription="@string/map_image_desc"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toTopOf="@+id/centerVertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_height="40.dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/text_background"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingEnd="20.dp"
+            android:singleLine="true"
+            android:text="@string/currentMapText"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:ignore="ImageContrastCheck" />
+            app:layout_constraintWidth_percent=".8" />
 
-        <ImageView
-            android:id="@+id/nextMapImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="false"
-            android:contentDescription="@string/map_image_desc"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+        <TextView
+            android:id="@+id/nextMapText"
+            android:layout_width="0.dp"
+            android:layout_height="40.dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/text_background"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingEnd="20.dp"
+            android:text="@string/nextUpText"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/centerVertical"
-            tools:ignore="ImageContrastCheck" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/timer_animation"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:contentDescription="@string/animation_id"
-            android:elevation="24dp"
-            android:scaleType="centerCrop"
-            android:scaleX="0.85"
-            android:scaleY="0.85"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_cacheComposition="false"
-            app:lottie_clipToCompositionBounds="false"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/timer_indicator_glowing"
-            tools:ignore="ImageContrastCheck" />
+            app:layout_constraintTop_toBottomOf="@id/currentMapText"
+            app:layout_constraintWidth_percent=".8" />
 
         <TextView
             android:id="@+id/time"
@@ -88,27 +76,124 @@
             android:shadowRadius="8"
             android:textColor="@color/white"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/timer_animation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/timer_animation"
             app:layout_constraintVertical_bias="0.48" />
 
-        <ImageView
-            android:id="@+id/topText"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/timer_animation"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:contentDescription="@string/timer_animation_id"
+            android:elevation="24dp"
+            android:scaleType="centerInside"
+            android:scaleX="3"
+            android:scaleY="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nextMapText"
+            app:lottie_autoPlay="true"
+            app:lottie_clipToCompositionBounds="false"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/timer_indicator_glowing" />
+
+        <ImageButton
+            android:id="@+id/rightArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/arrow_desc"
+            android:foregroundGravity="top"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:paddingStart="8.dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@id/timer_animation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/timer_animation"
+            app:srcCompat="@drawable/ic_arrow_right"
+            app:tint="@color/white"
+            tools:ignore="ImageContrastCheck,RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/setAlarmText"
+            android:layout_width="0.dp"
+            android:layout_height="40.dp"
+            android:layout_marginTop="48dp"
+            android:background="@color/text_background"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingEnd="20.dp"
+            android:text="@string/alarmText"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timer_animation"
+            app:layout_constraintWidth_percent="0.65"
+            tools:layout_constraintTop_toBottomOf="@id/timer_animation" />
+
+        <ImageButton
+            android:id="@+id/setAlarmBtn"
+            android:layout_width="30.dp"
+            android:layout_height="30.dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/alarm_imagebutton_desc"
+            android:foregroundGravity="center_vertical|center"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/setAlarmText"
+            app:layout_constraintEnd_toEndOf="@id/setAlarmText"
+            app:layout_constraintStart_toStartOf="@id/centerVertical"
+            app:layout_constraintTop_toTopOf="@id/setAlarmText"
+            app:srcCompat="@drawable/ic_alarm" />
+
+        <TextView
+            android:id="@+id/setNotificationText"
+            android:layout_width="0.dp"
             android:layout_height="40.dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="#99303030"
-            android:contentDescription="@string/topTextContentDesc"
-            android:scaleType="fitCenter"
-            app:layout_constraintEnd_toStartOf="@+id/centerHorizontal"
-            app:layout_constraintHorizontal_bias="0.4"
+            android:background="@color/text_background"
+            android:contentDescription="@string/notify_imagebutton_desc"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingEnd="20.dp"
+            android:text="@string/notifyText"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/currentMapImage"
-            app:srcCompat="@drawable/ic_currentmap_text"
-            tools:ignore="ImageContrastCheck" />
+            app:layout_constraintTop_toBottomOf="@id/setAlarmText"
+            app:layout_constraintWidth_percent="0.65" />
+
+        <ImageButton
+            android:id="@+id/setNotificationButton"
+            android:layout_width="30.dp"
+            android:layout_height="30.dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/notify_imagebutton_desc"
+            android:foregroundGravity="center_vertical|center|center_horizontal"
+            android:foregroundTint="@color/white"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/setNotificationText"
+            app:layout_constraintEnd_toEndOf="@id/setNotificationText"
+            app:layout_constraintStart_toStartOf="@id/centerVertical"
+            app:layout_constraintTop_toTopOf="@id/setNotificationText"
+            app:srcCompat="@drawable/ic_notification"
+            app:tint="@color/white" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/centerVertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/centerHorizontal"
@@ -118,153 +203,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintGuide_percent="0.5" />
-
-        <ImageView
-            android:id="@+id/bottomText"
-            android:layout_width="100dp"
-            android:layout_height="40.dp"
-            android:layout_marginBottom="16dp"
-            android:background="#99303030"
-            android:contentDescription="@string/nextmaptext_cont_desc"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@+id/nextMapImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/next_map_textasset_7"
-            tools:ignore="ImageContrastCheck" />
-
-        <View
-            android:id="@+id/menubackground"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="0"
-            android:background="@color/menu_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/menuBackgroundLines"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/background"
-            android:scaleType="centerCrop"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
-            app:layout_constraintBottom_toBottomOf="@+id/nextMapImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_background_lines"
-            app:tint="#810707"
-            tools:ignore="ImageContrastCheck" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/notify_button"
-            android:layout_width="120.dp"
-            android:layout_height="120.dp"
-            android:alpha="0.0"
-            android:contentDescription="@string/alert_imagebutton_desc"
-            android:focusable="true"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toTopOf="@+id/centerVertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/currentMapImage"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="false"
-            app:lottie_rawRes="@raw/notify" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/alarm_button"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:alpha="0.0"
-            android:contentDescription="@string/alarm_imagebutton_desc"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/centerVertical"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="false"
-            app:lottie_rawRes="@raw/alarm" />
-
-        <TextView
-            android:id="@+id/alarmLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_extralight"
-            android:text="@string/alarmLabel"
-            android:textColor="@color/apex_red_dark"
-            android:textSize="34sp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/alarm_button" />
-
-        <TextView
-            android:id="@+id/notifyLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_extralight"
-            android:text="@string/notifyLabel"
-            android:textColor="@color/apex_red_dark"
-            android:textSize="34sp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notify_button" />
-
-        <ImageView
-            android:id="@+id/arrowRight"
-            android:layout_width="48.dp"
-            android:layout_height="48.dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="@string/arrow_desc"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/currentMapImage"
-            app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="@color/apex_red_dark" />
-
-        <TextView
-            android:id="@+id/currentMapName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/currentMapNameDesc"
-            android:fontFamily="@font/automobile_contest"
-            android:textColor="@color/white"
-            android:textSize="96sp"
-            app:layout_constraintBottom_toBottomOf="@+id/centerVertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/nextMapName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/nextMapNameDesc"
-            android:fontFamily="@font/automobile_contest"
-            android:textColor="#FFFFFF"
-            android:textSize="96sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/centerVertical" />
-
-        <ImageView
-            android:id="@+id/errorImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

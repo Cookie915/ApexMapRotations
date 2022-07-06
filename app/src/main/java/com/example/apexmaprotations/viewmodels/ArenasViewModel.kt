@@ -12,8 +12,6 @@ import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -26,8 +24,11 @@ class ArenasViewModel @Inject constructor(
 ) : ViewModel() {
 
     val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>> =
-        apexRepo._mapData
-            .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, NetworkResult.Loading())
+        apexRepo._mapData.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            NetworkResult.Loading()
+        )
 
     //  Ranked Timer
     private var mTimeRemainingUnranked = MutableStateFlow<Long>(0)
