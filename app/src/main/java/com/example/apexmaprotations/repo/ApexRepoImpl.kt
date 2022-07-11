@@ -2,22 +2,9 @@ package com.example.apexmaprotations.repo
 
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.retrofit.MapDataBundle
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
 
 interface ApexRepoImpl {
-
-    var _mapData: MutableSharedFlow<NetworkResult<MapDataBundle>>
-
-    suspend fun refreshMapData()
-
-    fun getKingsCanyonImage(): Int
-
-    fun getWorldsEdgeImage(): Int
-
-    fun getOlympusImage(): Int
-
-    fun getStormPointImage(): Int
-
-    fun getArenasImageForMapName(mapName: String): Int?
-
+    var _mapData: Flow<NetworkResult<MapDataBundle>>
+    fun getRandomBgImage(): Int
 }

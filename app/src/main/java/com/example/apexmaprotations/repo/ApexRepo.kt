@@ -6,10 +6,8 @@ import com.example.apexmaprotations.models.BaseApiResponse
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.retrofit.ApexStatusApi
 import com.example.apexmaprotations.retrofit.MapDataBundle
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.util.*
 import javax.inject.Inject
 
@@ -18,85 +16,25 @@ private const val TAG = "ApexRepo"
 class ApexRepo @Inject constructor(
     private val apexApi: ApexStatusApi
 ) : BaseApiResponse(), ApexRepoImpl {
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
-    override var _mapData: MutableSharedFlow<NetworkResult<MapDataBundle>> = MutableSharedFlow()
-
-    override suspend fun refreshMapData() {
-        Log.i(TAG, "Refreshing...")
-        _mapData.emit(safeApiCall { apexApi.getMapDataBundle() })
+    override var _mapData: Flow<NetworkResult<MapDataBundle>> = flow {
+        Log.i(TAG, "Api Call")
+        emit(safeApiCall { apexApi.getMapDataBundle() })
     }
 
-    override fun getKingsCanyonImage(): Int {
-        val images = listOf(
-            R.drawable.kings_canyon_1,
-            R.drawable.kings_canyon_2,
-            R.drawable.kings_canyon_3
+    override fun getRandomBgImage(): Int {
+        val bgImages = listOf(
+            R.drawable.bg_ash,
+            R.drawable.bg_bloodhound,
+            R.drawable.bg_wraith,
+            R.drawable.bg_octane,
+            R.drawable.bg_valk,
+            R.drawable.bg_pathy
         )
         val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getWorldsEdgeImage(): Int {
-        val images = listOf(
-            R.drawable.worlds_edge_1,
-            R.drawable.worlds_edge_2,
-            R.drawable.worlds_edge_3
-        )
-        val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getOlympusImage(): Int {
-        val images = listOf(
-            R.drawable.olympus_2,
-            R.drawable.olympus_3,
-            R.drawable.transition_olympus,
-            R.drawable.transition_olympus_mu1
-        )
-        val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getStormPointImage(): Int {
-        val images = listOf(
-            R.drawable.storm_point_1,
-            R.drawable.storm_point_2
-        )
-        val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getArenasImageForMapName(mapName: String): Int? {
-        when (mapName) {
-            "Party crasher" -> {
-                return R.drawable.party_crasher
-            }
-            "Phase runner" -> {
-                return R.drawable.phase_runner
-            }
-            "Overflow" -> {
-                return R.drawable.overflow
-            }
-            "Encore" -> {
-                return R.drawable.encore
-            }
-            "Habitat" -> {
-                return R.drawable.habitat
-            }
-            "Drop Off" -> {
-                return R.drawable.bg_drop_off
-            }
-            else -> {
-                return null
-            }
-        }
+        return bgImages[rand.nextInt(bgImages.size)]
     }
 
     init {
-        coroutineScope.launch(Dispatchers.IO) {
-            refreshMapData()
-        }
         Log.i("ApexRepo", "Created Repo $this")
     }
 }

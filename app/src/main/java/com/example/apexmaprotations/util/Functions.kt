@@ -1,11 +1,5 @@
 package com.example.apexmaprotations.util
 
-import android.content.Context
-import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources
-import com.bumptech.glide.Glide
-import com.example.apexmaprotations.repo.ApexRepo
-
 
 fun formatTime(minutes: Long, seconds: Long): List<String> {
     val result: MutableList<String> = mutableListOf()
@@ -24,33 +18,7 @@ fun formatTime(minutes: Long, seconds: Long): List<String> {
     return result
 }
 
-fun assignMapImage(
-    map: String,
-    view: ImageView,
-    apexRepo: ApexRepo,
-    ctx: Context
-) {
-    when (map) {
-        "Storm Point" -> {
-            val mapImg = apexRepo.getStormPointImage()
-            view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
-        }
-        "King's Canyon" -> {
-            val mapImg = apexRepo.getKingsCanyonImage()
-            view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
-        }
-        "Olympus" -> {
-            val mapImg = apexRepo.getOlympusImage()
-            view.setImageDrawable(AppCompatResources.getDrawable(ctx, mapImg))
-        }
-        "World's Edge" -> {
-            val mapImg = apexRepo.getWorldsEdgeImage()
-            Glide.with(ctx)
-                .load(mapImg)
-                .centerCrop()
-                .into(view)
-        }
-    }
+fun String.capitalizeWords(): String {
+    return this.split(" ")
+        .joinToString(" ") { it.replaceFirstChar { char -> char.uppercaseChar() } }
 }
-
-fun String.capitalizeWords(): String = split(" ").joinToString(" ", transform = String::capitalize)

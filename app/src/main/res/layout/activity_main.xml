@@ -4,12 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     tools:context=".activities.MainActivity">
 
     <ImageView
         android:id="@+id/bgImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:contentDescription="@string/background"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg_bloodhound"
         tools:contentDescription="@string/bgImageDesc"
-        android:clickable="false" />
+        tools:ignore="ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/appIconMain"
@@ -41,7 +46,41 @@
         app:layout_constraintTop_toBottomOf="@id/appIconMain"
         app:layout_constraintBottom_toBottomOf="parent"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph"
-        tools:layout="@layout/activity_main" />
+        app:navGraph="@navigation/nav_graph" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/messageGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <ImageView
+        android:id="@+id/errImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/errorImageDesc"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/er_pathy"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/errorMessageTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_extralight"
+        android:text="@string/errorPlaceHolderText"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/messageGuideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

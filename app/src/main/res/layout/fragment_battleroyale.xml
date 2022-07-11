@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.apexmaprotations.viewmodels.BattleRoyalViewModel" />
+            type="com.example.apexmaprotations.viewmodels.ApexViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,9 +89,9 @@
             android:layout_marginTop="48dp"
             android:contentDescription="@string/timer_animation_id"
             android:elevation="24dp"
-            android:scaleType="centerInside"
-            android:scaleX="3"
-            android:scaleY="3"
+            android:scaleType="centerCrop"
+            android:scaleX="2"
+            android:scaleY="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nextMapText"
@@ -133,7 +133,7 @@
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/timer_animation"
-            app:layout_constraintWidth_percent="0.65"
+            app:layout_constraintWidth_percent="0.5"
             tools:layout_constraintTop_toBottomOf="@id/timer_animation" />
 
         <ImageButton
@@ -167,7 +167,7 @@
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/setAlarmText"
-            app:layout_constraintWidth_percent="0.65" />
+            app:layout_constraintWidth_percent=".5" />
 
         <ImageButton
             android:id="@+id/setNotificationButton"

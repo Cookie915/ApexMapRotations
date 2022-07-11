@@ -12,7 +12,7 @@ import com.example.apexmaprotations.MainCoroutineRule
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.launchFragmentInHiltContainer
 import com.example.apexmaprotations.models.NetworkResult
-import com.example.apexmaprotations.viewmodels.ArenasViewModel
+import com.example.apexmaprotations.viewmodels.ApexViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -36,7 +36,6 @@ class ArenasFragmentTest {
     @get:Rule(order = 1)
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    //  Switches main dispatcher when running tests
     @get:Rule(order = 2)
     var coroutineRule = MainCoroutineRule()
 
@@ -50,18 +49,21 @@ class ArenasFragmentTest {
 
     @Test
     fun test_TestsUseFakeRepo() = runTest {
-        var testViewModel: ArenasViewModel? = null
+        var testViewModel: ApexViewModel? = null
         testFragmentFactory.fakeRepo.setShouldReturnNetworkError(true)
+        //  mapDataBundle initially fetched in fragments onResume()
         launchFragmentInHiltContainer<ArenasFragment>(fragmentFactory = testFragmentFactory) {
-            testViewModel = this.arenasViewModel
+            testViewModel = this.apexViewModel
         }
         val job = launch {
             testViewModel?.mapDataBundle?.test {
+                //  check initial
                 assertThat(awaitItem()).isInstanceOf(NetworkResult.Loading::class.java)
+                //  check first emission
                 assertThat(awaitItem()).isInstanceOf(NetworkResult.Error::class.java)
+                cancelAndIgnoreRemainingEvents()
             }
         }
-        testViewModel?.refreshMapData()
         job.join()
         job.cancel()
     }

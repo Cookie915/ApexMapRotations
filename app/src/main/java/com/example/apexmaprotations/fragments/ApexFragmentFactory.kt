@@ -8,8 +8,8 @@ class ApexFragmentFactory @Inject constructor(
 ) : FragmentFactory() {
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         return when (className) {
-            ArenasFragment::class.java.name -> ArenasFragment(null)
-            BattleRoyalFragment::class.java.name -> BattleRoyalFragment(null, null, null)
+            ArenasFragment::class.java.name -> ArenasFragment(null, null)
+            BattleRoyalFragment::class.java.name -> BattleRoyalFragment(null, null)
             else -> return super.instantiate(classLoader, className)
         }
     }

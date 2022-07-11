@@ -37,7 +37,6 @@ class ArenasViewModelTest {
         repo.setShouldReturnNetworkError(true)
         val job = launch {
             arenasViewModel.mapDataBundle.test {
-                assertThat(awaitItem()).isInstanceOf(NetworkResult.Loading::class.java)
                 assertThat(awaitItem()).isInstanceOf(NetworkResult.Error::class.java)
                 cancelAndIgnoreRemainingEvents()
             }
@@ -50,16 +49,13 @@ class ArenasViewModelTest {
     @Test
     fun mapDataIsNetworkSuccess_whenRepoReturnsSuccessfully() = runTest {
         repo.setShouldReturnNetworkError(false)
+        arenasViewModel.refreshMapData()
         val job = launch {
             arenasViewModel.mapDataBundle.test {
-                //  1st emission
-                assertThat(awaitItem()).isInstanceOf(NetworkResult.Loading::class.java)
-                //  2nd emission
                 assertThat(awaitItem()).isInstanceOf(NetworkResult.Success::class.java)
                 cancelAndIgnoreRemainingEvents()
             }
         }
-        arenasViewModel.refreshMapData()
         job.join()
         job.cancel()
     }

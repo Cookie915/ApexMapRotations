@@ -14,6 +14,7 @@
     <string name="topTimerDesc">Ranked Arenas Timer</string>
     <string name="bgImageDesc">Background Image</string>
     <string name="appIconDesc">App Icon</string>
+    <string name="errorImageDesc">Error Background Image</string>
 
     // Strings
     <string name="currentMapText">Current Map :</string>
@@ -26,6 +27,7 @@
     <string name="ranked_text">RANKED</string>
     <string name="alarmText">Set Alarm</string>
     <string name="notifyText">Notify</string>
+    <string name="errorPlaceHolderText">An Error Occurred</string>
 
     <string name="unranked_label_underlined"><u>UNRANKED</u></string>
     <string name="unranked_label">UNRANKED</string>

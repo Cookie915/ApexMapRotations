@@ -19,7 +19,7 @@ abstract class CustomCountdownTimer(
      */
     private var mCountdownInterval: Long
 ) {
-    private var mStopTimeInFuture: Long = 0
+    var mStopTimeInFuture: Long = 0
 
     /**
      * boolean representing if the timer was cancelled

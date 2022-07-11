@@ -21,10 +21,9 @@ import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.util.NEXT_MAP
 import com.example.apexmaprotations.util.SwipeGestureListener
 import com.example.apexmaprotations.util.SwipeListener
+import com.example.apexmaprotations.util.dataStore
+import com.example.apexmaprotations.viewmodels.ApexViewModel
 import com.example.apexmaprotations.viewmodels.AppViewModel
-import com.example.apexmaprotations.viewmodels.ArenasViewModel
-import com.example.apexmaprotations.viewmodels.BattleRoyalViewModel
-import com.example.apexmaprotations.viewmodels.dataStore
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -35,8 +34,7 @@ const val TAG = "BattleRoyalFragment"
 
 @AndroidEntryPoint
 class BattleRoyalFragment @Inject constructor(
-    var battleRoyalViewModel: BattleRoyalViewModel?,
-    var arenasViewModel: ArenasViewModel?,
+    var apexViewModel: ApexViewModel?,
     var appViewModel: AppViewModel?,
 ) : Fragment(R.layout.fragment_battleroyale), SwipeListener {
     private val transitionInflater: TransitionInflater by lazy {
@@ -47,7 +45,7 @@ class BattleRoyalFragment @Inject constructor(
     private val binding: FragmentBattleroyaleBinding by lazy {
         FragmentBattleroyaleBinding.inflate(layoutInflater).apply {
             lifecycleOwner = this@BattleRoyalFragment
-            viewmodel = battleRoyalViewModel
+            viewmodel = apexViewModel
         }
     }
     private val alarmManager: AlarmManager by lazy {
@@ -60,6 +58,12 @@ class BattleRoyalFragment @Inject constructor(
             binding.timerAnimation,
             binding.time,
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "Resumed")
+        apexViewModel?.checkTimers()
     }
 
 
@@ -81,10 +85,8 @@ class BattleRoyalFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        battleRoyalViewModel = battleRoyalViewModel
-            ?: ViewModelProvider(this)[BattleRoyalViewModel::class.java]
-//        arenasViewModel =
-//            arenasViewModel ?: ViewModelProvider(this)[ArenasViewModel::class.java]
+        apexViewModel = apexViewModel
+            ?: ViewModelProvider(requireActivity())[ApexViewModel::class.java]
         appViewModel =
             appViewModel ?: ViewModelProvider(requireActivity())[AppViewModel::class.java]
 //        setUpClickListeners()
@@ -99,13 +101,34 @@ class BattleRoyalFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    battleRoyalViewModel?.mapDataBundle?.collect { mapDataBundleResponse ->
+                    apexViewModel?.mapDataBundle?.collect { mapDataBundleResponse ->
                         when (mapDataBundleResponse) {
                             is NetworkResult.Loading -> {
                                 Log.i("tesss", "Loading")
                             }
                             is NetworkResult.Error -> {
-                                Log.i("tesss", "Err")
+                                appViewModel?.hideSplash()
+                                Log.i(
+                                    TAG,
+                                    "MapDataBundleError: " + mapDataBundleResponse.message.toString()
+                                )
+                                when (mapDataBundleResponse.message) {
+                                    "429" -> {
+                                        appViewModel?.showError("Too many request, please wait a few seconds and try again")
+                                    }
+                                    "Api call failed java.security.cert.CertPathValidatorException: Trust anchor for certification path not found." -> {
+                                        appViewModel?.showError("Insecure Connection, connect to a new network and try again")
+                                    }
+                                    "Api call failed Unable to resolve host \"api.mozambiquehe.re\": No address associated with hostname" -> {
+                                        appViewModel?.showError("Unable to connect to server, check connection and try again")
+                                    }
+                                    else -> {
+                                        appViewModel?.showError(
+                                            mapDataBundleResponse.message
+                                                ?: "An unknown error occurred"
+                                        )
+                                    }
+                                }
                             }
                             is NetworkResult.Success -> {
                                 Log.i("tesss", "Succ")
@@ -124,7 +147,7 @@ class BattleRoyalFragment @Inject constructor(
                     }
                 }
                 launch {
-                    battleRoyalViewModel?.timeRemaining?.map {
+                    apexViewModel?.timeRemainingBr?.map {
                         binding.time.text = getString(
                             R.string.time_format_br,
                             it[0].toString().toLong(),
@@ -143,147 +166,11 @@ class BattleRoyalFragment @Inject constructor(
         binding.rightArrow.setOnClickListener {
             findNavController().navigate(BattleRoyalFragmentDirections.actionBattleRoyalFragmentToArenasFragment())
         }
+        binding.setAlarmBtn.setOnClickListener {
+
+        }
     }
 
-//    private fun setupObservables() {
-//        lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                launch {
-//                    battleRoyalViewModel?.currentMapImage?.collectLatest {
-//                        if (it != null) {
-//                            binding.currentMapImage.setImageDrawable(
-//                                requireActivity().getDrawable(it)
-//                            )
-//                        }
-//                    }
-//                }
-//                launch {
-//                    battleRoyalViewModel?.nextMapImage?.collectLatest {
-//                        if (it != null) {
-//                            binding.nextMapImage.setImageDrawable(requireActivity().getDrawable(it))
-//                        }
-//                    }
-//                }
-//                launch {
-//                    battleRoyalViewModel?.timeRemaining?.map {
-//                        binding.time.text = getString(
-//                            R.string.time_value_format,
-//                            it[0].toString().toLong(),
-//                            it[1].toString(),
-//                            it[2].toString(),
-//                            it[3].toString().toLong()
-//                        )
-//                    }?.collect()
-//                }
-//                launch {
-//                    battleRoyalViewModel?.mapDataBundle?.collectLatest { mapData ->
-//                        when (mapData) {
-//                            is NetworkResult.Loading -> {
-//                                Log.i(TAG, "mapdata Loading from setupobvs()")
-//                                Toast.makeText(requireContext(), "Loading...", Toast.LENGTH_SHORT)
-//                                    .show()
-//                                //todo show loading
-//                            }
-//                            is NetworkResult.Error -> {
-//                                Log.i(TAG, "mapdata Error from setupobvs()")
-//                                Toast.makeText(
-//                                    requireContext(),
-//                                    "MapData Failed ${mapData.message}",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                            is NetworkResult.Success -> {
-//                                Log.i(TAG, "mapdata Success from setupobvs()")
-//                                binding.currentMapName.text =
-//                                    mapData.data!!.battleRoyale.current.map
-//                                binding.nextMapName.text = mapData.data.battleRoyale.next.map
-//                                appViewModel?.hideSplash()
-//                                requireActivity().dataStore.edit {
-//                                    it[NEXT_MAP] = mapData.data.battleRoyale.next.map
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                launch {
-//                    appViewModel?.showMenu?.collectLatest { showMenu ->
-//                        when (showMenu) {
-//                            true -> showMenu()
-//                            false -> hideMenu()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun hideMenu() {
-//        notifyButton.isClickable = false
-//        alarmButton.isClickable = false
-//        foregroundViews.forEach {
-//            ObjectAnimator.ofFloat(it, "alpha", 1.0f).apply {
-//                interpolator = LinearInterpolator()
-//                duration = 600
-//                start()
-//            }
-//        }
-//        backgroundViews.forEach {
-//            ObjectAnimator.ofFloat(it, "alpha", 0.0f).apply {
-//                interpolator = LinearInterpolator()
-//                duration = 600
-//                start()
-//            }
-//        }
-//        ObjectAnimator.ofFloat(
-//            binding.menuBackgroundLines,
-//            "translationY",
-//            -linesOffset
-//        ).apply {
-//            duration = 800
-//            start()
-//        }
-//        ObjectAnimator.ofFloat(binding.menubackground, "alpha", 0f)
-//            .apply {
-//                interpolator = LinearInterpolator()
-//                duration = 800
-//                start()
-//            }
-//    }
-//
-//    private fun showMenu() {
-//        notifyButton.isClickable = true
-//        alarmButton.isClickable = true
-//        foregroundViews.forEach {
-//            ObjectAnimator.ofFloat(it, "alpha", 0.0f).apply {
-//                interpolator = LinearInterpolator()
-//                duration = 600
-//                start()
-//            }
-//        }
-//        backgroundViews.forEach {
-//            ObjectAnimator.ofFloat(it, "alpha", 1.0f).apply {
-//                interpolator = LinearInterpolator()
-//                duration = 600
-//                start()
-//            }
-//        }
-//        ObjectAnimator.ofFloat(
-//            binding.menuBackgroundLines,
-//            "translationY",
-//            0f
-//        )
-//            .apply {
-//                duration = 800
-//                start()
-//            }
-//        ObjectAnimator.ofFloat(binding.menubackground, "alpha", 0.8f)
-//            .apply {
-//                interpolator = LinearInterpolator()
-//                duration = 800
-//                start()
-//            }
-//    }
-//
 //    private fun setupAnimationListeners() {
 //        binding.alarmButton.addAnimatorListener(object : Animator.AnimatorListener {
 //            override fun onAnimationEnd(animation: Animator?) {

@@ -4,15 +4,18 @@ import com.example.apexmaprotations.R
 import com.example.apexmaprotations.models.NetworkResult
 import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.testUtils.TestMapDataBundles
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.util.*
 
 class FakeApexRepo : ApexRepoImpl {
-    override var _mapData: MutableSharedFlow<NetworkResult<MapDataBundle>> =
-        MutableStateFlow(NetworkResult.Loading())
-
-    suspend fun emit(value: NetworkResult<MapDataBundle>) = _mapData.emit(value)
+    override var _mapData: Flow<NetworkResult<MapDataBundle>> = flow {
+        if (shouldReturnNetworkError) {
+            emit(NetworkResult.Error("Network Error"))
+        } else {
+            emit(NetworkResult.Success(TestMapDataBundles.SuccessfulMapDataBundle))
+        }
+    }
 
     private var shouldReturnNetworkError = false
 
@@ -20,81 +23,16 @@ class FakeApexRepo : ApexRepoImpl {
         shouldReturnNetworkError = value
     }
 
-    override suspend fun refreshMapData() {
-        emit(NetworkResult.Loading())
-        when (shouldReturnNetworkError) {
-            true -> {
-                emit(NetworkResult.Error("Network Error"))
-            }
-            false -> {
-                emit(NetworkResult.Success(TestMapDataBundles.SuccessfulMapDataBundle))
-            }
-        }
-    }
-
-    override fun getKingsCanyonImage(): Int {
-        val images = listOf(
-            R.drawable.kings_canyon_1,
-            R.drawable.kings_canyon_2,
-            R.drawable.kings_canyon_3
+    override fun getRandomBgImage(): Int {
+        val bgImages = listOf(
+            R.drawable.bg_ash,
+            R.drawable.bg_bloodhound,
+            R.drawable.bg_wraith,
+            R.drawable.bg_octane,
+            R.drawable.bg_valk,
+            R.drawable.bg_pathy
         )
         val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getWorldsEdgeImage(): Int {
-        val images = listOf(
-            R.drawable.worlds_edge_1,
-            R.drawable.worlds_edge_2,
-            R.drawable.worlds_edge_3
-        )
-        val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getOlympusImage(): Int {
-        val images = listOf(
-            R.drawable.olympus_2,
-            R.drawable.olympus_3,
-            R.drawable.transition_olympus,
-            R.drawable.transition_olympus_mu1
-        )
-        val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getStormPointImage(): Int {
-        val images = listOf(
-            R.drawable.storm_point_1,
-            R.drawable.storm_point_2
-        )
-        val rand = Random()
-        return images[rand.nextInt(images.size)]
-    }
-
-    override fun getArenasImageForMapName(mapName: String): Int? {
-        when (mapName) {
-            "Party crasher" -> {
-                return R.drawable.party_crasher
-            }
-            "Phase runner" -> {
-                return R.drawable.phase_runner
-            }
-            "Overflow" -> {
-                return R.drawable.overflow
-            }
-            "Encore" -> {
-                return R.drawable.encore
-            }
-            "Habitat" -> {
-                return R.drawable.habitat
-            }
-            "Drop Off" -> {
-                return R.drawable.bg_drop_off
-            }
-            else -> {
-                return null
-            }
-        }
+        return bgImages[rand.nextInt(bgImages.size)]
     }
 }

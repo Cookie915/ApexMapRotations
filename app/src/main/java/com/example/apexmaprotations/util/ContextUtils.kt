@@ -9,16 +9,21 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.activities.LockScreenActivity
 import com.example.apexmaprotations.alarm.AlarmBroadCastReceiver
-import com.example.apexmaprotations.viewmodels.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.prefs.Preferences
 
+val Context.dataStore: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore(
+    "settings"
+)
 enum class RequestCodes {
     NOTIFICATION, ALARM;
     operator fun invoke(): Int {
@@ -26,7 +31,11 @@ enum class RequestCodes {
     }
 }
 
-fun Context.scheduleNotification(isAlarm: Boolean, timeRemaining: Long) {
+fun Context.scheduleNotification(
+    isAlarm: Boolean,
+    timeRemaining: Long,
+    dataStore: DataStore<Preferences>
+) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val scheduleTime = System.currentTimeMillis() + timeRemaining
     with(alarmManager) {
@@ -38,8 +47,9 @@ fun Context.scheduleNotification(isAlarm: Boolean, timeRemaining: Long) {
     }
     CoroutineScope(Dispatchers.IO).launch {
         val dataStoreTarget = if (isAlarm) ALARM_TIME else NOTIFICATION_TIME
-        dataStore.edit {
-            it[dataStoreTarget] = scheduleTime
+        dataStore.updateData {
+            it.putLong(dataStoreTarget.name, scheduleTime)
+            return@updateData it
         }
     }
 }
@@ -133,7 +143,7 @@ fun Context.showNotificationWithFullScreenIntent(
     description: String = "Apex map changed to",
 ) {
     val channelId = if (isAlarm) RequestCodes.ALARM.name else RequestCodes.NOTIFICATION.name
-    val icon = if (isAlarm) R.drawable.ic_notify_filled else R.drawable.ic_alert_3
+    val icon = if (isAlarm) R.drawable.ic_alarm else R.drawable.ic_notification
     val requestCode = if (isAlarm) RequestCodes.ALARM() else RequestCodes.NOTIFICATION()
     val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
     val builder = NotificationCompat.Builder(this, channelId)
