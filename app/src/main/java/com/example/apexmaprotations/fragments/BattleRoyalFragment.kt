@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val TAG = "BattleRoyalFragment"
+private const val TAG = "BattleRoyalFragment"
 
 @AndroidEntryPoint
 class BattleRoyalFragment @Inject constructor(
@@ -63,7 +63,6 @@ class BattleRoyalFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "Resumed")
-        apexViewModel?.checkTimers()
     }
 
 
@@ -103,9 +102,7 @@ class BattleRoyalFragment @Inject constructor(
                 launch {
                     apexViewModel?.mapDataBundle?.collect { mapDataBundleResponse ->
                         when (mapDataBundleResponse) {
-                            is NetworkResult.Loading -> {
-                                Log.i("tesss", "Loading")
-                            }
+                            is NetworkResult.Loading -> {}
                             is NetworkResult.Error -> {
                                 appViewModel?.hideSplash()
                                 Log.i(
@@ -131,8 +128,8 @@ class BattleRoyalFragment @Inject constructor(
                                 }
                             }
                             is NetworkResult.Success -> {
-                                Log.i("tesss", "Succ")
                                 appViewModel?.hideSplash()
+                                apexViewModel?.initializeTimer(mapDataBundleResponse.data!!)
                                 requireActivity().dataStore.edit {
                                     it[NEXT_MAP] =
                                         mapDataBundleResponse.data?.battleRoyale?.next?.map.toString()

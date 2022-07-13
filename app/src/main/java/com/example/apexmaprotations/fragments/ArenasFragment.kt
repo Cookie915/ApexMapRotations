@@ -2,6 +2,7 @@ package com.example.apexmaprotations.fragments
 
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+private const val TAG = "ArenasFragmentLogs"
 @AndroidEntryPoint
 class ArenasFragment @Inject constructor(
     var apexViewModel: ApexViewModel?,
@@ -58,16 +59,16 @@ class ArenasFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if (
-            apexViewModel?.rankedTimerArenas != null && System.currentTimeMillis() > (apexViewModel?.rankedTimerArenas?.mStopTimeInFuture
-                ?: 0) ||
-            apexViewModel?.unrankedTimerArenas != null && System.currentTimeMillis() > (apexViewModel?.unrankedTimerArenas?.mStopTimeInFuture
-                ?: 0)
-        ) {
-            lifecycleScope.launch {
-                apexViewModel?.refreshMapData()
-            }
-        }
+//        lifecycleScope.launch {
+//            apexViewModel?.refreshMapData()
+//        }
+        Log.i("ApexRepo", "onResume")
+//        apexViewModel?.checkTimers()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "onStop")
     }
 
     private fun setupListeners() {
@@ -85,6 +86,8 @@ class ArenasFragment @Inject constructor(
                             is NetworkResult.Error -> {
                             }
                             is NetworkResult.Success -> {
+                                Log.i("ApexRepo", "${it.data!!.battleRoyale.current.remainingSecs}")
+                                apexViewModel?.initializeTimer(it.data)
                                 binding.currentText.text =
                                     getString(R.string.currentMapText) + " " +
                                             it.data?.arenas?.current?.map?.capitalizeWords()
@@ -95,6 +98,7 @@ class ArenasFragment @Inject constructor(
                                             it.data?.arenasRanked?.current?.map?.capitalizeWords()
                                 binding.rankedNextText.text = getString(R.string.nextUpText) + " " +
                                         it.data?.arenasRanked?.next?.map?.capitalizeWords()
+                                apexViewModel?.refreshMapData()
                             }
                         }
                     }
