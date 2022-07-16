@@ -37,8 +37,14 @@ The viewmodels are bound to each fragment and the repository layer is a singleto
 
 ## 📷 Screenshots
 <P align="center">
- <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608266-c11e7b04-369c-4be4-86eb-112e9d462c97.png>
- <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608247-0d939ffc-6002-466b-963d-630fd4356ed1.png>
- <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/174608286-bc21f98b-9875-4d53-ab3c-9588ab0ec4a0.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/179357031-d5e3cd46-9949-4adb-9ada-bb768b26cc03.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/179357051-eb39b1d8-94f5-4e89-a103-65e6f66416d9.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/179357062-578f74d0-6fff-4aa2-b0b9-85a33aa986b3.png>
 </P>
-<video src=https://user-images.githubusercontent.com/49169067/174610059-53ca9a5d-68de-4c9c-ae27-331a4def176c.mp4>
+<P align="center">
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/179357088-1753bf69-d9c7-4e98-ac89-909585c74f49.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/179357105-e3aa6204-7b1c-48cf-a099-588c96b51102.png>
+ <img width="25%" height="25%" src = https://user-images.githubusercontent.com/49169067/179357118-530303c8-a88b-4fab-8311-76c7a3a60869.png>
+</P>
+
+<video src=https://user-images.githubusercontent.com/49169067/179357508-60afe5ec-3888-4dd3-a572-dd58bbaa6975.mp4>
