@@ -24,7 +24,7 @@ abstract class CustomCountdownTimer(
     /**
      * Millisecond representation of time when alarm should've fired, set after calling start()
      */
-    var mMillisInFutureToStop: Long = 0
+    var mStopTimeInFutureMillis: Long = 0
 
     /**
      * boolean representing if the timer was cancelled
@@ -64,7 +64,7 @@ abstract class CustomCountdownTimer(
             return this
         }
         mStopTimeInFuture = SystemClock.elapsedRealtime() + mMillisInFuture
-        mMillisInFutureToStop = System.currentTimeMillis() + mMillisInFuture
+        mStopTimeInFutureMillis = System.currentTimeMillis() + mMillisInFuture
         mHandler.sendMessage(mHandler.obtainMessage(MSG))
         return this
     }

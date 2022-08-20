@@ -9,28 +9,17 @@
             name="viewmodel"
             type="com.example.apexmaprotations.viewmodels.ApexViewModel" />
     </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!--        <ImageView-->
-        <!--            android:id="@+id/appIcon"-->
-        <!--            android:layout_width="100.dp"-->
-        <!--            android:layout_height="50.dp"-->
-        <!--            android:layout_marginTop="32dp"-->
-        <!--            android:contentDescription="@string/appIconDesc"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent"-->
-        <!--            app:srcCompat="@drawable/ic_apex_maps_icon" />-->
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/constraintLayoutMarginTop">
 
         <TextView
             android:id="@+id/currentMapText"
             android:layout_width="0dp"
-            android:layout_height="40.dp"
-            android:layout_marginTop="32dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/currentMapTextMarginTop"
             android:background="@color/text_background"
             android:fontFamily="@font/inter_extralight"
             android:gravity="start|center_vertical"
@@ -39,7 +28,7 @@
             android:singleLine="true"
             android:text="@string/currentMapText"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="@dimen/standardTextSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent=".8" />
@@ -47,7 +36,7 @@
         <TextView
             android:id="@+id/nextMapText"
             android:layout_width="0.dp"
-            android:layout_height="40.dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/text_background"
             android:fontFamily="@font/inter_extralight"
@@ -56,49 +45,33 @@
             android:paddingEnd="20.dp"
             android:text="@string/nextUpText"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="@dimen/standardTextSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/currentMapText"
             app:layout_constraintWidth_percent=".8" />
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="120.dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTintMode="add"
             android:elevation="24dp"
-            android:fontFamily="@font/inter_extralight"
-
-
+            android:fontFamily="@font/inter_regular"
+            android:fontFeatureSettings='"tnum"'
             android:shadowColor="@color/apex_red_night"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="8"
+            android:singleLine="true"
+            android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/timer_animation"
+            android:textSize="@dimen/timerTextSize"
+            app:autoSizeTextType="none"
+            app:layout_constraintBottom_toTopOf="@+id/setAlarmBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/timer_animation"
-            app:layout_constraintVertical_bias="0.48" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/timer_animation"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:contentDescription="@string/timer_animation_id"
-            android:elevation="24dp"
-            android:scaleType="centerCrop"
-            android:scaleX="2"
-            android:scaleY="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nextMapText"
-            app:lottie_autoPlay="true"
-            app:lottie_clipToCompositionBounds="false"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/timer_indicator_glowing" />
+            app:layout_constraintTop_toBottomOf="@+id/nextMapText"
+            tools:text="01 : 15 : 18.2" />
 
         <ImageButton
             android:id="@+id/rightArrow"
@@ -111,18 +84,41 @@
             android:minHeight="48dp"
             android:paddingStart="8.dp"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@id/timer_animation"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/timer_animation"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_arrow_right"
             app:tint="@color/white"
             tools:ignore="ImageContrastCheck,RtlSymmetry" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/timer_animation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timerAnimationMarginTop"
+            android:adjustViewBounds="false"
+            android:visibility="@integer/showTimerAnimation"
+            android:contentDescription="@string/timer_animation_id"
+            android:cropToPadding="true"
+            android:elevation="24dp"
+            android:scaleType="centerCrop"
+            android:scaleX="@dimen/timerAnimationScale"
+            android:scaleY="@dimen/timerAnimationScale"
+            app:layout_constraintBottom_toTopOf="@id/setAlarmText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nextMapText"
+            app:lottie_autoPlay="true"
+            app:lottie_clipToCompositionBounds="false"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/circleanimation"
+            tools:ignore="ImageContrastCheck" />
+
         <TextView
             android:id="@+id/setAlarmText"
             android:layout_width="0.dp"
-            android:layout_height="40.dp"
-            android:layout_marginTop="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/setAlarmTextMarginTop"
             android:background="@color/text_background"
             android:fontFamily="@font/inter_extralight"
             android:gravity="start|center_vertical"
@@ -130,7 +126,7 @@
             android:paddingEnd="20.dp"
             android:text="@string/alarmText"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="@dimen/standardTextSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/timer_animation"
             app:layout_constraintWidth_percent="0.5"
@@ -138,8 +134,8 @@
 
         <ImageButton
             android:id="@+id/setAlarmBtn"
-            android:layout_width="30.dp"
-            android:layout_height="30.dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/alarm_imagebutton_desc"
@@ -154,7 +150,7 @@
         <TextView
             android:id="@+id/setNotificationText"
             android:layout_width="0.dp"
-            android:layout_height="40.dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@color/text_background"
             android:contentDescription="@string/notify_imagebutton_desc"
@@ -164,15 +160,15 @@
             android:paddingEnd="20.dp"
             android:text="@string/notifyText"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="@dimen/standardTextSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/setAlarmText"
             app:layout_constraintWidth_percent=".5" />
 
         <ImageButton
             android:id="@+id/setNotificationButton"
-            android:layout_width="30.dp"
-            android:layout_height="30.dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/notify_imagebutton_desc"
@@ -201,10 +197,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintGuide_percent="0.5" />
-
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

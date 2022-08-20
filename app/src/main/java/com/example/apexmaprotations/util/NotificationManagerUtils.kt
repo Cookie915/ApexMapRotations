@@ -11,7 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 
 fun NotificationManagerCompat.buildChannel(name: String, description: String, channelId: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val importance = NotificationManager.IMPORTANCE_HIGH
+        val importance = NotificationManager.IMPORTANCE_MAX
         if (channelId == RequestCodes.ALARM.name) {
             val channel = NotificationChannel(channelId, name, importance).apply {
                 enableLights(true)
@@ -23,6 +23,7 @@ fun NotificationManagerCompat.buildChannel(name: String, description: String, ch
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), attr)
+                this.importance = importance
             }
             createNotificationChannel(channel)
         }

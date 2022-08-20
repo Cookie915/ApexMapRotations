@@ -1,77 +1,96 @@
 package com.example.apexmaprotations.viewmodels
 
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.cash.turbine.test
+import app.cash.turbine.testIn
 import com.example.apexmaprotations.MainCoroutineRule
-import com.google.common.truth.Truth
+import com.example.apexmaprotations.testUtils.TestDispatchers
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
+import org.mockito.Mockito.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppViewModelTest {
-    private lateinit var appViewModel: AppViewModel
 
-    @get:Rule
+    @get:Rule(order = 1)
     var mainCoroutineRule = MainCoroutineRule()
 
-    @get:Rule
+    @get:Rule(order = 2)
     var instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    lateinit var appViewModel: AppViewModel
 
     @Before
     fun setup() {
-        appViewModel = AppViewModel()
+        val sharedPreferences = mock(SharedPreferences::class.java)
+        appViewModel = AppViewModel(TestDispatchers(), sharedPreferences)
     }
 
+
     @Test
-    fun hideSplash_changesShowSplashValue() {
+    fun hideSplash_changesShowSplashValue() = runTest {
+        val showSplashTurbine = appViewModel.showSplash.testIn(this)
+        //  check initial value
+        assertThat(showSplashTurbine.awaitItem()).isEqualTo(true)
+        //  hide the splash
         appViewModel.hideSplash()
-        Truth.assertThat(appViewModel.showSplash.value).isEqualTo(false)
+        //  make sure state is changed
+        assertThat(showSplashTurbine.awaitItem()).isEqualTo(false)
+        // cleanup turbine
+        showSplashTurbine.cancelAndConsumeRemainingEvents()
     }
 
     @Test
-    fun resetErrorStateFun_properlyResetsErrorState() = runTest {
-        val job = launch {
-            appViewModel.errStatus.test {
-                //  collect initial emission
-                Truth.assertThat(awaitItem()).isEqualTo(false)
-                //  collect error emission
-                Truth.assertThat(awaitItem()).isEqualTo(true)
-                //  make sure error status is reset
-                Truth.assertThat(awaitItem()).isEqualTo(false)
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-        appViewModel.showError("Test Error")
+    fun showError_setsViewModelState() = runTest {
+        //  Flows under test
+        val errorStatusTurbine = appViewModel.errStatus.testIn(this)
+        val errorMessageTurbine = appViewModel.errMessage.testIn(this)
+        val errorImageTurbine = appViewModel.errImage.testIn(this)
+        //  Test initial values
+        assertThat(errorStatusTurbine.awaitItem()).isEqualTo(false)
+        assertThat(errorMessageTurbine.awaitItem()).isNull()
+        assertThat(errorImageTurbine.awaitItem()).isNull()
+        //  Show an Error
+        appViewModel.showError("Error")
+        //  Test new values
+        assertThat(errorStatusTurbine.awaitItem()).isEqualTo(true)
+        assertThat(errorMessageTurbine.awaitItem()).isEqualTo("Error")
+        assertThat(errorImageTurbine.awaitItem()).isNotNull()
+        //  cleanup turbines
+        errorImageTurbine.cancelAndConsumeRemainingEvents()
+        errorMessageTurbine.cancelAndConsumeRemainingEvents()
+        errorStatusTurbine.cancelAndConsumeRemainingEvents()
+    }
+
+    @Test
+    fun resetError_resetsErrorImageMessageAndState() = runTest {
+        val errorStatusTurbine = appViewModel.errStatus.testIn(this)
+        val errorMessageTurbine = appViewModel.errMessage.testIn(this)
+        val errorImageTurbine = appViewModel.errImage.testIn(this)
+        //  skip initial values
+        errorStatusTurbine.skipItems(1)
+        errorMessageTurbine.skipItems(1)
+        errorImageTurbine.skipItems(1)
+        //  Show an error and update state
+        appViewModel.showError("Error")
+        //  Make sure error state is set
+        assertThat(errorStatusTurbine.awaitItem()).isEqualTo(true)
+        assertThat(errorMessageTurbine.awaitItem()).isEqualTo("Error")
+        assertThat(errorImageTurbine.awaitItem()).isNotNull()
+        //  Reset error state
         appViewModel.resetErrorState()
-        job.join()
-        job.cancel()
+        // verify error state is reset
+        assertThat(errorStatusTurbine.awaitItem()).isEqualTo(false)
+        assertThat(errorMessageTurbine.awaitItem()).isEqualTo(null)
+        assertThat(errorImageTurbine.awaitItem()).isNull()
+        //  clean up turbines
+        errorStatusTurbine.cancelAndConsumeRemainingEvents()
+        errorMessageTurbine.cancelAndConsumeRemainingEvents()
+        errorImageTurbine.cancelAndConsumeRemainingEvents()
     }
 
-    @Test
-    fun appViewModelShowErrorFun_setsErrorImageAndMessage() = runTest {
-        //  Check initial value is false
-        Truth.assertThat(appViewModel.errStatus.value).isEqualTo(false)
-        //  Show error
-        appViewModel.showError("Test Error")
-        val job = launch {
-            //  Status error is true
-            appViewModel.errStatus.test {
-                Truth.assertThat(awaitItem()).isEqualTo(true)
-            }
-            //  errImage is set
-            appViewModel.errImage.test {
-                Truth.assertThat(awaitItem()).isNotNull()
-            }
-            //  errMsg is equal to string passed in showError()
-            appViewModel.errMessage.test {
-                Truth.assertThat(awaitItem()).isEqualTo("Test Error")
-            }
-        }
-        job.join()
-    }
 }

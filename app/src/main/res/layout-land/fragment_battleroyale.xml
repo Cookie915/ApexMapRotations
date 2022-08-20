@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.example.apexmaprotations.viewmodels.ApexViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/appIcon"-->
+        <!--            android:layout_width="100.dp"-->
+        <!--            android:layout_height="50.dp"-->
+        <!--            android:layout_marginTop="32dp"-->
+        <!--            android:contentDescription="@string/appIconDesc"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:srcCompat="@drawable/ic_apex_maps_icon" />-->
+
+        <TextView
+            android:id="@+id/currentMapText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/currentMapTextMarginTop"
+            android:background="@color/text_background"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="20.dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="@string/currentMapText"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/standardTextSize"
+            app:layout_constraintEnd_toStartOf="@+id/centerHorizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text='"Current: Kings Canyon"' />
+
+        <TextView
+            android:id="@+id/nextMapText"
+            android:layout_width="0.dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/text_background"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="20.dp"
+            android:paddingBottom="4dp"
+            android:text="@string/nextUpText"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/standardTextSize"
+            app:layout_constraintEnd_toStartOf="@+id/centerHorizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/currentMapText"
+            tools:text='"Next: Storm Point"' />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/timer_animation"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/timer_animation_id"
+            android:elevation="24dp"
+            android:scaleType="centerCrop"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/centerHorizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/centerVertical"
+            app:lottie_autoPlay="true"
+            app:lottie_clipToCompositionBounds="false"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/circleanimation"
+            tools:ignore="ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTintMode="add"
+            android:elevation="24dp"
+            android:fontFamily="@font/inter_regular"
+            android:fontFeatureSettings='"tnum"'
+            android:gravity="center"
+            android:maxLines="1"
+            android:shadowColor="@color/apex_red_night"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="8"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="@id/timer_animation"
+            app:layout_constraintEnd_toEndOf="@+id/timer_animation"
+            app:layout_constraintStart_toStartOf="@+id/timer_animation"
+            app:layout_constraintTop_toTopOf="@id/timer_animation"
+            app:layout_constraintWidth_percent="0.1"
+            tools:text='"00 : 56 : 35.2"' />
+
+        <ImageButton
+            android:id="@+id/rightArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/arrow_desc"
+            android:foregroundGravity="top"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:paddingStart="8.dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_right"
+            app:tint="@color/white"
+            tools:ignore="ImageContrastCheck,RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/setAlarmText"
+            android:layout_width="0.dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@color/text_background"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="20.dp"
+            android:paddingBottom="4dp"
+            android:text="@string/alarmText"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/standardTextSize"
+            app:layout_constraintBottom_toTopOf="@+id/setNotificationText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.3"
+            tools:layout_constraintTop_toBottomOf="@id/timer_animation"
+            tools:text="Set Alarm"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/setAlarmBtn"
+            android:layout_width="30.dp"
+            android:layout_height="30.dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/alarm_imagebutton_desc"
+            android:foregroundGravity="center_vertical|center"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/setAlarmText"
+            app:layout_constraintEnd_toEndOf="@id/setAlarmText"
+            app:layout_constraintStart_toStartOf="@id/centerVertical"
+            app:layout_constraintTop_toTopOf="@id/setAlarmText"
+            app:srcCompat="@drawable/ic_alarm" />
+
+        <TextView
+            android:id="@+id/setNotificationText"
+            android:layout_width="0.dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:background="@color/text_background"
+            android:contentDescription="@string/notify_imagebutton_desc"
+            android:fontFamily="@font/inter_extralight"
+            android:gravity="start|center_vertical"
+            android:paddingStart="20.dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="20.dp"
+            android:paddingBottom="4dp"
+            android:text="@string/notifyText"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/standardTextSize"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.3"
+            tools:text="Notify"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/setNotificationButton"
+            android:layout_width="30.dp"
+            android:layout_height="30.dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/notify_imagebutton_desc"
+            android:foregroundGravity="center_vertical|center|center_horizontal"
+            android:foregroundTint="@color/white"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@id/setNotificationText"
+            app:layout_constraintEnd_toEndOf="@id/setNotificationText"
+            app:layout_constraintStart_toStartOf="@id/centerVertical"
+            app:layout_constraintTop_toTopOf="@id/setNotificationText"
+            app:srcCompat="@drawable/ic_notification"
+            app:tint="@color/white" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/centerVertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_percent="0.4"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/centerHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

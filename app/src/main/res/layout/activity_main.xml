@@ -12,16 +12,18 @@
 
     <ImageView
         android:id="@+id/bgImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="false"
         android:clickable="false"
         android:contentDescription="@string/background"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
+        android:scaleX="1"
+        android:scaleY="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/nav_host_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_bloodhound"
         tools:contentDescription="@string/bgImageDesc"
         tools:ignore="ImageContrastCheck" />
 
@@ -29,24 +31,38 @@
         android:id="@+id/appIconMain"
         android:layout_width="100.dp"
         android:layout_height="50.dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/appIconTopMargin"
+        android:layout_marginBottom="@dimen/appIconTopMargin"
         android:contentDescription="@string/appIconDesc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_apex_maps_icon" />
+        app:srcCompat="@drawable/ic_apex_maps_icon"
+        android:scaleX="@dimen/appIconScale"
+        android:scaleY="@dimen/appIconScale" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appIconMain"
+
         app:layout_constraintBottom_toBottomOf="parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appIconMain" />
+
+    <!--    <androidx.fragment.app.FragmentContainerView-->
+    <!--        android:id="@+id/nav_host_fragment"-->
+    <!--        android:name="androidx.navigation.fragment.NavHostFragment"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/appIconMain"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:defaultNavHost="true"-->
+    <!--        app:navGraph="@navigation/nav_graph"-->
+    <!--        tools:layout="@layout/activity_main" />-->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/messageGuideline"
@@ -57,17 +73,18 @@
 
     <ImageView
         android:id="@+id/errImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:contentDescription="@string/errorImageDesc"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/er_pathy"
-        tools:ignore="ImageContrastCheck" />
+        tools:ignore="ImageContrastCheck"
+        tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/errorMessageTv"
@@ -82,5 +99,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.9" />
+
+    <ImageButton
+        android:id="@+id/refreshDataButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/refreshMapDataButtonDesc"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_refresh"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,139 +1,27 @@
 package com.example.apexmaprotations.util
 
-import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import com.example.apexmaprotations.R
 import com.example.apexmaprotations.activities.LockScreenActivity
-import com.example.apexmaprotations.alarm.AlarmBroadCastReceiver
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import java.util.prefs.Preferences
+import java.util.*
+import kotlin.math.sqrt
 
-val Context.dataStore: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore(
-    "settings"
-)
+
 enum class RequestCodes {
     NOTIFICATION, ALARM;
     operator fun invoke(): Int {
         return ordinal
     }
-}
-
-fun Context.scheduleNotification(
-    isAlarm: Boolean,
-    timeRemaining: Long,
-    dataStore: DataStore<Preferences>
-) {
-    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val scheduleTime = System.currentTimeMillis() + timeRemaining
-    with(alarmManager) {
-//        setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, scheduleTime, getReceiver(isAlarm))
-        setAlarmClock(
-            AlarmManager.AlarmClockInfo(scheduleTime, getReceiver(isAlarm)),
-            getReceiver(isAlarm)
-        )
-    }
-    CoroutineScope(Dispatchers.IO).launch {
-        val dataStoreTarget = if (isAlarm) ALARM_TIME else NOTIFICATION_TIME
-        dataStore.updateData {
-            it.putLong(dataStoreTarget.name, scheduleTime)
-            return@updateData it
-        }
-    }
-}
-
-fun Context.cancelAlert(isAlarm: Boolean) {
-    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    alarmManager.cancel(getReceiver(isAlarm))
-    CoroutineScope(Dispatchers.IO).launch {
-        val dataStoreTarget = if (isAlarm) ALARM_TIME else NOTIFICATION_TIME
-        dataStore.edit {
-            it[dataStoreTarget] = 0
-        }
-    }
-}
-
-//  Verifies alarms are valid and resets them with alarm manager
-suspend fun Context.resetAlerts() {
-    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val alarmTime = dataStore.data.first()[ALARM_TIME] ?: 0
-    val notifyTime = dataStore.data.first()[NOTIFICATION_TIME] ?: 0
-    if (alarmTime > 0 && alarmTime < System.currentTimeMillis()) {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, getReceiver(true))
-    } else {
-        dataStore.edit {
-            it[ALARM_TIME] = 0
-        }
-        alarmManager.cancel(getReceiver(true))
-    }
-    if (notifyTime > 0 && notifyTime < System.currentTimeMillis()) {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, notifyTime, getReceiver(false))
-    } else {
-        dataStore.edit {
-            it[NOTIFICATION_TIME] = 0
-        }
-        alarmManager.cancel(getReceiver(false))
-    }
-}
-
-suspend fun Context.cancelAlerts() {
-    dataStore.edit {
-        it[ALARM_TIME] = 0L
-        it[NOTIFICATION_TIME] = 0L
-    }
-    cancelAlert(true)
-    cancelAlert(false)
-}
-
-//  Cancels alarms if time has already passed since map change
-fun Context.verifyAlerts() {
-    CoroutineScope(Dispatchers.IO).launch {
-        val alarmTime = dataStore.data.first()[ALARM_TIME] ?: 0L
-        val notifyTime = dataStore.data.first()[NOTIFICATION_TIME] ?: 0L
-        val currentTime = System.currentTimeMillis()
-        if (currentTime > alarmTime) {
-            cancelAlert(true)
-            dataStore.edit {
-                it[ALARM_TIME] = 0L
-            }
-        }
-        if (currentTime > notifyTime) {
-            cancelAlert(false)
-            dataStore.edit {
-                it[NOTIFICATION_TIME] = 0L
-            }
-        }
-    }
-}
-
-fun Context.getReceiver(isAlarm: Boolean): PendingIntent {
-    var flags = 0
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        flags = PendingIntent.FLAG_IMMUTABLE
-    }
-    flags += PendingIntent.FLAG_CANCEL_CURRENT
-    val intent = Intent(this, AlarmBroadCastReceiver::class.java).apply {
-        putExtra("ALARM", isAlarm)
-    }
-    val requestCode = if (isAlarm) RequestCodes.ALARM() else RequestCodes.NOTIFICATION()
-    return PendingIntent.getBroadcast(
-        this,
-        requestCode,
-        intent,
-        flags
-    )
 }
 
 fun Context.showNotificationWithFullScreenIntent(
@@ -156,7 +44,9 @@ fun Context.showNotificationWithFullScreenIntent(
         .setSound(sound)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setCategory(NotificationCompat.CATEGORY_ALARM)
+        .setDefaults(Notification.DEFAULT_VIBRATE)
         .setPriority(NotificationCompat.PRIORITY_MAX)
+
     if (isAlarm) {
         builder.setFullScreenIntent(getFullScreenIntent(isLockScreen), true)
     } else {
@@ -172,9 +62,7 @@ fun Context.showNotificationWithFullScreenIntent(
     }
     with(NotificationManagerCompat.from(this)) {
         buildChannel(channelId, description, channelId)
-        val notification = builder.build().apply {
-            category = NotificationCompat.CATEGORY_ALARM
-        }
+        val notification = builder.build()
         notify(requestCode, notification)
     }
 }
@@ -193,4 +81,34 @@ private fun Context.getFullScreenIntent(isLockScreen: Boolean): PendingIntent {
         flag = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
     }
     return PendingIntent.getActivity(this, RequestCodes.ALARM(), intent, flag)
+}
+
+fun Context.getRandomBgImage(): Int {
+    Log.i("tester14", "ctx get image")
+    val bgImages: List<Int>
+    val metrics = resources.displayMetrics
+    val yInches = metrics.heightPixels / metrics.ydpi
+    val xInches = metrics.widthPixels / metrics.xdpi
+    val diagonalInches: Double = sqrt(xInches * xInches + yInches * yInches).toDouble()
+    val isTablet = diagonalInches > 6.5
+    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE || isTablet) {
+        bgImages = listOf(
+            R.drawable.bg_valk_tablet,
+            R.drawable.bg_wattson_tablet,
+            R.drawable.bg_octone_tablet,
+            R.drawable.bg_crypto_tablet
+        )
+    } else {
+        bgImages = listOf(
+            R.drawable.bg_ash,
+            R.drawable.bg_bloodhound,
+            R.drawable.bg_octane,
+            R.drawable.bg_valk,
+            R.drawable.bg_pathy
+        )
+    }
+    val rand = Random()
+    val image = bgImages[rand.nextInt(bgImages.size)]
+    Log.i("tester14", image.toString())
+    return image
 }

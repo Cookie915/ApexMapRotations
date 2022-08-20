@@ -5,17 +5,26 @@ import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.datastore.preferences.core.edit
-import com.example.apexmaprotations.util.*
+import com.example.apexmaprotations.util.ALARM_TIME_KEY
+import com.example.apexmaprotations.util.NEXT_MAP_KEY
+import com.example.apexmaprotations.util.NOTIFICATION_TIME_KEY
+import com.example.apexmaprotations.util.showNotificationWithFullScreenIntent
+import com.example.apexmaprotations.viewmodels.AppViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AlarmBroadCastReceiver : BroadcastReceiver() {
+@AndroidEntryPoint
+class AlarmBroadCastReceiver @Inject constructor(
+    val sharedPreferences: SharedPreferences,
+    val appViewModel: AppViewModel
+) : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context, intent: Intent) {
         val alarmManager = getSystemService(
@@ -27,9 +36,9 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 if (Build.VERSION.SDK_INT >= 31) {
                     CoroutineScope(Dispatchers.IO).launch {
                         if (alarmManager.canScheduleExactAlarms()) {
-                            context.resetAlerts()
+                            appViewModel.resetAlerts(context)
                         } else {
-                            context.cancelAlerts()
+                            appViewModel.cancelAllAlerts(context)
                         }
                     }
                 }
@@ -39,32 +48,30 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 CoroutineScope(Dispatchers.IO).launch {
                     if (Build.VERSION.SDK_INT >= 31) {
                         if (alarmManager.canScheduleExactAlarms()) {
-                            context.resetAlerts()
+                            appViewModel.resetAlerts(context)
                         } else {
-                            context.cancelAlerts()
+                            appViewModel.cancelAllAlerts(context)
                         }
                     } else {
-                        context.resetAlerts()
+                        appViewModel.resetAlerts(context)
                     }
                 }
             }
             else -> {
-                // alarm actions
-                CoroutineScope(Dispatchers.IO).launch {
-                    context.dataStore.edit {
-                        it[NOTIFICATION_TIME] = 0
-                        it[ALARM_TIME] = 0
-                    }
-                    val isAlarm = intent.extras?.get("ALARM") as Boolean
-                    val nextMap = context.dataStore.data.first()[NEXT_MAP]
-                    with(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager) {
-                        context.showNotificationWithFullScreenIntent(
-                            isAlarm,
-                            isDeviceLocked,
-                            "Map Change",
-                            "Battle Royal map changed to $nextMap"
-                        )
-                    }
+                with(sharedPreferences.edit()) {
+                    putLong(NOTIFICATION_TIME_KEY, 0)
+                    putLong(ALARM_TIME_KEY, 0)
+                    commit()
+                }
+                val nextMap = sharedPreferences.getString(NEXT_MAP_KEY, "")
+                val isAlarm = intent.extras?.get("ALARM") as Boolean
+                with(context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager) {
+                    context.showNotificationWithFullScreenIntent(
+                        isAlarm,
+                        isDeviceLocked,
+                        "Apex Map Change",
+                        "Battle Royal map changed to $nextMap"
+                    )
                 }
             }
         }

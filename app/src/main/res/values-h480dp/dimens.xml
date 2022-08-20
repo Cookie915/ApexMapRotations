@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  MainActivity Layout  -->
+    <dimen name="appIconScale">1</dimen>
+
+    <dimen name="appIconTopMargin">48dp</dimen>
+
+    <!--  Battle Royal Layout  -->
+
+    <dimen name="constraintLayoutMarginTop">0dp</dimen>
+
+    <dimen name="currentMapTextMarginTop">48dp</dimen>
+
+    <dimen name="timerAnimationMarginTop">100dp</dimen>
+
+    <dimen name="setAlarmTextMarginTop">100dp</dimen>
+
+    <dimen name="timerAnimationScale">2f</dimen>
+
+    <dimen name="standardTextSize">24sp</dimen>
+
+    <dimen name="timerTextSize">14sp</dimen>
+
+    <integer name="showTimerAnimation">0</integer>
+
+
+    <!--  Arenas Layout  -->
+
+    <dimen name="arenasTextTopMargin">48dp</dimen>
+
+    <dimen name="currentArenasTextTopMargin">24dp</dimen>
+
+    <dimen name="nextArenasTextTopMargin">16dp</dimen>
+
+    <dimen name="timerArenasTopMargin">48dp</dimen>
+
+    <dimen name="rankedTextTopMargin">120dp</dimen>
+
+    <dimen name="arenasTimerTextSize">20sp</dimen>
+
+    <dimen name="arenasCurrentAndNextTextSize">20sp</dimen>
+
+    <dimen name="boxTimerAnimationScale">3f</dimen>
+
+
+</resources>

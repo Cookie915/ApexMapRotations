@@ -1,6 +1,6 @@
 package com.example.apexmaprotations.testUtils
 
-import com.example.apexmaprotations.retrofit.MapDataBundle
+import com.example.apexmaprotations.data.retrofit.MapDataBundle
 
 object TestMapDataBundles {
     val SuccessfulMapDataBundle = MapDataBundle(

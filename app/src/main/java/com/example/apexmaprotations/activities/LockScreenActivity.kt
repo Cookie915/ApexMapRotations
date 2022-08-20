@@ -1,35 +1,32 @@
 package com.example.apexmaprotations.activities
 
 import android.app.NotificationManager
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.apexmaprotations.databinding.ActivityLockScreenBinding
-import com.example.apexmaprotations.repo.ApexRepo
-import com.example.apexmaprotations.util.NEXT_MAP
-import com.example.apexmaprotations.util.dataStore
+import com.example.apexmaprotations.repo.ApexRepoImpl
+import com.example.apexmaprotations.util.NEXT_MAP_KEY
+import com.example.apexmaprotations.util.getRandomBgImage
 import com.example.apexmaprotations.util.turnScreenOffAndKeyGuardOn
 import com.example.apexmaprotations.util.turnScreenOnAndKeyguardOff
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class LockScreenActivity @Inject constructor(
-    private var apexRepo: ApexRepo
+    private var apexRepo: ApexRepoImpl,
+    private var sharedPreferences: SharedPreferences
 ) : AppCompatActivity() {
     private val binding: ActivityLockScreenBinding by lazy {
         ActivityLockScreenBinding.inflate(layoutInflater)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            val mapName = dataStore.data.first()[NEXT_MAP] ?: ""
-            binding.mapName.text = mapName
-            binding.image.setImageDrawable(getDrawable(apexRepo.getRandomBgImage()))
-            setContentView(binding.root)
-        }
+        val mapName = sharedPreferences.getString(NEXT_MAP_KEY, "")
+        val mapImage = getDrawable(this.getRandomBgImage())
+        binding.mapName.text = mapName
+        binding.image.setImageDrawable(mapImage)
         turnScreenOnAndKeyguardOff()
     }
 

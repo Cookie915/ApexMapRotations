@@ -1,28 +1,25 @@
 package com.example.apexmaprotations.fragments
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.swipeRight
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import android.content.SharedPreferences
 import androidx.test.filters.MediumTest
 import app.cash.turbine.test
 import com.example.apexmaprotations.MainCoroutineRule
-import com.example.apexmaprotations.R
+import com.example.apexmaprotations.data.models.NetworkResult
 import com.example.apexmaprotations.launchFragmentInHiltContainer
-import com.example.apexmaprotations.models.NetworkResult
+import com.example.apexmaprotations.repo.ApexRepoImpl
+import com.example.apexmaprotations.repo.FakeApexRepo
 import com.example.apexmaprotations.viewmodels.ApexViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.*
 import javax.inject.Inject
 
 
@@ -32,68 +29,70 @@ import javax.inject.Inject
 class ArenasFragmentTest {
     @get:Rule(order = 0)
     var hiltAndroidRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 1)
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+//
+//    @get:Rule(order = 1)
+//    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule(order = 2)
-    var coroutineRule = MainCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule()
 
     @Inject
-    lateinit var testFragmentFactory: TestApexFragmentFactory
+    lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var repo: ApexRepoImpl
 
     @Before
     fun setup() {
         hiltAndroidRule.inject()
     }
 
+    @After
+    fun teardown() {
+        (repo as FakeApexRepo).setShouldReturnNetworkError(false)
+        with(sharedPreferences.edit()) {
+            clear()
+            commit()
+        }
+    }
+
+    //  This test uses the StandardTestDispatcher() because I wanted to play
+    //  around and get a feel for the different ways
+    //  test handle dispatching and starting coroutines
     @Test
     fun test_TestsUseFakeRepo() = runTest {
         var testViewModel: ApexViewModel? = null
-        testFragmentFactory.fakeRepo.setShouldReturnNetworkError(true)
-        //  mapDataBundle initially fetched in fragments onResume()
-        launchFragmentInHiltContainer<ArenasFragment>(fragmentFactory = testFragmentFactory) {
-            testViewModel = this.apexViewModel
-        }
+        (repo as FakeApexRepo).setShouldReturnNetworkError(true)
+        //  Starts listening for emissions
         val job = launch {
             testViewModel?.mapDataBundle?.test {
-                //  check initial
-                assertThat(awaitItem()).isInstanceOf(NetworkResult.Loading::class.java)
                 //  check first emission
+                assertThat(awaitItem()).isNull()
+                //  check loading
+                assertThat(awaitItem()).isInstanceOf(NetworkResult.Loading::class.java)
+                //  check error
                 assertThat(awaitItem()).isInstanceOf(NetworkResult.Error::class.java)
                 cancelAndIgnoreRemainingEvents()
             }
         }
         job.join()
+        //  mapDataBundle initially fetched in viewmodel init{}
+        launchFragmentInHiltContainer<ArenasFragment> {
+            testViewModel = this.apexViewModel
+        }
         job.cancel()
     }
 
     @Test
-    fun swipeRight_popsBackStack() {
-        val navController = mock(NavController::class.java)
-        launchFragmentInHiltContainer<ArenasFragment>(fragmentFactory = testFragmentFactory) {
-            viewLifecycleOwnerLiveData.observeForever { lifecycleOwner ->
-                if (lifecycleOwner != null) {
-                    navController.setGraph(R.navigation.nav_graph)
-                    Navigation.setViewNavController(requireView(), navController)
-                }
-            }
+    fun test_TestsUseFakeRepoUnconfined() = runTest {
+        var testViewModel: ApexViewModel? = null
+        (repo as FakeApexRepo).setShouldReturnNetworkError(true)
+        //  mapDataBundle initially fetched in viewmodel init{}
+        launchFragmentInHiltContainer<ArenasFragment> {
+            testViewModel = this.apexViewModel
         }
-        onView(isRoot()).perform(swipeRight())
-        verify(navController).popBackStack()
+        advanceUntilIdle()
+        assertThat(testViewModel?.mapDataBundle?.value).isInstanceOf(NetworkResult.Error::class.java)
     }
 
-    @Test
-    fun swipeLeft_doesNotPopBackStack() {
-        val navController = mock(NavController::class.java)
-        launchFragmentInHiltContainer<ArenasFragment>(fragmentFactory = testFragmentFactory) {
-            viewLifecycleOwnerLiveData.observeForever { lifecycleOwner ->
-                if (lifecycleOwner != null) {
-                    navController.setGraph(R.navigation.nav_graph)
-                    Navigation.setViewNavController(requireView(), navController)
-                }
-            }
-        }
-        verify(navController, never()).popBackStack()
-    }
 }

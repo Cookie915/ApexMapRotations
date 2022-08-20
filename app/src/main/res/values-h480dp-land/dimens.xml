@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="arenasTextTopMargin">24dp</dimen>
+
+    <dimen name="currentArenasTextTopMargin">48dp</dimen>
+
+    <dimen name="nextArenasTextTopMargin">24dp</dimen>
+
+    <dimen name="rankedTextTopMargin">48dp</dimen>
+
+    <dimen name="boxTimerAnimationScale">5f</dimen>
+
+    <dimen name="standardTextSize">40sp</dimen>
+
+    <dimen name="arenasCurrentAndNextTextSize">32sp</dimen>
+
+</resources>

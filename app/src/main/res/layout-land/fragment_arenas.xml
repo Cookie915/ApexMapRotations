@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/arenasConstraintLayout">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".25" />
+
+    <TextView
+        android:id="@+id/arenasText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/arenasTextTopMargin"
+        android:background="@color/text_background"
+        android:fontFamily="@font/inter_extralight"
+        android:gravity="center"
+        android:text="@string/arenas"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/standardTextSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/currentText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/currentArenasTextTopMargin"
+        android:background="@color/text_background"
+        android:fontFamily="@font/inter_extralight"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:text="@string/currentMapText"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/arenasCurrentAndNextTextSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/arenasText"
+        app:layout_constraintWidth_percent="0.4"
+        tools:ignore="RtlSymmetry,TextContrastCheck"
+        tools:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/nextText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/nextArenasTextTopMargin"
+        android:background="@color/text_background"
+        android:fontFamily="@font/inter_extralight"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:text="@string/nextUpText"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/arenasCurrentAndNextTextSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentText"
+        app:layout_constraintWidth_percent="0.4"
+        tools:ignore="RtlSymmetry,TextContrastCheck"
+        tools:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_regular"
+        android:fontFeatureSettings='"tnum"'
+        android:text="@string/topTimerPlacesHolder"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/arenasTimerTextSize"
+        app:layout_constraintBottom_toBottomOf="@id/nextText"
+        app:layout_constraintEnd_toEndOf="@+id/timer_animation"
+        app:layout_constraintStart_toStartOf="@+id/timer_animation"
+        app:layout_constraintTop_toTopOf="@id/currentText"
+        tools:ignore="TextContrastCheck" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/timer_animation"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/timer_animation_id"
+        android:elevation="24dp"
+        android:scaleType="centerCrop"
+        android:scaleX="@dimen/boxTimerAnimationScale"
+        android:scaleY="@dimen/boxTimerAnimationScale"
+        app:layout_constraintBottom_toBottomOf="@+id/nextText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/currentText"
+        app:layout_constraintTop_toTopOf="@+id/currentText"
+        app:lottie_autoPlay="true"
+        app:lottie_clipToCompositionBounds="false"
+        app:lottie_colorFilter="@color/white"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/timer_animation_box"
+        app:lottie_speed="1"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/rankedArenasText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/rankedTextTopMargin"
+        android:background="@color/text_background"
+        android:fontFamily="@font/inter_extralight"
+        android:gravity="center"
+        android:text="@string/ranked_text"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/standardTextSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nextText" />
+
+    <TextView
+        android:id="@+id/rankedCurrentText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/currentArenasTextTopMargin"
+        android:background="@color/text_background"
+        android:fontFamily="@font/inter_extralight"
+        android:gravity="start|center_vertical"
+        android:paddingStart="20.dp"
+        android:text="@string/currentMapText"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/arenasCurrentAndNextTextSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rankedArenasText"
+        app:layout_constraintWidth_percent="0.4"
+        tools:ignore="RtlSymmetry,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/rankedNextText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/nextArenasTextTopMargin"
+        android:background="@color/text_background"
+        android:fontFamily="@font/inter_extralight"
+        android:gravity="start|center_vertical"
+        android:paddingStart="20dp"
+        android:text="@string/nextUpText"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/arenasCurrentAndNextTextSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rankedCurrentText"
+        app:layout_constraintWidth_percent="0.4"
+        tools:ignore="RtlSymmetry,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/rankedTimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_regular"
+        android:fontFeatureSettings='"tnum"'
+        android:text="@string/topTimerPlacesHolder"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/arenasTimerTextSize"
+        app:layout_constraintBottom_toBottomOf="@+id/rankedNextText"
+        app:layout_constraintEnd_toEndOf="@+id/timer_animation_ranked"
+        app:layout_constraintStart_toStartOf="@+id/timer_animation_ranked"
+        app:layout_constraintTop_toTopOf="@+id/rankedCurrentText"
+        tools:ignore="TextContrastCheck" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/timer_animation_ranked"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/timer_animation_id"
+        android:elevation="24dp"
+        android:scaleType="centerCrop"
+        android:scaleX="@dimen/boxTimerAnimationScale"
+        android:scaleY="@dimen/boxTimerAnimationScale"
+        app:layout_constraintBottom_toBottomOf="@+id/rankedNextText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rankedCurrentText"
+        app:layout_constraintTop_toTopOf="@+id/rankedCurrentText"
+        app:lottie_autoPlay="true"
+        app:lottie_clipToCompositionBounds="false"
+        app:lottie_colorFilter="@color/white"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/timer_animation_box"
+        app:lottie_speed="-1"
+        tools:ignore="ImageContrastCheck" />
+
+    <ImageButton
+        android:id="@+id/leftArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/arrow_desc"
+        android:foregroundGravity="top"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:paddingEnd="8.dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_left"
+        app:tint="@color/white"
+        tools:ignore="ImageContrastCheck,RtlSymmetry" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -15,10 +15,11 @@
     <string name="bgImageDesc">Background Image</string>
     <string name="appIconDesc">App Icon</string>
     <string name="errorImageDesc">Error Background Image</string>
+    <string name="refreshMapDataButtonDesc">Refresh Map Data</string>
 
     // Strings
-    <string name="currentMapText">Current Map :</string>
-    <string name="nextUpText">Next Map :</string>
+    <string name="currentMapText">Current: </string>
+    <string name="nextUpText">Next:</string>
     <string name="time_format_arenas">%1s : %1s.%1d</string>
     <string name="time_format_br">0%1d : %1s : %1s.%1d</string>
     <string name="topTimerPlacesHolder">00 : 00</string>
@@ -34,4 +35,10 @@
     <string name="unranked_label_desc">UNRANKED LABEL</string>
     <string name="nextMapNameDesc">name of next map</string>
     <string name="currentMapNameDesc">current map name</string>
+
+    <string name="sharedPreferencesKey">com.example.apexmaprotations.PREFERENCE_FILE_KEY</string>
+    <string name="testSharedPreferencesKey">com.example.apexmaprotations.PREFERENCE_FILE_KEY_TEST_VERSION</string>
+    <string name="alarmTimeKey">ALARM_TIME</string>
+    <string name="notificationTimeKey">NOTIFICATION_TIME</string>
+    <string name="nextMapKey">NEXT_MAP</string>
 </resources>

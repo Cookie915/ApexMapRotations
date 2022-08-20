@@ -1,34 +1,42 @@
 package com.example.apexmaprotations.viewmodels
 
-import android.os.Handler
-import android.os.Looper
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.apexmaprotations.models.NetworkResult
-import com.example.apexmaprotations.models.toStateFlow
+import com.example.apexmaprotations.data.models.NetworkResult
+import com.example.apexmaprotations.data.retrofit.MapDataBundle
 import com.example.apexmaprotations.repo.ApexRepoImpl
-import com.example.apexmaprotations.retrofit.MapDataBundle
 import com.example.apexmaprotations.util.CustomCountdownTimer
+import com.example.apexmaprotations.util.NEXT_MAP_KEY
 import com.example.apexmaprotations.util.formatTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "ApexViewModel"
 
 @HiltViewModel
 class ApexViewModel @Inject constructor(
-    val apexRepo: ApexRepoImpl,
+    private val apexRepo: ApexRepoImpl,
+    val sharedPreferences: SharedPreferences
 ) : ViewModel() {
-    private val _mapDataBundle: Flow<NetworkResult<MapDataBundle>> =
-        apexRepo._mapData
-    val mapDataBundle = _mapDataBundle
-        .onStart { emit(NetworkResult.Loading()) }
-        .conflate()
-        .shareIn(viewModelScope, SharingStarted.Lazily, 0)
+    private val _mapDataBundle: MutableStateFlow<NetworkResult<MapDataBundle>?> =
+        MutableStateFlow(null)
+    val mapDataBundle: StateFlow<NetworkResult<MapDataBundle>?> = _mapDataBundle
+
+    private var provideFakeTimers: Boolean = false
+
+    //  Only use this method in tests
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun setFakeTimers() {
+        provideFakeTimers = true
+        refreshMapData()
+    }
 
     private var _timeRemainingBr = MutableStateFlow<Long>(0)
     val timeRemainingBr: StateFlow<List<Any>>
@@ -40,7 +48,7 @@ class ApexViewModel @Inject constructor(
             val times = formatTime(minutes, seconds)
             val list = listOf<Any>(hours, times.first(), times.last(), decimal)
             emit(list)
-        }.toStateFlow(viewModelScope, listOf(0, "0.0", "0.0", 0))
+        }.stateIn(viewModelScope, SharingStarted.Lazily, listOf(0, "0.0", "0.0", 0))
 
     //  Ranked Arenas Timer
     private var _timeRemainingArenas = MutableStateFlow<Long>(0)
@@ -52,7 +60,7 @@ class ApexViewModel @Inject constructor(
             val times = formatTime(minutes, seconds)
             val list = listOf<Any>(times.first(), times.last(), decimal)
             emit(list)
-        }.toStateFlow(viewModelScope, listOf("0.0", "0.0", 0))
+        }.stateIn(viewModelScope, SharingStarted.Lazily, listOf("0.0", "0.0", 0))
 
     //  Unranked Arenas Timer
     private var _timeRemainingArenasRanked = MutableStateFlow<Long>(0)
@@ -64,87 +72,110 @@ class ApexViewModel @Inject constructor(
             val times = formatTime(minutes, seconds)
             val list = listOf<Any>(times.first(), times.last(), decimal)
             emit(list)
-        }.toStateFlow(viewModelScope, listOf("0.0", "0.0", 0))
-
-
-    suspend fun refreshMapData() {
-        _mapDataBundle.collect()
-    }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, listOf("0.0", "0.0", 0))
 
     var timerBr: CustomCountdownTimer? = null
     var rankedTimerArenas: CustomCountdownTimer? = null
     var unrankedTimerArenas: CustomCountdownTimer? = null
 
-    fun initializeTimer(mapData: MapDataBundle) {
-        Log.i(TAG, "Init Timers")
-        Log.i(TAG, "${mapData.battleRoyale.current.remainingSecs}")
-        //  Prevent duplicate timers
-        cancelTimers()
-        Handler(Looper.getMainLooper())
-            .post {
-                val remainingTimeUnranked = mapData.arenas.current.remainingSecs * 1000L
-                val remainingTimeRanked = mapData.arenasRanked.current.remainingSecs * 1000L
-                val remainingTimeBr = mapData.battleRoyale.current.remainingSecs * 1000L
-
-                timerBr = object : CustomCountdownTimer(remainingTimeBr, 1) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        viewModelScope.launch {
-                            _timeRemainingBr.emit(millisUntilFinished)
-                        }
+    fun refreshMapData() {
+        Log.i("test2", "refreshmapdata")
+        viewModelScope.launch {
+            apexRepo._mapData.collect {
+                when (it) {
+                    is NetworkResult.Loading -> {
+                        _mapDataBundle.value = NetworkResult.Loading()
                     }
-
-                    override suspend fun onFinish() {
-                        delay(1500L)
-                        refreshMapData()
+                    is NetworkResult.Error -> {
+                        _mapDataBundle.value = NetworkResult.Error("${it.message}", it.data)
+                    }
+                    is NetworkResult.Success -> {
+                        initializeTimers(it.data!!)
+                        _mapDataBundle.value = NetworkResult.Success(it.data)
                     }
                 }
-
-                rankedTimerArenas = object : CustomCountdownTimer(remainingTimeRanked, 1) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        viewModelScope.launch {
-                            _timeRemainingArenasRanked.emit(millisUntilFinished)
-                        }
-                    }
-
-                    override suspend fun onFinish() {
-                        delay(1500L)
-                        refreshMapData()
-                    }
-                }
-
-                unrankedTimerArenas = object : CustomCountdownTimer(remainingTimeUnranked, 1) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        viewModelScope.launch {
-                            _timeRemainingArenas.emit(millisUntilFinished)
-                        }
-                    }
-
-                    override suspend fun onFinish() {
-                        delay(1500L)
-                        refreshMapData()
-                    }
-                }
-                timerBr?.start()
-                rankedTimerArenas?.start()
-                unrankedTimerArenas?.start()
-                checkTimers()
             }
+        }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun setNextMapPreferences(nextMap: String) {
+        viewModelScope.launch {
+            with(sharedPreferences.edit()) {
+                putString(NEXT_MAP_KEY, nextMap)
+                commit()
+            }
+        }
+    }
+
+    private fun initializeTimers(mapData: MapDataBundle) {
         cancelTimers()
-        Log.i(TAG, "vm cleared")
+        if (provideFakeTimers) {
+            //  Provide fake timers for testing
+            cancelTimers()
+        } else {
+            //  Provide real timers
+            val remainingTimeUnranked = mapData.arenas.current.remainingSecs * 1000L
+            val remainingTimeRanked = mapData.arenasRanked.current.remainingSecs * 1000L
+            val remainingTimeBr = mapData.battleRoyale.current.remainingSecs * 1000L
+            timerBr = object : CustomCountdownTimer(remainingTimeBr, 1) {
+                override fun onTick(millisUntilFinished: Long) {
+                    viewModelScope.launch {
+                        _timeRemainingBr.value = millisUntilFinished
+                    }
+                }
+
+                override suspend fun onFinish() {
+                    viewModelScope.launch {
+                        delay(1000L)
+                        cancelTimers()
+                        refreshMapData()
+                    }
+                }
+            }
+            rankedTimerArenas = object : CustomCountdownTimer(remainingTimeRanked, 1) {
+                override fun onTick(millisUntilFinished: Long) {
+                    viewModelScope.launch {
+                        _timeRemainingArenasRanked.value = millisUntilFinished
+                    }
+                }
+
+                override suspend fun onFinish() {
+                    viewModelScope.launch {
+                        delay(1500L)
+                        cancelTimers()
+                        refreshMapData()
+                    }
+                }
+            }
+            unrankedTimerArenas = object : CustomCountdownTimer(remainingTimeUnranked, 1) {
+                override fun onTick(millisUntilFinished: Long) {
+                    viewModelScope.launch {
+                        _timeRemainingArenas.emit(millisUntilFinished)
+                    }
+                }
+
+                override suspend fun onFinish() {
+                    viewModelScope.launch {
+                        delay(2000L)
+                        cancelTimers()
+                        refreshMapData()
+                    }
+                }
+            }
+            timerBr?.start()
+            rankedTimerArenas?.start()
+            unrankedTimerArenas?.start()
+        }
     }
 
-    private fun checkTimers() {
-        val currentTime = System.currentTimeMillis()
-        if (
-            (timerBr?.mMillisInFutureToStop ?: 0) < currentTime ||
-            ((rankedTimerArenas?.mMillisInFutureToStop ?: 0) < currentTime) ||
-            (unrankedTimerArenas?.mMillisInFutureToStop ?: 0) < currentTime
-        ) {
-            viewModelScope.launch {
+    fun checkTimers(calendar: Calendar) {
+        val currentTimeMillis = calendar.timeInMillis
+        if (timerBr != null && rankedTimerArenas != null && unrankedTimerArenas != null) {
+            if (
+                (timerBr?.mStopTimeInFutureMillis ?: 0) < currentTimeMillis ||
+                ((rankedTimerArenas?.mStopTimeInFutureMillis ?: 0) < currentTimeMillis) ||
+                (unrankedTimerArenas?.mStopTimeInFutureMillis ?: 0) < currentTimeMillis
+            ) {
                 refreshMapData()
             }
         }
@@ -154,6 +185,12 @@ class ApexViewModel @Inject constructor(
         timerBr?.cancel(); timerBr = null
         rankedTimerArenas?.cancel(); rankedTimerArenas = null
         unrankedTimerArenas?.cancel(); unrankedTimerArenas = null
+    }
+
+    public override fun onCleared() {
+        super.onCleared()
+        cancelTimers()
+        Log.i(TAG, "vm cleared")
     }
 
 }
