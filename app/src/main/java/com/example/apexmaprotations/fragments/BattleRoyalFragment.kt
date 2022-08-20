@@ -71,6 +71,7 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
     override fun onResume() {
         super.onResume()
         apexViewModel.checkTimers(Calendar.getInstance())
+        requireActivity().findViewById<ImageView>(R.id.appIconMain).visibility = View.VISIBLE
     }
 
     private fun setupObservables() {

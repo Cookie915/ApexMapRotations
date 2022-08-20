@@ -1,6 +1,8 @@
 package com.example.apexmaprotations.activities
 
 import android.animation.ObjectAnimator
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,6 +26,7 @@ import com.example.apexmaprotations.databinding.ActivityMainBinding
 import com.example.apexmaprotations.di.DispatcherProvider
 import com.example.apexmaprotations.fragments.ArenasFragment
 import com.example.apexmaprotations.fragments.BattleRoyalFragment
+import com.example.apexmaprotations.util.SHOW_INTO_SCREEN_KEY
 import com.example.apexmaprotations.util.SwipeGestureListener
 import com.example.apexmaprotations.util.SwipeListener
 import com.example.apexmaprotations.viewmodels.ApexViewModel
@@ -41,6 +44,9 @@ class MainActivity : AppCompatActivity(), SwipeListener {
 
     @Inject
     lateinit var dispatchers: DispatcherProvider
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     val appViewModel: AppViewModel by viewModels()
     val apexViewModel: ApexViewModel by viewModels()
@@ -92,10 +98,6 @@ class MainActivity : AppCompatActivity(), SwipeListener {
                 else -> BattleRoyalFragment()
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun setupObservables() {
@@ -150,6 +152,11 @@ class MainActivity : AppCompatActivity(), SwipeListener {
                 interpolator = DecelerateInterpolator()
                 duration = 300L
                 doOnEnd {
+                    //  Show intro screen if first launch
+                    if (sharedPreferences.getBoolean(SHOW_INTO_SCREEN_KEY, true)) {
+                        val intent = Intent(this@MainActivity, IntroScreenActivity::class.java)
+                        startActivity(intent)
+                    }
                     splashScreenView.remove()
                 }
             }.start()

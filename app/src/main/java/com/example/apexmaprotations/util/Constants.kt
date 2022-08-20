@@ -1,8 +1,10 @@
 package com.example.apexmaprotations.util
 
 //  Datastore Key
-val ALARM_TIME_KEY = "ALARM_TIME"
+const val ALARM_TIME_KEY = "ALARM_TIME"
 
-val NOTIFICATION_TIME_KEY = "NOTIFICATION_TIME"
+const val NOTIFICATION_TIME_KEY = "NOTIFICATION_TIME"
 
-val NEXT_MAP_KEY = "NEXT_MAP"
+const val NEXT_MAP_KEY = "NEXT_MAP"
+
+const val SHOW_INTO_SCREEN_KEY = "SHOW_INTRO_SCREEN"

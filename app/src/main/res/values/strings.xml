@@ -17,6 +17,11 @@
     <string name="errorImageDesc">Error Background Image</string>
     <string name="refreshMapDataButtonDesc">Refresh Map Data</string>
 
+    <string name="swipeToNavigateDesc">Swipe To Navigate Graphic</string>
+    <string name="swipeToRefreshDesc">Swipe Down To Refresh Graphic</string>
+    <string name="setAlarmIntroDesc">Tap to schedule alarm or notification</string>
+    <string name="finishIntroButtonDesc">Exit tutorial</string>
+
     // Strings
     <string name="currentMapText">Current: </string>
     <string name="nextUpText">Next:</string>
@@ -41,4 +46,9 @@
     <string name="alarmTimeKey">ALARM_TIME</string>
     <string name="notificationTimeKey">NOTIFICATION_TIME</string>
     <string name="nextMapKey">NEXT_MAP</string>
+
+    <string name="navigationIntroText">Swipe to navigate!</string>
+    <string name="refreshDataIntroText">Pull down to refresh!</string>
+    <string name="setAlarmsIntroText">Tap to schedule alarms or notifications!</string>
+    <string name="finishIntroButtonText">Got it!</string>
 </resources>

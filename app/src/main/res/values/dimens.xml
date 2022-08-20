@@ -41,4 +41,7 @@
 
     <dimen name="boxTimerAnimationScale">2f</dimen>
 
+    <!--  Intro Activity  -->
+    <dimen name="introImageScale">0.2</dimen>
+
 </resources>
