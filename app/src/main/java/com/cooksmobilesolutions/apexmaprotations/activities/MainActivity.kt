@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity(), SwipeListener {
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
-    val appViewModel: AppViewModel by viewModels()
+    private val appViewModel: AppViewModel by viewModels()
     val apexViewModel: ApexViewModel by viewModels()
 
     private val binding: ActivityMainBinding by lazy {
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), SwipeListener {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    appViewModel.backgroundImage.collect() {
+                    appViewModel.backgroundImage.collect {
                         if (it != null) {
                             Glide.with(this@MainActivity)
                                 .load(it)
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity(), SwipeListener {
                     }
                 }
                 launch {
-                    appViewModel.errStatus.collect() { error ->
+                    appViewModel.errStatus.collect { error ->
                         if (error) {
                             Glide.with(this@MainActivity)
                                 .load(appViewModel.errImage.value)

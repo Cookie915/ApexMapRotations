@@ -9,8 +9,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.cooksmobilesolutions.apexmaprotations.R
-import com.cooksmobilesolutions.apexmaprotations.data.retrofit.ApexApiInterceptor
-import com.cooksmobilesolutions.apexmaprotations.data.retrofit.ApexStatusApi
 import com.cooksmobilesolutions.apexmaprotations.repo.ApexRepo
 import com.cooksmobilesolutions.apexmaprotations.repo.ApexRepoImpl
 import dagger.Module
@@ -20,10 +18,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 private const val USER_SETTINGS_DATASTORE = "Settings"
@@ -33,22 +27,6 @@ private const val USER_SETTINGS_DATASTORE = "Settings"
 class SingletonModule {
     @Singleton
     @Provides
-    fun provideRetrofitInstance(): ApexStatusApi {
-        return Retrofit.Builder()
-            .baseUrl(HttpUrl.get("https://api.mozambiquehe.re"))
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(
-                OkHttpClient()
-                    .newBuilder()
-                    .addInterceptor(ApexApiInterceptor())
-                    .build()
-            )
-            .build()
-            .create(ApexStatusApi::class.java)
-    }
-
-    @Singleton
-    @Provides
     fun provideDispatchers(): DispatcherProvider {
         return DefaultDispatchers()
     }
@@ -56,9 +34,8 @@ class SingletonModule {
     @Singleton
     @Provides
     fun provideRealApexRepo(
-        apexApi: ApexStatusApi,
         dispatchers: DispatcherProvider
-    ) = ApexRepo(apexApi, dispatchers) as ApexRepoImpl
+    ) = ApexRepo(dispatchers) as ApexRepoImpl
 
 
     @Singleton
@@ -88,30 +65,3 @@ class SingletonModule {
     }
 
 }
-
-//@Module
-//@InstallIn(ViewModelComponent::class)
-//object ViewModelModule {
-//    @ViewModelScoped
-//    @Provides
-//    fun provideApexViewModel(apexRepo: ApexRepo): BattleRoyalViewModel {
-//        return BattleRoyalViewModel(apexRepo)
-//    }
-//}
-
-
-//@Module
-//@InstallIn(ActivityRetainedComponent::class)
-//object ActivityViewModelModule {
-//    @ActivityRetainedScoped
-//    @Provides
-//    fun provideArenasViewModel(apexRepo: ApexRepo): ArenasViewModel {
-//        return ArenasViewModel(apexRepo)
-//    }
-//
-//    @ActivityRetainedScoped
-//    @Provides
-//    fun provideAppViewModel(): AppViewModel {
-//        return AppViewModel()
-//    }
-//}

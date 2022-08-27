@@ -1,10 +1,8 @@
 package com.cooksmobilesolutions.apexmaprotations.repo
 
 import android.util.Log
-import com.cooksmobilesolutions.apexmaprotations.data.models.BaseApiResponse
 import com.cooksmobilesolutions.apexmaprotations.data.models.MapData
 import com.cooksmobilesolutions.apexmaprotations.data.models.NetworkResult
-import com.cooksmobilesolutions.apexmaprotations.data.retrofit.ApexStatusApi
 import com.cooksmobilesolutions.apexmaprotations.di.DispatcherProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.MetadataChanges
@@ -17,9 +15,8 @@ import javax.inject.Inject
 private const val TAG = "ApexRepo"
 
 class ApexRepo @Inject constructor(
-    private val apexApi: ApexStatusApi,
     dispatchers: DispatcherProvider
-) : BaseApiResponse(), ApexRepoImpl {
+) : ApexRepoImpl {
     override var _mapData: Flow<NetworkResult<MapData>> = callbackFlow {
         trySend(NetworkResult.Loading())
         val mapDataDoc = FirebaseFirestore

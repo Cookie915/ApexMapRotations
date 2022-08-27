@@ -1,7 +1,6 @@
 package com.cooksmobilesolutions.apexmaprotations.util
 
 import android.app.AlarmManager
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -47,7 +46,6 @@ fun Context.showNotificationWithFullScreenIntent(
         .setSound(sound)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setCategory(NotificationCompat.CATEGORY_ALARM)
-        .setDefaults(Notification.DEFAULT_VIBRATE)
         .setPriority(NotificationCompat.PRIORITY_MAX)
 
     if (isAlarm) {
@@ -63,11 +61,13 @@ fun Context.showNotificationWithFullScreenIntent(
         val pi = PendingIntent.getActivity(this, requestCode, intent, flags)
         builder.setContentIntent(pi)
     }
+
     with(NotificationManagerCompat.from(this)) {
         buildChannel(channelId, description, channelId)
         val notification = builder.build()
         notify(requestCode, notification)
     }
+
 }
 
 private fun Context.getFullScreenIntent(isLockScreen: Boolean): PendingIntent {

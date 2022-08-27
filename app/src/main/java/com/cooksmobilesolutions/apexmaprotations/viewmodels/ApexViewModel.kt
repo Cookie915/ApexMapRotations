@@ -78,7 +78,6 @@ class ApexViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.Lazily, listOf("0.0", "0.0", 0))
 
     fun refreshMapData() {
-        Log.i("test2", "refreshmapdata")
         viewModelScope.launch {
             apexRepo._mapData.collect {
                 when (it) {
@@ -121,7 +120,6 @@ class ApexViewModel @Inject constructor(
 
             override fun onFinish() {
                 viewModelScope.launch {
-//                        refreshMapData()
                 }
             }
         }
@@ -134,7 +132,6 @@ class ApexViewModel @Inject constructor(
 
             override fun onFinish() {
                 viewModelScope.launch {
-//                        refreshMapData()
                 }
             }
         }
@@ -146,9 +143,6 @@ class ApexViewModel @Inject constructor(
             }
 
             override fun onFinish() {
-                viewModelScope.launch {
-//                        refreshMapData()
-                }
             }
         }
         //  Don't run timers in tests, stops looper from idling
