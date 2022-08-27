@@ -23,8 +23,8 @@
     <string name="finishIntroButtonDesc">Exit tutorial</string>
 
     // Strings
-    <string name="currentMapText">Current: </string>
-    <string name="nextUpText">Next:</string>
+    <string name="currentMapText">Current: %s</string>
+    <string name="nextMapText">Next: %s</string>
     <string name="time_format_arenas">%1s : %1s.%1d</string>
     <string name="time_format_br">0%1d : %1s : %1s.%1d</string>
     <string name="topTimerPlacesHolder">00 : 00</string>

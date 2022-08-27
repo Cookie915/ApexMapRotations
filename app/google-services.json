@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "893048288328",
+    "project_id": "apex-app-360501",
+    "storage_bucket": "apex-app-360501.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893048288328:android:fe1abc125b45fe392b947d",
+        "android_client_info": {
+          "package_name": "com.cooksmobilesolutions.apexmaprotations"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893048288328-uk7mmontltbenekaqm16v01o8414bfur.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cooksmobilesolutions.apexmaprotations",
+            "certificate_hash": "47e196ba019f04b4c835b5bec3f19af63796bffc"
+          }
+        },
+        {
+          "client_id": "893048288328-7f9p1dg1u43qfovd24qg4loj4v56vdfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQDdW_ZRpFmmAfT0eFMLraZ4ZynqijKxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893048288328-7f9p1dg1u43qfovd24qg4loj4v56vdfm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

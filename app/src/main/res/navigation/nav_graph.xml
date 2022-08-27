@@ -5,7 +5,7 @@
     app:startDestination="@id/battleRoyalFragment">
     <fragment
         android:id="@+id/battleRoyalFragment"
-        android:name="com.example.apexmaprotations.fragments.BattleRoyalFragment"
+        android:name="com.cooksmobilesolutions.apexmaprotations.fragments.BattleRoyalFragment"
         android:label="BattleRoyalFragment">
         <action
             android:id="@+id/action_battleRoyalFragment_to_arenasFragment"
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/arenasFragment"
-        android:name="com.example.apexmaprotations.fragments.ArenasFragment"
+        android:name="com.cooksmobilesolutions.apexmaprotations.fragments.ArenasFragment"
         android:label="ArenasFragment">
         <action
             android:id="@+id/action_arenasFragment_to_battleRoyalFragment"

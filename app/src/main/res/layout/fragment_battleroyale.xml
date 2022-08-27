@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.apexmaprotations.viewmodels.ApexViewModel" />
+            type="com.cooksmobilesolutions.apexmaprotations.viewmodels.ApexViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -43,7 +43,7 @@
             android:gravity="start|center_vertical"
             android:paddingStart="20.dp"
             android:paddingEnd="20.dp"
-            android:text="@string/nextUpText"
+            android:text="@string/nextMapText"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/standardTextSize"
             app:layout_constraintStart_toStartOf="parent"
