@@ -10,10 +10,8 @@
 - [✅ Atrributions](#-attributions)
 - [📷 Screenshots](#-screenshots)
 ## ℹ️ About
-## Quick Edit 6/27/2022
-Currently working on getting all the testing setup, once that is down I'll get a stable version for downloads and create a sererate branch for developement :)
 <p>
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps for battle royal and arenas. You can set alarms or notifications to be alerted when map changes happen.
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Alarm is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps for battle royal and arenas. You can set alarms or notifications to be alerted when map changes happen.
 I made this app to get some experience using Views + XML for layout as opposed to Jetpack Compose, and to brush up on my skills with Adobe Illustrator,
 Photoshop and other graphic utilities. All icons and animations are made in house. If you have an issues or feature requests send me and 
 email at calebcookdev@gmail.com or leave it on the repository, I'd love to hear it! 😁
@@ -24,11 +22,7 @@ email at calebcookdev@gmail.com or leave it on the repository, I'd love to hear 
 The viewmodels are bound to each fragment and the repository layer is a singleton that holds a SharedFlow which collects data from the api. The flow is converted to a public stateflow that is collect in each viewmodel. This also maintains a single source of truth for map data. The app uses Glide for image loading and caching. The animations and icons are build in Adobe Illustrator, animated in after effects, and exoprted as lottieanimations. Jetpack Datastore is used to persist local data. The app takes advantage of kotlin KTX and Coroutines. It also implements the new Splash Screen Api for android 12
 
 ## ▶️ Downloads 
-- Go to Code -> Download ZIP
-- Extract to ApexMapRotations-master
-- Open Android Studio
-- File -> Open -> ApexMapRotations-master
-- Run from Android Studio on emulator or device
+- Play store release expected in next couple weeks!
 
 ## ✅ Attributions  
 - Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
