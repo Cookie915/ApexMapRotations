@@ -23,6 +23,8 @@ The viewmodels are bound to the activity and the repository is a singleton that 
 
 ## ▶️ Downloads 
 - Play store release pending review! Will update as soon as it becomes available!
+- The master branch of this repository has the latest stable version of the app.
+- The development branch may be unstable and is updated as I develope new features!
 
 ## ✅ Attributions  
 - Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
