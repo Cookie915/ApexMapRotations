@@ -13,7 +13,7 @@
 <p>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Alarm is a free to use, unmonotized android app that uses an unoffical Apex Legends API to bring you updates on the current maps for battle royal and arenas. You can set alarms or notifications to be alerted when map changes happen.
 I made this app to get some experience using Views + XML for layout as opposed to Jetpack Compose, and to brush up on my skills with Adobe Illustrator,
-Photoshop and other graphic utilities. All icons and animations are made in house. If you have an issues or feature requests send me and 
+Photoshop and other graphic utilities. The app should support screen sizes from small 4 inch phones all the way to 10 inch tablets, landscape or portrait.  All icons and animations are made in house. If you have an issues or feature requests send me and 
 email at calebcookdev@gmail.com or leave it on the repository, I'd love to hear it! 😁
  </P>
 
