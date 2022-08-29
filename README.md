@@ -18,11 +18,11 @@ email at calebcookdev@gmail.com or leave it on the repository, I'd love to hear 
  </P>
 
 ## 🏗️ Libraries/Architecture 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is build using MVVM, with a single activity swapping out fragments. It features a repository layer that uses Retrofit to make request to the server. Its set up for dependency injection with hilt for the viewmodels, repository, and retrofit instance.
-The viewmodels are bound to each fragment and the repository layer is a singleton that holds a SharedFlow which collects data from the api. The flow is converted to a public stateflow that is collect in each viewmodel. This also maintains a single source of truth for map data. The app uses Glide for image loading and caching. The animations and icons are build in Adobe Illustrator, animated in after effects, and exoprted as lottieanimations. Jetpack Datastore is used to persist local data. The app takes advantage of kotlin KTX and Coroutines. It also implements the new Splash Screen Api for android 12
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apex Map Rotations is build using MVVM, with a single activity swapping out fragments. It features a repository layer that uses Firebase to make request to the server. Its set up for dependency injection with hilt for the viewmodels, repository, and sharedPreferences instances.
+The viewmodels are bound to the activity and the repository is a singleton that holds a SharedFlow which collects data from firestore. The flow is converted to a public stateflow that is collected in the viewmodels. The app uses Glide for image loading and caching. The animations and icons are build in Adobe Illustrator, animated in after effects, and exoprted as lottieanimations. SharedPreferences is used to persist local data. The app takes advantage of kotlin KTX and Coroutines. It also implements the new Splash Screen Api for android 12. On the cloud we have a Firestore database holding our mapdata. I have a cloud function that runs a small JS file to fetch the map data from the API. It takes the data and populates our firestore databases with only the stuff we need for the app. The function then schedules a task to run 1 second after nearest map change. The this task then reruns the original function. This keeps the data fresh, while minimizing firebase calls and avoiding rate limits on the Apex API. 
 
 ## ▶️ Downloads 
-- Play store release expected in next couple weeks!
+- Play store release pending review! Will update as soon as it becomes available!
 
 ## ✅ Attributions  
 - Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
