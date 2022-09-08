@@ -29,6 +29,7 @@ The viewmodels are bound to the activity and the repository is a singleton that 
 ## ✅ Attributions  
 - Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
 - Thank you https://www.reddit.com/user/kurdan/ for the Error and Loading screen images 
+- Thank you @Jamalater1269 for the beatiful background images
 - This app is not affiliated with or sponsored by Electronic Arts Inc. or its licensors.
 
 ## 📷 Screenshots
