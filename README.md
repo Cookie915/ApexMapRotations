@@ -22,9 +22,7 @@ email at calebcookdev@gmail.com or leave it on the repository, I'd love to hear 
 The viewmodels are bound to the activity and the repository is a singleton that holds a SharedFlow which collects data from firestore. The flow is converted to a public stateflow that is collected in the viewmodels. The app uses Glide for image loading and caching. The animations and icons are build in Adobe Illustrator, animated in after effects, and exoprted as lottieanimations. SharedPreferences is used to persist local data. The app takes advantage of kotlin KTX and Coroutines. It also implements the new Splash Screen Api for android 12. On the cloud we have a Firestore database holding our mapdata. I have a cloud function that runs a small JS file to fetch the map data from the API. It takes the data and populates our firestore databases with only the stuff we need for the app. The function then schedules a task to run 1 second after nearest map change. The this task then reruns the original function. This keeps the data fresh, while minimizing firebase calls and avoiding rate limits on the Apex API. 
 
 ## ▶️ Downloads 
-- Play store release pending review! Will update as soon as it becomes available!
-- The master branch of this repository has the latest stable version of the app.
-- The development branch may be unstable and is updated as I develope new features!
+- https://play.google.com/store/apps/details?id=com.cooksmobilesolutions.apexmaprotations&raii=com.cooksmobilesolutions.apexmaprotations&rapt=AEjHL4Moal9hKZKgm3MTSCk_GojzF4pVzkZ_1n-hc2XxDJ6L1NK5_6bBwJRVamT4t6KXUZhjMED-DUbtctyykLtii1kj_M3MbZmcrqXLe5Gv-z5_m-rSToo
 
 ## ✅ Attributions  
 - Thank you https://apexlegendsapi.com/#introduction for a clean easy to use API with good JSON responses.
