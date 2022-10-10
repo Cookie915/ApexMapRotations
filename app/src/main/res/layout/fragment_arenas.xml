@@ -108,7 +108,7 @@
         android:id="@+id/rankedArenasText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/rankedTextTopMargin"
+        android:layout_marginTop="32dp"
         android:background="@color/text_background"
         android:fontFamily="@font/inter_extralight"
         android:gravity="center"
@@ -192,24 +192,6 @@
         app:lottie_rawRes="@raw/timer_animation_box"
         app:lottie_speed="-1"
         tools:ignore="ImageContrastCheck" />
-
-    <ImageButton
-        android:id="@+id/leftArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/arrow_desc"
-        android:foregroundGravity="top"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
-        android:paddingEnd="8.dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_left"
-        app:tint="@color/white"
-        tools:ignore="ImageContrastCheck,RtlSymmetry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

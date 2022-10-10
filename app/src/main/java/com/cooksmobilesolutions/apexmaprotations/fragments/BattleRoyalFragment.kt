@@ -14,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.TransitionInflater
-import androidx.viewpager2.widget.ViewPager2
 import com.cooksmobilesolutions.apexmaprotations.R
 import com.cooksmobilesolutions.apexmaprotations.data.models.NetworkResult
 import com.cooksmobilesolutions.apexmaprotations.databinding.FragmentBattleroyaleBinding
@@ -202,9 +201,6 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
     }
 
     private fun setupListeners() {
-        binding.rightArrow.setOnClickListener {
-            requireActivity().findViewById<ViewPager2>(R.id.viewPager).currentItem = 1
-        }
         binding.setAlarmBtn.setOnClickListener {
             when (appViewModel.isAlarmSet.value) {
                 true -> {

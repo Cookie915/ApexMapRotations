@@ -12,10 +12,10 @@ android {
     compileSdk 32
     defaultConfig {
         applicationId "com.cooksmobilesolutions.apexmaprotations"
-        minSdk 21
+        minSdk 23
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "5 - minify disabiled"
 
         testInstrumentationRunner = "com.cooksmobilesolutions.apexmaprotations.testUtils.HiltTestRunner"
     }
@@ -29,7 +29,8 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 

@@ -26,7 +26,7 @@ import java.util.*
 @AndroidEntryPoint
 class ArenasFragment : Fragment() {
     val apexViewModel: ApexViewModel by viewModels({ requireActivity() })
-    val appViewModel: AppViewModel by viewModels({ requireActivity() })
+    private val appViewModel: AppViewModel by viewModels({ requireActivity() })
 
     private val binding: FragmentArenasBinding by lazy {
         FragmentArenasBinding.inflate(layoutInflater)
@@ -51,7 +51,6 @@ class ArenasFragment : Fragment() {
             }
         }
         setupObservables()
-        setupListeners()
     }
 
     override fun onResume() {
@@ -68,12 +67,6 @@ class ArenasFragment : Fragment() {
             appIcon?.let {
                 it.visibility = View.GONE
             }
-        }
-    }
-
-    private fun setupListeners() {
-        binding.leftArrow.setOnClickListener {
-            requireActivity().onBackPressed()
         }
     }
 

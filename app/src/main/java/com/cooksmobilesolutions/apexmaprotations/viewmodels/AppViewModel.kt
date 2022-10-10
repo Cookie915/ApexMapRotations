@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cooksmobilesolutions.apexmaprotations.R
@@ -19,7 +18,9 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class AppViewModel @Inject constructor(
+class
+
+AppViewModel @Inject constructor(
     val sharedPreferences: SharedPreferences
 ) : ViewModel() {
     private var mShowSplash = MutableStateFlow(true)
@@ -125,9 +126,7 @@ class AppViewModel @Inject constructor(
 
     private fun getReceiver(ctx: Context, isAlarm: Boolean): PendingIntent {
         var flags = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags = PendingIntent.FLAG_IMMUTABLE
-        }
+        flags = PendingIntent.FLAG_IMMUTABLE
         flags += PendingIntent.FLAG_CANCEL_CURRENT
         val intent = Intent(ctx, AlarmBroadCastReceiver::class.java).apply {
             putExtra("ALARM", isAlarm)

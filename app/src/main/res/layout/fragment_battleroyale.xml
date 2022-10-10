@@ -71,25 +71,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nextMapText"
+            tools:ignore="TextContrastCheck"
             tools:text="01 : 15 : 18.2" />
-
-        <ImageButton
-            android:id="@+id/rightArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/arrow_desc"
-            android:foregroundGravity="top"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:paddingStart="8.dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="@color/white"
-            tools:ignore="ImageContrastCheck,RtlSymmetry" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/timer_animation"
@@ -134,18 +117,19 @@
 
         <ImageButton
             android:id="@+id/setAlarmBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/alarm_imagebutton_desc"
             android:foregroundGravity="center_vertical|center"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             app:layout_constraintBottom_toBottomOf="@id/setAlarmText"
             app:layout_constraintEnd_toEndOf="@id/setAlarmText"
             app:layout_constraintStart_toStartOf="@id/centerVertical"
             app:layout_constraintTop_toTopOf="@id/setAlarmText"
-            app:srcCompat="@drawable/ic_alarm" />
+            app:srcCompat="@drawable/ic_alarm"
+            tools:ignore="DuplicateSpeakableTextCheck" />
 
         <TextView
             android:id="@+id/setNotificationText"
@@ -167,20 +151,21 @@
 
         <ImageButton
             android:id="@+id/setNotificationButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/notify_imagebutton_desc"
             android:foregroundGravity="center_vertical|center|center_horizontal"
             android:foregroundTint="@color/white"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             app:layout_constraintBottom_toBottomOf="@id/setNotificationText"
             app:layout_constraintEnd_toEndOf="@id/setNotificationText"
             app:layout_constraintStart_toStartOf="@id/centerVertical"
             app:layout_constraintTop_toTopOf="@id/setNotificationText"
             app:srcCompat="@drawable/ic_notification"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            tools:ignore="DuplicateSpeakableTextCheck" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/centerVertical"

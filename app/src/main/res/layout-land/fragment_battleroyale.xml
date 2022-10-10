@@ -113,24 +113,6 @@
             app:layout_constraintWidth_percent="0.1"
             tools:text='"00 : 56 : 35.2"' />
 
-        <ImageButton
-            android:id="@+id/rightArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/arrow_desc"
-            android:foregroundGravity="top"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:paddingStart="8.dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="@color/white"
-            tools:ignore="ImageContrastCheck,RtlSymmetry" />
-
         <TextView
             android:id="@+id/setAlarmText"
             android:layout_width="0.dp"

@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), SwipeListener {
         appViewModel.verifyAlerts(this)
         appViewModel.setBackgroundImage(this)
         val splashScreen = installSplashScreen()
+//        val spl = SplashScreenC
         setUpSplash(splashScreen)
         setContentView(binding.root)
         setupObservables()
