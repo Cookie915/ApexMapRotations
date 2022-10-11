@@ -193,5 +193,6 @@
         app:lottie_speed="-1"
         tools:ignore="ImageContrastCheck" />
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

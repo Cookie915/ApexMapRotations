@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,6 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.TransitionInflater
 import com.cooksmobilesolutions.apexmaprotations.R
+import com.cooksmobilesolutions.apexmaprotations.compose.BubbleMenuItemState
+import com.cooksmobilesolutions.apexmaprotations.compose.BubbleMenuQuadrants
 import com.cooksmobilesolutions.apexmaprotations.data.models.NetworkResult
 import com.cooksmobilesolutions.apexmaprotations.databinding.FragmentBattleroyaleBinding
 import com.cooksmobilesolutions.apexmaprotations.util.cancelAlert
@@ -48,6 +52,31 @@ class BattleRoyalFragment : Fragment(R.layout.fragment_battleroyale) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.bubbleMenu?.apply {
+            mainIcon = R.drawable.ic_materials
+            size = 50.dp
+            bubbleItemSize = 30.dp
+            bubbleMenuItems = mutableStateListOf(
+                BubbleMenuItemState(
+                    R.drawable._x_hcog_bruiser,
+                    ""
+                ) {},
+                BubbleMenuItemState(
+                    R.drawable._x_digital_threat,
+                    ""
+                ) {},
+                BubbleMenuItemState(
+                    R.drawable.med_kit,
+                    ""
+                ) {},
+                BubbleMenuItemState(
+                    R.drawable.shield_battery,
+                    ""
+                ) {}
+            )
+            quadrants = BubbleMenuQuadrants(listOf(0, 1, 0, 0))
+            contentDescriptionString = "Crafting Menu"
+        }
         setupListeners()
     }
 
